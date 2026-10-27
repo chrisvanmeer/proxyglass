@@ -1,0 +1,68 @@
+services:
+  web1: &web
+    image: nginx:alpine
+    networks: [pgtest]
+  web2: { <<: *web }
+  web3: { <<: *web }
+  api1: { <<: *web }
+  api2: { <<: *web }
+  api3: { <<: *web }
+  app1: { <<: *web }
+  app2: { <<: *web }
+  app3: { <<: *web }
+  app4: { <<: *web }
+  static1: { <<: *web }
+  static2: { <<: *web }
+  edge1: { <<: *web }
+  edge2: { <<: *web }
+  edge3: { <<: *web }
+  edge4: { <<: *web }
+  admin1: { <<: *web }
+  admin2: { <<: *web }
+  haproxy1:
+    image: haproxy:2.9
+    container_name: proxyglass-haproxy1
+    ports:
+      - "18404:8404"
+      - "18080:80"
+    volumes:
+      - ../test/haproxy/haproxy1.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on: [web1, web2, web3, api1, api2, api3]
+    networks:
+      - pgtest
+  haproxy2:
+    image: haproxy:2.9
+    container_name: proxyglass-haproxy2
+    ports:
+      - "28404:8404"
+      - "28080:80"
+    volumes:
+      - ../test/haproxy/haproxy2.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on: [app1, app2, app3, app4, static1, static2]
+    networks:
+      - pgtest
+  haproxy3:
+    image: haproxy:2.9
+    container_name: proxyglass-haproxy3
+    ports:
+      - "38404:8404"
+      - "38080:80"
+    volumes:
+      - ../test/haproxy/haproxy3.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on: [edge1, edge2, edge3, edge4, admin1, admin2]
+    networks:
+      - pgtest
+  proxyglass:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "18000:8080"
+    volumes:
+      - ../test/config.docker.yaml:/etc/proxyglass/config.yml:ro
+    depends_on: [haproxy1, haproxy2, haproxy3]
+    networks: [pgtest]
+
+networks:
+  pgtest:
+    driver: bridge

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" role="img" aria-labelledby="title">
+  <title id="title">Proxyglass</title>
+  <defs>
+    <linearGradient id="pg-gradient" x1="8" y1="6" x2="96" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67e8f9"/><stop offset=".52" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="pg-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+  </defs>
+  <rect x="4" y="4" width="104" height="104" rx="30" fill="#0b1426" stroke="#fff" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="56" cy="56" r="34" fill="url(#pg-gradient)" fill-opacity=".12" stroke="url(#pg-gradient)" stroke-width="3"/>
+  <circle cx="56" cy="56" r="24" fill="#0c172b" stroke="#dffaff" stroke-opacity=".82" stroke-width="2.5"/>
+  <path d="M40 56h9l5-10 7 20 5-10h8" fill="none" stroke="url(#pg-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" filter="url(#pg-glow)"/>
+  <circle cx="34" cy="34" r="4" fill="#67e8f9"/><circle cx="79" cy="36" r="4" fill="#a78bfa"/><circle cx="80" cy="78" r="4" fill="#67e8f9"/>
+  <path d="m37 37 6 6m34-4-5 6m6 27-6-6" stroke="#dffaff" stroke-opacity=".55" stroke-width="1.5"/>
+  <path d="m74 74 17 17" stroke="url(#pg-gradient)" stroke-linecap="round" stroke-width="7"/><path d="m74 74 17 17" stroke="#e0fbff" stroke-linecap="round" stroke-opacity=".8" stroke-width="2"/>
+</svg>

@@ -1,0 +1,21 @@
+server:
+  listen: ":8080"
+  default_refresh: 5
+
+require_auth: true
+tokens_file: "/tmp/proxyglass-tokens.json"
+log_path: ""
+
+targets:
+  - name: edge-01
+    url: http://haproxy1:8404/stats;csv
+    username: admin
+    password: changeme
+  - name: edge-02
+    url: http://haproxy2:8404/stats;csv
+    username: admin
+    password: changeme
+  - name: edge-03
+    url: http://haproxy3:8404/stats;csv
+    username: admin
+    password: changeme

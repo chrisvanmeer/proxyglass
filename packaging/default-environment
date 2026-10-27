@@ -1,0 +1,6 @@
+# Proxyglass service environment
+PROXYGLASS_CONFIG=/etc/proxyglass/config.yml
+# Optional outbound proxy for HAProxy stats endpoints and OIDC discovery/login.
+# HTTP_PROXY=http://proxy.example.net:3128
+# HTTPS_PROXY=http://proxy.example.net:3128
+# NO_PROXY=localhost,127.0.0.1,.internal

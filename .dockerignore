@@ -1,0 +1,10 @@
+.git
+.gitignore
+node_modules
+bin
+dist
+*.log
+proxyglass
+test
+docs
+.github

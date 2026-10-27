@@ -1,0 +1,7 @@
+bin/
+dist/
+node_modules/
+.astro/
+.wrangler/
+*.log
+.env

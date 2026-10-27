@@ -1,0 +1,19 @@
+server:
+  listen: "127.0.0.1:8080"
+  default_refresh: 5
+
+require_auth: true
+tokens_file: "/etc/proxyglass/tokens.json"
+token_ttl_days: 0
+log_path: "/var/log/proxyglass/proxyglass.log"
+
+oidc:
+  enabled: false
+  issuer: ""
+  client_id: ""
+  client_secret: ""
+  session_ttl_hours: 8
+  redirect_uri: ""
+  allowed_groups: []
+
+targets: []

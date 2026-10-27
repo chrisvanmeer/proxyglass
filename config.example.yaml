@@ -1,0 +1,25 @@
+server:
+  listen: ":8080"
+  default_refresh: 5  # seconds, 0 = disabled
+
+require_auth: true
+tokens_file: "./tokens.json"
+token_ttl_days: 0
+log_path: ""
+
+oidc:
+  enabled: false
+  issuer: "https://identity.example.com/realms/ops"
+  client_id: "proxyglass"
+  client_secret: "replace-me"
+  session_ttl_hours: 8
+  # For nginx TLS termination, the callback is derived from X-Forwarded-Proto and Host.
+  # redirect_uri: "https://proxyglass.example.com/ui/oidc/callback"
+  allowed_groups: []
+
+targets:
+  - name: haproxy-lb-01
+    url: http://localhost:18404/stats;csv
+    username: admin
+    password: changeme
+    verify_tls: true
