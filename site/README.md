@@ -42,7 +42,11 @@ Open <http://127.0.0.1:8788>. The Worker uses the same static asset binding as p
    npm run deploy
    ```
 
-`site/wrangler.jsonc` attaches the Worker to `proxyglass.app/*` and `www.proxyglass.app/*`, deploys `dist/` as static assets, and returns the generated `404.html` for missing paths. TLS and edge delivery are handled by Cloudflare.
+`site/wrangler.jsonc` attaches a Cloudflare Worker Custom Domain at `proxyglass.app`, deploys `dist/` as static assets, and returns the generated `404.html` for missing paths. Wrangler/Cloudflare provisions the apex DNS record and TLS certificate for the custom domain.
+
+## Cloudflare Email Routing
+
+In the Cloudflare dashboard, open **Email → Email Routing**, add and verify a destination inbox, then create the addresses you want to forward (for example, `hello@proxyglass.app`). Email Routing shows and installs the exact MX and SPF records for your zone. Keep those mail records alongside the Worker-managed website record; they serve different protocols. Email Routing handles incoming forwarding only—it does not provide SMTP for sending mail.
 
 The GitHub Actions workflow `.github/workflows/site-deploy.yml` supports manual deploys. To deploy automatically on pushes to `main`, configure the two secrets above and set the repository variable `PROXYGLASS_WORKER_DEPLOY=true`.
 
