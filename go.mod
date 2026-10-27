@@ -1,6 +1,6 @@
 module github.com/chrisvanmeer/proxyglass
 
-go 1.23.0
+go 1.25.0
 
 require (
 	github.com/coreos/go-oidc/v3 v3.12.0
@@ -10,5 +10,5 @@ require (
 
 require (
 	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 )
