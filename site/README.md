@@ -44,6 +44,8 @@ Open <http://127.0.0.1:8788>. The Worker uses the same static asset binding as p
 
 `site/wrangler.jsonc` attaches a Cloudflare Worker Custom Domain at `proxyglass.app`, deploys `dist/` as static assets, and returns the generated `404.html` for missing paths. Wrangler/Cloudflare provisions the apex DNS record and TLS certificate for the custom domain.
 
+For **Workers Builds** in the Cloudflare dashboard, use Worker name `proxyglass`, repository `chrisvanmeer/proxyglass`, production branch `main`, root directory `site`, build command `npm run build`, and deploy command `npx wrangler deploy`. Choose **None/Other** for the framework preset (this is a Worker with static assets, not a Pages project); the Wrangler config supplies the asset directory and custom domain.
+
 ## Cloudflare Email Routing
 
 In the Cloudflare dashboard, open **Email → Email Routing**, add and verify a destination inbox, then create the addresses you want to forward (for example, `hello@proxyglass.app`). Email Routing shows and installs the exact MX and SPF records for your zone. Keep those mail records alongside the Worker-managed website record; they serve different protocols. Email Routing handles incoming forwarding only—it does not provide SMTP for sending mail.
