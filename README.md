@@ -16,7 +16,7 @@ Proxyglass is a read-only dashboard for one or more HAProxy stats endpoints. It 
 
 ## Build and run
 
-Requires Go 1.23+.
+Requires Go 1.25+.
 
 ```sh
 cp config.example.yaml config.yaml

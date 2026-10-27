@@ -4,7 +4,7 @@ Astro static marketing site for [proxyglass.app](https://proxyglass.app), styled
 
 ## Local development
 
-Requires Node.js 22.12+.
+Requires Node.js 22.23.4+.
 
 ```sh
 npm ci
