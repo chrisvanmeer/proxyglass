@@ -1,4 +1,8 @@
-# Proxyglass
+<p align="center">
+  <img src="assets/brand/proxyglass-logo.svg" alt="Proxyglass — read-only HAProxy stats dashboard" width="480">
+</p>
+
+<p align="center"><strong>Read-only visibility into every HAProxy frontend, backend and server.</strong></p>
 
 Proxyglass is a read-only dashboard for one or more HAProxy stats endpoints. It reads HAProxy CSV stats and presents frontends, backends and backend servers. There are no controls that change HAProxy state.
 
