@@ -1,0 +1,36 @@
+name: Deploy Proxyglass website
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/site-deploy.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    # Add the repository variable PROXYGLASS_WORKER_DEPLOY=true to enable
+    # deploys on main; workflow_dispatch remains available for manual releases.
+    if: github.event_name == 'workflow_dispatch' || vars.PROXYGLASS_WORKER_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy static site to Cloudflare Worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

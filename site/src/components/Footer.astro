@@ -1,0 +1,24 @@
+---
+import { relativeLink } from '../utils/links';
+import { repositoryURL, releasesURL } from '../config';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <a class="brand footer-brand" href={relativeLink(currentPath, '/')} aria-label="Proxyglass home">
+      <img src={relativeLink(currentPath, '/assets/proxyglass-mark.svg')} alt="" width="32" height="32" />
+      <span>proxyglass</span>
+    </a>
+    <p>Read-only HAProxy visibility. Yours to run.</p>
+    <a class="footer-docs" href={relativeLink(currentPath, '/docs/configuration')}>Configuration docs <span aria-hidden="true">↗</span></a>
+    <a class="footer-docs" href={repositoryURL} target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a class="footer-docs" href={releasesURL} target="_blank" rel="noopener noreferrer">Releases</a>
+    <span class="footer-credit">© 2026 Chris van Meer</span>
+  </div>
+</footer>

@@ -1,0 +1,46 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+---
+
+<SiteLayout title="Deployment — Proxyglass docs" description="Deploy Proxyglass as a native systemd service or optionally as a container on Nomad.">
+  <section class="docs-page wrap">
+    <div class="docs-heading">
+      <span class="eyebrow"><i></i> Deployment</span>
+      <h1>A small service.<br /><span>Your choice of runtime.</span></h1>
+      <p>The native Go binary and systemd service are the recommended deployment. Container and Nomad support are available when they fit your platform.</p>
+    </div>
+    <div class="docs-grid">
+      <nav class="docs-toc" aria-label="On this page">
+        <strong>On this page</strong>
+        <a href="#native">Native install</a>
+        <a href="#systemd">systemd and nginx</a>
+        <a href="#container">Container / Nomad</a>
+        <a href="#health">Health endpoint</a>
+      </nav>
+      <article class="docs-article">
+        <section class="docs-section" id="native">
+          <h2>Install the native binary</h2>
+          <p>Build a host-native binary with <code>make build-native</code>, or cross-build the static Linux binaries with <code>make build-all</code>. Releases are designed for Linux amd64 and arm64.</p>
+          <pre class="docs-code"><code>sudo ./proxyglass --install
+sudoedit /etc/proxyglass/config.yml
+sudo proxyglass --generate-token --config /etc/proxyglass/config.yml
+sudo systemctl enable --now proxyglass</code></pre>
+          <p>The installer creates the service account, config and data directories, systemd unit and <code>/etc/default/proxyglass</code>. Existing config is preserved on reinstall.</p>
+        </section>
+        <section class="docs-section" id="systemd">
+          <h2>systemd behind nginx</h2>
+          <p>The packaged config listens on <code>127.0.0.1:8080</code>, so the dashboard is not exposed directly. nginx handles TLS and forwards <code>Host</code> plus <code>X-Forwarded-Proto</code> for OIDC.</p>
+          <p>Set optional <code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code> and <code>NO_PROXY</code> values in <code>/etc/default/proxyglass</code>, then restart the service.</p>
+        </section>
+        <section class="docs-section" id="container">
+          <h2>Container and Nomad</h2>
+          <p>Build the optional image with <code>docker build -f docker/Dockerfile -t proxyglass .</code>. Mount a config file at <code>/etc/proxyglass/config.yml</code>. A sample Nomad job is provided in <code>deploy/proxyglass.nomad.hcl</code>; configure a persistent writable volume for token storage.</p>
+        </section>
+        <section class="docs-section" id="health">
+          <h2>Health check</h2>
+          <p><code>GET /healthz</code> returns <code>200 OK</code> and <code>ok</code> for load balancer and Nomad health checks. The endpoint does not require dashboard authentication.</p>
+        </section>
+      </article>
+    </div>
+  </section>
+</SiteLayout>

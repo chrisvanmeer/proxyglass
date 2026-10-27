@@ -1,0 +1,80 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { relativeLink } from '../../utils/links';
+
+const path = Astro.url.pathname;
+
+const oidcSample = `oidc:
+  enabled: true
+  issuer: "https://sso.example.net/realms/operations"
+  client_id: "proxyglass"
+  client_secret: "REPLACE_WITH_SECRET"
+  session_ttl_hours: 8
+  # Either set a fixed HTTPS callback or leave empty to derive it from
+  # Host + X-Forwarded-Proto on the incoming nginx request.
+  redirect_uri: "https://proxyglass.example.net/ui/oidc/callback"
+  # Optional; the ID token must contain a string-array "groups" claim.
+  allowed_groups:
+    - "network-operations"`;
+
+const nginxSample = `location / {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}`;
+---
+
+<SiteLayout title="OIDC behind nginx — Proxyglass docs" description="Configure OIDC sign-in, group allow-lists and nginx TLS forwarding for Proxyglass.">
+  <section class="docs-page wrap">
+    <div class="docs-heading">
+      <span class="eyebrow"><i></i> Authentication</span>
+      <h1>OIDC, behind<br /><span>your nginx.</span></h1>
+      <p>Proxyglass serves plain HTTP and relies on your existing reverse proxy for TLS. OIDC uses the authorization-code flow and validates the ID token before creating a session.</p>
+      <div class="docs-links"><a class="button button-quiet" href={relativeLink(path, '/docs/configuration')}>Full configuration →</a></div>
+    </div>
+
+    <div class="docs-grid">
+      <nav class="docs-toc" aria-label="On this page">
+        <strong>On this page</strong>
+        <a href="#sample">Config sample</a>
+        <a href="#nginx">nginx headers</a>
+        <a href="#provider">Identity provider</a>
+        <a href="#groups">Group restriction</a>
+      </nav>
+      <article class="docs-article">
+        <section class="docs-section" id="sample">
+          <h2>OIDC configuration sample</h2>
+          <p>Replace the issuer, client ID and secret with values from your identity provider. Register the exact callback URI with that client.</p>
+          <pre class="docs-code"><code>{oidcSample}</code></pre>
+          <div class="docs-callout"><strong>Keep the secret private.</strong> Do not commit it to source control. Render the config from your secret manager or restrict the installed config file to root and the Proxyglass service group.</div>
+        </section>
+
+        <section class="docs-section" id="nginx">
+          <h2>Forward the public host and scheme</h2>
+          <p>Bind Proxyglass to loopback when nginx is on the same host. Preserve the original host and forward the external scheme so the OIDC callback is built correctly.</p>
+          <pre class="docs-code"><code>{nginxSample}</code></pre>
+          <p>For another proxy or a non-standard path, set <code>oidc.redirect_uri</code> explicitly to the public absolute URL ending in <code>/ui/oidc/callback</code>.</p>
+        </section>
+
+        <section class="docs-section" id="provider">
+          <h2>Register the OIDC client</h2>
+          <ul>
+            <li>Use the issuer URL for the provider/realm; Proxyglass discovers authorization and token endpoints from its OIDC metadata.</li>
+            <li>Use a confidential client and configure its client secret in the protected Proxyglass config.</li>
+            <li>Allow the callback URI <code>https://proxyglass.example.net/ui/oidc/callback</code> (or the exact URI you configured).</li>
+            <li>Ensure the Proxyglass host can reach the issuer and token endpoints. Standard HTTP proxy environment variables are supported.</li>
+          </ul>
+          <p>OIDC sessions are in memory and expire after <code>session_ttl_hours</code> (8 hours when unset or zero). A service restart clears sessions. Bearer-token sign-in remains available as an alternative.</p>
+        </section>
+
+        <section class="docs-section" id="groups">
+          <h2>Optional group allow-list</h2>
+          <p>When <code>allowed_groups</code> is non-empty, a user must have at least one matching value in the ID token’s <code>groups</code> string-array claim. Configure your identity provider to include that claim. An empty list disables group filtering.</p>
+        </section>
+      </article>
+    </div>
+  </section>
+</SiteLayout>

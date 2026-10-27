@@ -1,0 +1,46 @@
+<div class="preview-shell" aria-label="Illustrative Proxyglass dashboard preview">
+  <div class="preview-topbar">
+    <div class="preview-brand">
+      <img src="assets/proxyglass-mark.svg" alt="" width="28" height="28" />
+      <span>proxyglass</span>
+    </div>
+    <div class="preview-controls">
+      <span class="preview-chip"><i></i> 3 proxies</span>
+      <span class="preview-chip">Refresh · 5s</span>
+    </div>
+  </div>
+  <div class="preview-body">
+    <div class="preview-summary">
+      <div class="summary-heading">
+        <div>
+          <span class="eyebrow">Fleet overview</span>
+          <h2>HAProxy at a glance</h2>
+        </div>
+        <span class="updated"><span></span> Updated just now</span>
+      </div>
+      <div class="metric-row">
+        <div class="metric-card"><span>Active sessions</span><strong>1,284</strong><small>across 3 proxies</small></div>
+        <div class="metric-card"><span>Healthy servers</span><strong>24 <em>/ 26</em></strong><small><b class="good">↑ 92.3%</b> available</small></div>
+        <div class="metric-card"><span>Traffic in</span><strong>8.42 <em>GB</em></strong><small>last 24 hours</small></div>
+      </div>
+    </div>
+    <div class="preview-table-card">
+      <div class="table-heading">
+        <div><span class="eyebrow">Backend</span><h3>web-production</h3></div>
+        <span class="status-pill"><i></i> UP · 4 / 4</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Server</th><th>Status</th><th>Sessions</th><th>Traffic in / out</th><th>Last activity</th><th>Last check</th></tr></thead>
+          <tbody>
+            <tr><td><span class="server-name"><i class="dot up"></i> web-01</span></td><td><span class="status-text up-text">UP</span></td><td>42 / 200</td><td>1.8 GB / 6.2 GB</td><td>12s ago</td><td>Layer7 OK <span class="check-code">200</span></td></tr>
+            <tr><td><span class="server-name"><i class="dot up"></i> web-02</span></td><td><span class="status-text up-text">UP</span></td><td>38 / 200</td><td>1.6 GB / 5.8 GB</td><td>4s ago</td><td>Layer7 OK <span class="check-code">200</span></td></tr>
+            <tr><td><span class="server-name"><i class="dot down"></i> web-03</span></td><td><span class="status-text down-text">DOWN</span></td><td>0 / 200</td><td>0 B / 0 B</td><td>No session yet</td><td>Connection refused <span class="check-code error">L4</span></td></tr>
+            <tr><td><span class="server-name"><i class="dot up"></i> web-04</span></td><td><span class="status-text up-text">UP</span></td><td>31 / 200</td><td>1.4 GB / 4.9 GB</td><td>1m ago</td><td>Layer7 OK <span class="check-code">200</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="preview-caption"><span>Illustrative data</span><span>Read-only · no HAProxy controls</span></div>
+    </div>
+  </div>
+</div>

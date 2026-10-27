@@ -1,0 +1,25 @@
+<section class="section wrap" id="deployment">
+  <div class="section-heading center-heading">
+    <span class="eyebrow"><i></i> Your infrastructure, your choice</span>
+    <h2>Native first.<br /><span>Container when it fits.</span></h2>
+    <p>Proxyglass is a small Go service, not a platform you have to operate.</p>
+  </div>
+  <div class="deploy-grid">
+    <article class="deploy-card deploy-primary">
+      <div class="deploy-badge"><span></span> Recommended</div>
+      <div class="deploy-icon" aria-hidden="true">⌘</div>
+      <h3>Native binary + systemd</h3>
+      <p>Install a static Linux binary, create a service account, and let systemd keep the dashboard running. Nginx remains responsible for TLS.</p>
+      <ul><li>Linux amd64 and arm64 builds</li><li>Config in <code>/etc/proxyglass/</code></li><li>Optional DEB and RPM release packages</li></ul>
+      <div class="deploy-note">One service. No Node.js runtime.</div>
+    </article>
+    <article class="deploy-card">
+      <div class="deploy-icon container-icon" aria-hidden="true">▣</div>
+      <h3>Container + Nomad</h3>
+      <p>Prefer containers? Use the same config in a Docker image and schedule it as a small Nomad service.</p>
+      <ul><li>Read-only HAProxy polling</li><li>Health endpoint for service checks</li><li>Persistent token storage is your choice</li></ul>
+      <div class="deploy-note">Same app. Same config. Optional runtime.</div>
+    </article>
+  </div>
+  <div class="airgap-note"><span class="airgap-icon" aria-hidden="true">◈</span><p><strong>Air-gap friendly by default.</strong> Dashboard JavaScript, styles and logos are bundled locally. For OIDC or external HAProxy targets, standard proxy environment variables are supported.</p></div>
+</section>

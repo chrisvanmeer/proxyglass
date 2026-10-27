@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { relativeLink } from '../utils/links';
+
+const path = Astro.url.pathname;
+---
+
+<SiteLayout title="Not found — Proxyglass" description="This Proxyglass page could not be found.">
+  <section class="not-found wrap">
+    <span class="eyebrow"><i></i> 404 · route not found</span>
+    <h1>This route isn’t<br /><span>in the pool.</span></h1>
+    <p>That page does not exist. Head back to the Proxyglass overview.</p>
+    <a class="button button-primary" href={relativeLink(path, '/')}>Back to Proxyglass <span aria-hidden="true">↗</span></a>
+  </section>
+</SiteLayout>

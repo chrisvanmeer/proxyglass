@@ -1,0 +1,33 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { relativeLink } from '../../utils/links';
+
+const path = Astro.url.pathname;
+---
+
+<SiteLayout title="Documentation — Proxyglass" description="Configuration, OIDC and reverse-proxy guidance for Proxyglass.">
+  <section class="docs-page wrap">
+    <div class="docs-heading">
+      <span class="eyebrow"><i></i> Proxyglass docs</span>
+      <h1>Run it your way.<br /><span>Know what to expect.</span></h1>
+      <p>Start with the config, connect your HAProxy stats endpoints, and add sign-in the way your environment requires.</p>
+    </div>
+    <div class="docs-cards">
+      <a class="docs-card" href={relativeLink(path, '/docs/configuration')}>
+        <span>01 · START HERE</span>
+        <h2>Configuration</h2>
+        <p>Listener, refresh interval, HAProxy targets, authentication and config file locations.</p>
+      </a>
+      <a class="docs-card" href={relativeLink(path, '/docs/oidc')}>
+        <span>02 · SIGN-IN</span>
+        <h2>OIDC behind nginx</h2>
+        <p>Issuer discovery, redirect URI, group allow-list and forwarded headers for TLS termination.</p>
+      </a>
+      <a class="docs-card" href={relativeLink(path, '/docs/deployment')}>
+        <span>03 · OPERATE</span>
+        <h2>Deployment</h2>
+        <p>Native systemd installation is the standard path; container and Nomad are optional.</p>
+      </a>
+    </div>
+  </section>
+</SiteLayout>

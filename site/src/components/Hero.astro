@@ -1,0 +1,26 @@
+---
+import DashboardPreview from './DashboardPreview.astro';
+import { repositoryURL, releasesURL } from '../config';
+---
+
+<section class="hero wrap" id="top">
+  <div class="hero-copy">
+    <span class="eyebrow"><i></i> HAProxy observability</span>
+    <h1>See every proxy.<br /><span>Change nothing.</span></h1>
+    <p class="hero-lede">
+      A focused, read-only dashboard for HAProxy frontends, backends and servers. One native binary,
+      a small config file, and the visibility your fleet deserves.
+    </p>
+    <div class="hero-actions">
+      <a class="button button-primary" href={releasesURL} target="_blank" rel="noopener noreferrer">Download releases <span aria-hidden="true">↗</span></a>
+      <a class="button button-quiet" href="#features">Explore features <span aria-hidden="true">↓</span></a>
+      <a class="source-link" href={repositoryURL} target="_blank" rel="noopener noreferrer">View source on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="hero-traits" aria-label="Product principles">
+      <span><i class="trait-check">✓</i> Read-only by design</span>
+      <span><i class="trait-check">✓</i> Air-gap friendly</span>
+      <span><i class="trait-check">✓</i> Native binary first</span>
+    </div>
+  </div>
+  <DashboardPreview />
+</section>

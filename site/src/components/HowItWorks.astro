@@ -1,0 +1,30 @@
+<section class="section how-section" id="how-it-works">
+  <div class="wrap how-grid">
+    <div class="how-copy">
+      <span class="eyebrow"><i></i> A small, simple setup</span>
+      <h2>From stats endpoint<br /><span>to clear picture.</span></h2>
+      <p>Proxyglass sits alongside HAProxy, polls its read-only CSV stats endpoint, and serves the dashboard to your team.</p>
+      <ol class="steps">
+        <li><span>1</span><div><strong>Expose HAProxy stats</strong><p>Use a dedicated read-only account and the <code>;csv</code> stats endpoint.</p></div></li>
+        <li><span>2</span><div><strong>List your proxies</strong><p>Put endpoint URLs and credentials in Proxyglass’ config file.</p></div></li>
+        <li><span>3</span><div><strong>Run and observe</strong><p>Start the binary, sign in, and filter the parts of the fleet you need.</p></div></li>
+      </ol>
+    </div>
+    <div class="config-card">
+      <div class="code-head"><span class="code-lights"><i></i><i></i><i></i></span><span>config.yml</span><span class="code-tag">YAML</span></div>
+      <pre><code><span class="code-muted"># Proxyglass listens behind your existing nginx</span>
+<span class="code-key">server:</span>
+  <span class="code-key">listen:</span> <span class="code-string">"127.0.0.1:8080"</span>
+  <span class="code-key">default_refresh:</span> <span class="code-number">5</span> <span class="code-muted"># 0 disables refresh</span>
+
+<span class="code-key">targets:</span>
+  - <span class="code-key">name:</span> <span class="code-string">edge-01</span>
+    <span class="code-key">url:</span> <span class="code-string">https://edge-01/stats;csv</span>
+    <span class="code-key">username:</span> <span class="code-string">stats-reader</span>
+    <span class="code-key">password:</span> <span class="code-string">&lt;secret&gt;</span>
+  - <span class="code-key">name:</span> <span class="code-string">edge-02</span>
+    <span class="code-key">url:</span> <span class="code-string">https://edge-02/stats;csv</span></code></pre>
+      <div class="code-foot"><span class="code-dot"></span> Read-only stats · Basic Auth supported</div>
+    </div>
+  </div>
+</section>

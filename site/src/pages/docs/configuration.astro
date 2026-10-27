@@ -1,0 +1,95 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { relativeLink } from '../../utils/links';
+
+const path = Astro.url.pathname;
+
+const sample = `server:
+  listen: "127.0.0.1:8080"
+  default_refresh: 5        # seconds; 0 disables automatic refresh
+
+require_auth: true
+tokens_file: "/etc/proxyglass/tokens.json"
+token_ttl_days: 0           # 0 means tokens do not expire
+log_path: "/var/log/proxyglass/proxyglass.log"
+
+oidc:
+  enabled: true
+  issuer: "https://sso.example.net/realms/operations"
+  client_id: "proxyglass"
+  client_secret: "REPLACE_WITH_SECRET"
+  session_ttl_hours: 8
+  redirect_uri: "https://proxyglass.example.net/ui/oidc/callback"
+  # Optional; the IdP must include a string-array "groups" claim.
+  allowed_groups:
+    - "network-operations"
+
+targets:
+  - name: edge-01
+    url: "https://edge-01.example.net:8404/stats;csv"
+    username: "proxyglass-reader"
+    password: "REPLACE_WITH_STATS_PASSWORD"
+    verify_tls: true
+  - name: edge-02
+    url: "https://edge-02.example.net:8404/stats;csv"
+    username: "proxyglass-reader"
+    password: "REPLACE_WITH_STATS_PASSWORD"
+    verify_tls: true`;
+
+const tokenCommands = `sudo proxyglass --generate-token --config /etc/proxyglass/config.yml
+sudo proxyglass --generate-token --quiet --config /etc/proxyglass/config.yml
+sudo proxyglass --revoke-token TOKEN --config /etc/proxyglass/config.yml`;
+---
+
+<SiteLayout title="Configuration — Proxyglass docs" description="Configure Proxyglass listeners, refresh, HAProxy targets, tokens and OIDC.">
+  <section class="docs-page wrap">
+    <div class="docs-heading">
+      <span class="eyebrow"><i></i> Configuration</span>
+      <h1>One file.<br /><span>Your HAProxy fleet.</span></h1>
+      <p>Proxyglass reads YAML configuration at startup. On a native install the default path is <code>/etc/proxyglass/config.yml</code>; use <code>PROXYGLASS_CONFIG</code> or <code>--config</code> to select another file.</p>
+      <div class="docs-links"><a class="button button-quiet" href={relativeLink(path, '/docs/oidc')}>OIDC and nginx →</a><a class="button button-quiet" href={relativeLink(path, '/docs/deployment')}>Deployment →</a></div>
+    </div>
+
+    <div class="docs-grid">
+      <nav class="docs-toc" aria-label="On this page">
+        <strong>On this page</strong>
+        <a href="#example">Full example</a>
+        <a href="#refresh">Refresh and preferences</a>
+        <a href="#targets">HAProxy targets</a>
+        <a href="#auth">Authentication</a>
+      </nav>
+      <article class="docs-article">
+        <section class="docs-section" id="example">
+          <h2>Full configuration example</h2>
+          <p>Replace the example hostnames and credentials. Keep the file readable only by the Proxyglass service account and administrators; target passwords and the OIDC client secret are stored here.</p>
+          <pre class="docs-code"><code>{sample}</code></pre>
+          <div class="docs-callout"><strong>Read-only requirement:</strong> enable HAProxy’s stats page with a dedicated account and expose the CSV endpoint (typically <code>/stats;csv</code>). Proxyglass only issues HTTP GET requests; it never sends HAProxy control commands.</div>
+        </section>
+
+        <section class="docs-section" id="refresh">
+          <h2>Refresh and saved views</h2>
+          <p><code>server.default_refresh</code> sets the first dashboard refresh interval in seconds. The default is 5; set it to <code>0</code> to start with refresh disabled. Users can choose Off, 2, 5, 10 or 30 seconds in the dashboard.</p>
+          <p>Proxy selections, frontend/backend/server filters, sort order and refresh preference are saved in a browser cookie. The cookie is local to that browser and does not change HAProxy or the server config.</p>
+        </section>
+
+        <section class="docs-section" id="targets">
+          <h2>HAProxy targets</h2>
+          <ul>
+            <li>Give each proxy a unique, human-readable <code>name</code>.</li>
+            <li>Set <code>url</code> to the HAProxy stats CSV endpoint, including <code>;csv</code>.</li>
+            <li>Set <code>username</code> and <code>password</code> when stats Basic Auth is enabled.</li>
+            <li><code>verify_tls</code> defaults to true. Disable certificate verification only for a deliberate self-signed certificate setup.</li>
+          </ul>
+          <p>For outbound network proxies, configure <code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code> and <code>NO_PROXY</code> in the service environment. Use <code>NO_PROXY</code> for private HAProxy endpoints that should be reached directly.</p>
+        </section>
+
+        <section class="docs-section" id="auth">
+          <h2>Authentication</h2>
+          <p>Keep <code>require_auth: true</code> for shared or production dashboards. Proxyglass supports locally generated bearer tokens and optional OIDC login. OIDC configuration is in the same file; see <a href={relativeLink(path, '/docs/oidc')}>OIDC behind nginx</a>.</p>
+          <pre class="docs-code"><code>{tokenCommands}</code></pre>
+          <p>Use the first command to create a token, the quiet form for automation, and revoke a token by supplying its value. The generated token is shown once.</p>
+        </section>
+      </article>
+    </div>
+  </section>
+</SiteLayout>

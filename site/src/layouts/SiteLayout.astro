@@ -1,0 +1,57 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ScrollSpy from '../components/ScrollSpy.astro';
+import '../styles/global.css';
+import { relativeLink } from '../utils/links';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = 'Proxyglass — HAProxy visibility, without the control plane',
+  description = 'A polished, read-only HAProxy stats dashboard. Monitor frontends, backends and servers from a native binary, container or Nomad job.',
+  image = '/og.svg',
+} = Astro.props;
+
+const siteURL = Astro.site ?? new URL('https://proxyglass.app');
+const canonical = relativeLink(Astro.url.pathname, Astro.url.pathname);
+const absoluteImage = image.startsWith('http') ? image : new URL(image, siteURL).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#07101c" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={relativeLink(Astro.url.pathname, '/favicon.svg')} />
+    <link rel="manifest" href={relativeLink(Astro.url.pathname, '/site.webmanifest')} />
+    <title>{title}</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Proxyglass" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absoluteImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteImage} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="ambient ambient-cyan" aria-hidden="true"></div>
+    <div class="ambient ambient-violet" aria-hidden="true"></div>
+    <Navbar currentPath={Astro.url.pathname} />
+    <main id="main"><slot /></main>
+    {Astro.url.pathname.startsWith('/docs') && <ScrollSpy />}
+    <Footer currentPath={Astro.url.pathname} />
+  </body>
+</html>

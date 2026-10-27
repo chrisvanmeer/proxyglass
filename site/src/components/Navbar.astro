@@ -1,0 +1,30 @@
+---
+import { relativeLink } from '../utils/links';
+import { repositoryURL } from '../config';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const links = [
+  { target: '/#features', label: 'Features' },
+  { target: '/#how-it-works', label: 'How it works' },
+  { target: '/#deployment', label: 'Deployment' },
+  { target: '/docs/configuration', label: 'Docs' },
+];
+---
+
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href={relativeLink(currentPath, '/')} aria-label="Proxyglass home">
+      <img src={relativeLink(currentPath, '/assets/proxyglass-mark.svg')} alt="" width="38" height="38" />
+      <span>proxyglass</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      {links.map((link) => <a href={relativeLink(currentPath, link.target)}>{link.label}</a>)}
+    </nav>
+    <a class="nav-source" href={repositoryURL} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    <a class="nav-cta" href="#setup">Get started <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
