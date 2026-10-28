@@ -93,7 +93,7 @@ sudo proxyglass --revoke-token TOKEN --config /etc/proxyglass/config.yml`;
         <section class="docs-section" id="refresh">
           <h2>Refresh and saved views</h2>
           <p><code>server.default_refresh</code> sets the first dashboard refresh interval in seconds. The default is 5; set it to <code>0</code> to start with refresh disabled. Users can choose Off, 2, 5, 10 or 30 seconds in the dashboard.</p>
-          <p>Proxy selections, frontend/backend/server filters, sort order and refresh preference are saved in a browser cookie. The cookie is local to that browser and does not change HAProxy or the server config.</p>
+          <p>Sorting includes configuration order, server name, status, current sessions and inbound bytes. Configuration order follows the target order in this file; rows within each target retain HAProxy's stats order. Proxy selections, filters, sort order and refresh preference are saved in a browser cookie and do not change HAProxy or the server config.</p>
         </section>
 
         <section class="docs-section" id="targets">

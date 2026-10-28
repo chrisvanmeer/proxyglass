@@ -280,6 +280,16 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
 		Errors:     snap.Errors,
 		DefaultRef: defRef,
 	}
+	targetOrder := make(map[string]int, len(snap.Targets))
+	for index, target := range snap.Targets {
+		targetOrder[target] = index
+	}
+	configTargetIndex := func(target string) int {
+		if index, ok := targetOrder[target]; ok {
+			return index
+		}
+		return len(targetOrder)
+	}
 	fv := FleetView{Proxies: len(snap.Targets)}
 	for _, be := range snap.Backends {
 		for _, sv := range be.Servers {
@@ -315,41 +325,49 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
 			}
 			bv.Servers = append(bv.Servers, SView{Key: sk, Name: sv.Name, Backend: sv.Backend, Target: sv.Target, Status: sv.Status, CheckStatus: sv.CheckStatus, CheckCode: sv.CheckCode, LastChk: sv.LastChk, LastChkDur: sv.LastChkDur, LastActivity: lastSessionAge(sv.LastSess), SCur: sv.SessionsCur, SMax: sv.SessionsMax, SLim: sv.SessionsLim, BIn: sv.BytesIn, BOut: sv.BytesOut, ErrorsReq: sv.ErrorsReq, ErrorsConn: sv.ErrorsConn, ErrorsResp: sv.ErrorsResp, Shown: sshown})
 		}
-		sort.Slice(bv.Servers, func(i, j int) bool {
-			if p.SortKey == "status" {
-				if p.SortAsc {
-					return bv.Servers[i].Status < bv.Servers[j].Status
+		if p.SortKey != "config" {
+			sort.Slice(bv.Servers, func(i, j int) bool {
+				if p.SortKey == "status" {
+					if p.SortAsc {
+						return bv.Servers[i].Status < bv.Servers[j].Status
+					}
+					return bv.Servers[i].Status > bv.Servers[j].Status
 				}
-				return bv.Servers[i].Status > bv.Servers[j].Status
-			}
-			if p.SortKey == "scur" {
-				if p.SortAsc {
-					return bv.Servers[i].SCur < bv.Servers[j].SCur
+				if p.SortKey == "scur" {
+					if p.SortAsc {
+						return bv.Servers[i].SCur < bv.Servers[j].SCur
+					}
+					return bv.Servers[i].SCur > bv.Servers[j].SCur
 				}
-				return bv.Servers[i].SCur > bv.Servers[j].SCur
-			}
-			if p.SortKey == "bin" {
-				if p.SortAsc {
-					return bv.Servers[i].BIn < bv.Servers[j].BIn
+				if p.SortKey == "bin" {
+					if p.SortAsc {
+						return bv.Servers[i].BIn < bv.Servers[j].BIn
+					}
+					return bv.Servers[i].BIn > bv.Servers[j].BIn
 				}
-				return bv.Servers[i].BIn > bv.Servers[j].BIn
-			}
-			if p.SortAsc {
-				return bv.Servers[i].Name < bv.Servers[j].Name
-			}
-			return bv.Servers[i].Name > bv.Servers[j].Name
-		})
+				if p.SortAsc {
+					return bv.Servers[i].Name < bv.Servers[j].Name
+				}
+				return bv.Servers[i].Name > bv.Servers[j].Name
+			})
+		}
 		vd.Backends = append(vd.Backends, bv)
 	}
-	sort.Slice(vd.Frontends, func(i, j int) bool {
+	sort.SliceStable(vd.Frontends, func(i, j int) bool {
 		a, b := vd.Frontends[i], vd.Frontends[j]
+		if p.SortKey == "config" {
+			return configTargetIndex(a.Target) < configTargetIndex(b.Target)
+		}
 		if less := compareViewValues(p.SortKey, a.Name, a.Status, a.SCur, a.BIn, b.Name, b.Status, b.SCur, b.BIn); less != 0 {
 			return ordered(less, p.SortAsc)
 		}
 		return a.Target < b.Target
 	})
-	sort.Slice(vd.Backends, func(i, j int) bool {
+	sort.SliceStable(vd.Backends, func(i, j int) bool {
 		a, b := vd.Backends[i], vd.Backends[j]
+		if p.SortKey == "config" {
+			return configTargetIndex(a.Target) < configTargetIndex(b.Target)
+		}
 		if less := compareViewValues(p.SortKey, a.Name, a.Status, a.SCur, a.BIn, b.Name, b.Status, b.SCur, b.BIn); less != 0 {
 			return ordered(less, p.SortAsc)
 		}

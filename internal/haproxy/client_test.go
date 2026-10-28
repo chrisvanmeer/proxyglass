@@ -41,6 +41,22 @@ func TestParseCSVReportsMalformedCSV(t *testing.T) {
 	}
 }
 
+func TestParseCSVPreservesBackendRowOrder(t *testing.T) {
+	data := `# pxname,svname,type,status
+backend-b,BACKEND,1,UP
+backend-b,b1,2,UP
+backend-a,BACKEND,1,UP
+backend-a,a1,2,UP
+`
+	_, backends, err := parseCSV(data, "edge-a")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(backends) != 2 || backends[0].Name != "backend-b" || backends[1].Name != "backend-a" {
+		t.Fatalf("backend order = %#v, want backend-b then backend-a", backends)
+	}
+}
+
 func TestRequestErrorSummaryRecognizesTimeoutAndRedactsURL(t *testing.T) {
 	err := &url.Error{Op: "Get", URL: "https://reader:secret@example.test/stats;csv", Err: context.DeadlineExceeded}
 	if !isRequestTimeout(err) {

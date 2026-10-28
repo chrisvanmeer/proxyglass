@@ -13,7 +13,7 @@ presents frontends, backends and backend servers. There are no controls that cha
 
 - Config-file-based HAProxy targets with per-target HTTP Basic Auth.
 - Filters for HAProxy instances, frontends, backends and servers.
-- Sort by server name, status, current sessions or bytes received.
+- Sort by configuration order, server name, status, current sessions or bytes received.
 - Configurable default auto-refresh; 0 disables it. Users can select Off, 2, 5, 10 or 30 seconds from custom
   styled menus. Preferences persist in a browser cookie.
 - Frontend sessions/rate/peak, totals, bytes and denials/errors; backend/server sessions, bytes, status and

@@ -22,6 +22,7 @@ type Prefs struct {
 	ShowServers      map[string]bool `json:"ss"`
 	ShowTargets      map[string]bool `json:"st"`
 	SortKey          string          `json:"sk"`
+	SortKeySet       bool            `json:"sks"`
 	SortAsc          bool            `json:"sa"`
 	Refresh          int             `json:"r"` // seconds, 0 disabled
 }
@@ -51,7 +52,7 @@ func Default() *Prefs {
 		ShowBackends:  map[string]bool{},
 		ShowServers:   map[string]bool{},
 		ShowTargets:   map[string]bool{},
-		SortKey:       "name",
+		SortKey:       "config",
 		SortAsc:       true,
 		Refresh:       5,
 	}
@@ -91,6 +92,9 @@ func GetWithDefault(r *http.Request, defaultRefresh int) *Prefs {
 	}
 	if p.ShowTargets == nil {
 		p.ShowTargets = map[string]bool{}
+	}
+	if !p.SortKeySet {
+		p.SortKey = "config"
 	}
 	if p.Refresh < 0 {
 		p.Refresh = 0
@@ -168,6 +172,7 @@ func ParseFromForm(r *http.Request) *Prefs {
 	}
 	if sk := r.FormValue("sort"); sk != "" {
 		p.SortKey = sk
+		p.SortKeySet = true
 	}
 	if sa := r.FormValue("asc"); sa == "1" {
 		p.SortAsc = true
@@ -183,6 +188,9 @@ func ParseFromForm(r *http.Request) *Prefs {
 		}
 	} else if _, ok := r.Form["refresh"]; ok {
 		p.Refresh = 0
+	}
+	if !p.SortKeySet {
+		p.SortKey = "config"
 	}
 	return p
 }

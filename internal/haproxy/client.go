@@ -136,8 +136,18 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 		return nil, nil, err
 	}
 	backendMap := map[string]*model.Backend{}
+	backendOrder := make([]string, 0)
 	var frontends []model.Frontend
 	indices := map[string]int{}
+	getBackend := func(key, name string) *model.Backend {
+		b := backendMap[key]
+		if b == nil {
+			b = &model.Backend{Name: name, Target: target, Servers: []model.Server{}}
+			backendMap[key] = b
+			backendOrder = append(backendOrder, key)
+		}
+		return b
+	}
 	for _, rec := range records {
 		if len(rec) < 2 {
 			continue
@@ -186,11 +196,7 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 		}
 		if qtype == "1" && svname == "BACKEND" {
 			key := pxname + "|" + target
-			b := backendMap[key]
-			if b == nil {
-				b = &model.Backend{Name: pxname, Target: target, Servers: []model.Server{}}
-				backendMap[key] = b
-			}
+			b := getBackend(key, pxname)
 			b.Status = field(rec, indices, "status", 17)
 			b.CheckStatus = field(rec, indices, "check_status", 36)
 			b.CheckCode = field(rec, indices, "check_code", 37)
@@ -206,15 +212,7 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 		}
 		if qtype == "2" {
 			key := pxname + "|" + target
-			b, ok := backendMap[key]
-			if !ok {
-				b = &model.Backend{
-					Name:    pxname,
-					Target:  target,
-					Servers: []model.Server{},
-				}
-				backendMap[key] = b
-			}
+			b := getBackend(key, pxname)
 			s := model.Server{
 				Name:        svname,
 				Backend:     pxname,
@@ -239,9 +237,9 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 			b.Servers = append(b.Servers, s)
 		}
 	}
-	var backends []model.Backend
-	for _, b := range backendMap {
-		backends = append(backends, *b)
+	backends := make([]model.Backend, 0, len(backendOrder))
+	for _, key := range backendOrder {
+		backends = append(backends, *backendMap[key])
 	}
 	return frontends, backends, nil
 }

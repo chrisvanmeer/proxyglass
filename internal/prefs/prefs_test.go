@@ -1,11 +1,35 @@
 package prefs
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
 )
+
+func TestConfigOrderIsDefaultAndMigratesLegacySortPreference(t *testing.T) {
+	if got := GetWithDefault(httptest.NewRequest("GET", "/", nil), 5).SortKey; got != "config" {
+		t.Fatalf("default sort = %q, want config", got)
+	}
+
+	legacyCookie := &http.Cookie{Name: cookieName, Value: url.QueryEscape(`{"sk":"name","sa":true,"r":5}`)}
+	req := httptest.NewRequest("GET", "/", nil)
+	req.AddCookie(legacyCookie)
+	if got := GetWithDefault(req, 5).SortKey; got != "config" {
+		t.Fatalf("legacy cookie sort = %q, want migrated config default", got)
+	}
+}
+
+func TestExplicitSortPreferenceOverridesConfigDefault(t *testing.T) {
+	form := url.Values{"sort": {"name"}}
+	post := httptest.NewRequest("POST", "/api/prefs", strings.NewReader(form.Encode()))
+	post.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	preferences := ParseFromForm(post)
+	if preferences.SortKey != "name" || !preferences.SortKeySet {
+		t.Fatalf("explicit sort preference = %#v, want name marked as user-selected", preferences)
+	}
+}
 
 func TestConfiguredRefreshDefaultAndZeroPersist(t *testing.T) {
 	req := httptest.NewRequest("GET", "/", nil)

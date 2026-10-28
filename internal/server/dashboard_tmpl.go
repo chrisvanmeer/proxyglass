@@ -6,6 +6,7 @@ const dashboardHTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proxyglass</title>
+<link rel="icon" type="image/svg+xml" href="/static/img/proxyglass-mark.svg">
 <link rel="stylesheet" href="/static/css/output.css?v=0.1.2">
 <script src="/static/js/htmx.min.js"></script>
 <style>
@@ -71,15 +72,16 @@ Filters
 <h3 class="font-semibold mb-3">Sort by</h3>
 <div class="pg-select" data-select data-submit="true">
 <input type="hidden" name="sort" value="{{.Prefs.SortKey}}" data-select-value>
-<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if eq .Prefs.SortKey "status"}}Status{{else if eq .Prefs.SortKey "scur"}}Current sessions{{else if eq .Prefs.SortKey "bin"}}Bytes in{{else}}Server name{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if eq .Prefs.SortKey "config"}}Configuration order{{else if eq .Prefs.SortKey "status"}}Status{{else if eq .Prefs.SortKey "scur"}}Current sessions{{else if eq .Prefs.SortKey "bin"}}Bytes in{{else}}Server name{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <div class="pg-select-menu" data-select-menu role="listbox" hidden>
+<button type="button" class="pg-select-option" data-select-option data-value="config" aria-selected="{{if eq .Prefs.SortKey "config"}}true{{else}}false{{end}}"><span><strong>Configuration order</strong><small>Targets in config.yml order</small></span><span class="pg-select-check">✓</span></button>
 <button type="button" class="pg-select-option" data-select-option data-value="name" aria-selected="{{if eq .Prefs.SortKey "name"}}true{{else}}false{{end}}"><span><strong>Server name</strong><small>Alphabetical order</small></span><span class="pg-select-check">✓</span></button>
 <button type="button" class="pg-select-option" data-select-option data-value="status" aria-selected="{{if eq .Prefs.SortKey "status"}}true{{else}}false{{end}}"><span><strong>Status</strong><small>Group healthy and unavailable servers</small></span><span class="pg-select-check">✓</span></button>
 <button type="button" class="pg-select-option" data-select-option data-value="scur" aria-selected="{{if eq .Prefs.SortKey "scur"}}true{{else}}false{{end}}"><span><strong>Current sessions</strong><small>Compare active connections</small></span><span class="pg-select-check">✓</span></button>
 <button type="button" class="pg-select-option" data-select-option data-value="bin" aria-selected="{{if eq .Prefs.SortKey "bin"}}true{{else}}false{{end}}"><span><strong>Bytes in</strong><small>Compare inbound traffic</small></span><span class="pg-select-check">✓</span></button>
 </div>
 </div>
-<div class="pg-select mt-3" data-select data-submit="true">
+<div id="sortDirection" class="pg-select mt-3" data-select data-submit="true" {{if eq .Prefs.SortKey "config"}}hidden{{end}}>
 <input type="hidden" name="asc" value="{{if .Prefs.SortAsc}}1{{else}}0{{end}}" data-select-value>
 <button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if .Prefs.SortAsc}}Ascending{{else}}Descending{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <div class="pg-select-menu" data-select-menu role="listbox" hidden>
@@ -159,6 +161,10 @@ document.addEventListener('click',async function(event){
         htmx.process(content);
       }
     }else if(root.dataset.submit==='true'){
+      if(value.name==='sort'){
+        const direction=document.getElementById('sortDirection');
+        if(direction){direction.hidden=value.value==='config'}
+      }
       root.closest('form').requestSubmit();
     }
     return;

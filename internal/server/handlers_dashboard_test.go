@@ -20,10 +20,25 @@ func TestDashboardRendersFullLayoutAndBundledBrandAssets(t *testing.T) {
 	response := httptest.NewRecorder()
 	s.handleDashboard(response, httptest.NewRequest("GET", "/", nil))
 	body := response.Body.String()
-	for _, expected := range []string{"<!DOCTYPE html>", "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\"", ".pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))"} {
+	for _, expected := range []string{"<!DOCTYPE html>", `rel="icon" type="image/svg+xml" href="/static/img/proxyglass-mark.svg"`, "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\"", ".pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))"} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("full dashboard HTML does not contain %q", expected)
 		}
+	}
+}
+
+func TestBundledFaviconIsServed(t *testing.T) {
+	s, err := NewServer(&config.AppConfig{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	response := httptest.NewRecorder()
+	s.httpSrv.Handler.ServeHTTP(response, httptest.NewRequest("GET", "/static/img/proxyglass-mark.svg", nil))
+	if response.Code != http.StatusOK {
+		t.Fatalf("favicon request returned HTTP %d", response.Code)
+	}
+	if !strings.Contains(response.Header().Get("Content-Type"), "image/svg+xml") {
+		t.Fatalf("favicon content type = %q, want image/svg+xml", response.Header().Get("Content-Type"))
 	}
 }
 
@@ -95,6 +110,47 @@ func TestDashboardPlacesFrontendsFirstAndGroupsServerFilters(t *testing.T) {
 	}
 	if !strings.Contains(html, `data-backend-toggle="be:edge-a:web-pool"`) || !strings.Contains(html, `data-backend-server="be:edge-a:web-pool"`) {
 		t.Fatal("backend filter checkbox is not linked to its child server checkbox")
+	}
+}
+
+func TestBuildViewConfigurationSortUsesConfiguredTargetOrder(t *testing.T) {
+	snapshot := &model.Snapshot{
+		Targets: []string{"edge-b", "edge-a"},
+		Frontends: []model.Frontend{
+			{Name: "frontend-a", Target: "edge-a", Status: "OPEN"},
+			{Name: "frontend-b", Target: "edge-b", Status: "OPEN"},
+		},
+		Backends: []model.Backend{
+			{Name: "backend-a", Target: "edge-a", Status: "UP", Servers: []model.Server{
+				{Name: "a-second", Backend: "backend-a", Target: "edge-a", Status: "UP"},
+				{Name: "a-first", Backend: "backend-a", Target: "edge-a", Status: "UP"},
+			}},
+			{Name: "backend-b", Target: "edge-b", Status: "UP", Servers: []model.Server{
+				{Name: "b-second", Backend: "backend-b", Target: "edge-b", Status: "UP"},
+				{Name: "b-first", Backend: "backend-b", Target: "edge-b", Status: "UP"},
+			}},
+		},
+	}
+	preferences := prefs.Default()
+	preferences.SortKey = "config"
+	preferences.SortAsc = false // Configuration order remains fixed; direction only affects other sort modes.
+	view := buildView(snapshot, preferences, 5)
+
+	if len(view.Frontends) != 2 || view.Frontends[0].Target != "edge-b" || view.Frontends[1].Target != "edge-a" {
+		t.Fatalf("frontends do not follow target config order: %#v", view.Frontends)
+	}
+	if len(view.Backends) != 2 || view.Backends[0].Target != "edge-b" || view.Backends[1].Target != "edge-a" {
+		t.Fatalf("backends do not follow target config order: %#v", view.Backends)
+	}
+	if got := view.Backends[0].Servers; len(got) != 2 || got[0].Name != "b-second" || got[1].Name != "b-first" {
+		t.Fatalf("servers should retain HAProxy row order in config sort: %#v", got)
+	}
+	var rendered strings.Builder
+	if err := dashboardTemplate().ExecuteTemplate(&rendered, "dash", view); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(rendered.String(), `id="sortDirection" class="pg-select mt-3" data-select data-submit="true" hidden`) {
+		t.Fatal("sort direction control should be hidden for fixed configuration order")
 	}
 }
 
