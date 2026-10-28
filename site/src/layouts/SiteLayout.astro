@@ -18,7 +18,8 @@ const {
 } = Astro.props;
 
 const siteURL = Astro.site ?? new URL('https://proxyglass.app');
-const canonical = relativeLink(Astro.url.pathname, Astro.url.pathname);
+const canonicalPath = Astro.url.pathname === '/index.html' ? '/' : Astro.url.pathname.replace(/\.html$/, '');
+const canonical = relativeLink(Astro.url.pathname, canonicalPath);
 const absoluteImage = image.startsWith('http') ? image : new URL(image, siteURL).href;
 ---
 

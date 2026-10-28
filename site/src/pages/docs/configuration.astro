@@ -4,6 +4,19 @@ import { relativeLink } from '../../utils/links';
 
 const path = Astro.url.pathname;
 
+const haproxyStats = `listen stats
+  bind 10.0.0.10:8404
+  mode http
+  stats enable
+  stats uri /stats
+  stats auth proxyglass-reader:REPLACE_WITH_A_LONG_RANDOM_PASSWORD`;
+
+const haproxyTarget = `targets:
+  - name: edge-01
+    url: "http://10.0.0.10:8404/stats;csv"
+    username: "proxyglass-reader"
+    password: "REPLACE_WITH_A_LONG_RANDOM_PASSWORD"`;
+
 const sample = `server:
   listen: "127.0.0.1:8080"
   default_refresh: 5        # seconds; 0 disables automatic refresh
@@ -53,12 +66,22 @@ sudo proxyglass --revoke-token TOKEN --config /etc/proxyglass/config.yml`;
     <div class="docs-grid">
       <nav class="docs-toc" aria-label="On this page">
         <strong>On this page</strong>
+        <a href="#haproxy-stats">HAProxy stats endpoint</a>
         <a href="#example">Full example</a>
         <a href="#refresh">Refresh and preferences</a>
         <a href="#targets">HAProxy targets</a>
         <a href="#auth">Authentication</a>
       </nav>
       <article class="docs-article">
+        <section class="docs-section" id="haproxy-stats">
+          <h2>Expose a read-only HAProxy stats endpoint</h2>
+          <p>Add a dedicated stats listener to <code>haproxy.cfg</code>. Replace the bind address with an internal address reachable from Proxyglass, and use a unique, strong password.</p>
+          <pre class="docs-code"><code>{haproxyStats}</code></pre>
+          <p>Configure the matching target in Proxyglass. The <code>;csv</code> suffix makes HAProxy return the CSV data Proxyglass reads.</p>
+          <pre class="docs-code"><code>{haproxyTarget}</code></pre>
+          <div class="docs-callout"><strong>Keep it read-only and private:</strong> do not add <code>stats admin</code>. Bind the listener to a private interface and restrict port <code>8404</code> to the Proxyglass host using your firewall. The example uses plain HTTP, so keep it on a trusted network or protect the connection with TLS.</div>
+        </section>
+
         <section class="docs-section" id="example">
           <h2>Full configuration example</h2>
           <p>Replace the example hostnames and credentials. Keep the file readable only by the Proxyglass service account and administrators; target passwords and the OIDC client secret are stored here.</p>
