@@ -457,8 +457,8 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 <title>{{.Kind}}: {{.Label}} · {{.Target}} · {{.Status}}</title>
 <rect width="190" height="70" rx="13"/>
 <circle cx="16" cy="19" r="5"/>
-<text class="pg-topology-node-title" x="29" y="24">{{.Label}}</text>
-<text class="pg-topology-node-meta" x="15" y="49">{{.Target}} · {{.Status}}</text>
+<text class="pg-topology-node-title" x="29" y="24"{{if .LabelTruncated}} textLength="148" lengthAdjust="spacingAndGlyphs"{{end}}>{{.DisplayLabel}}</text>
+<text class="pg-topology-node-meta" x="15" y="49"{{if .MetaTruncated}} textLength="160" lengthAdjust="spacingAndGlyphs"{{end}}>{{.DisplayMeta}}</text>
 </g>
 {{end}}
 </g>

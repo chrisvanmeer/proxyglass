@@ -164,8 +164,12 @@ type SView struct {
 type TopologyNode struct {
 	Kind       string
 	Label      string
+	DisplayLabel string
+	LabelTruncated bool
 	Target     string
 	Status     string
+	DisplayMeta string
+	MetaTruncated bool
 	StateClass string
 	Anchor     string
 	X          float64

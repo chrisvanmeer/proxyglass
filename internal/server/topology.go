@@ -66,29 +66,12 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 		if _, failed := errorsByTarget[group.name]; failed {
 			targetStatus, targetState = "UNREACHABLE", "unhealthy"
 		}
-		targetNode := TopologyNode{
-			Kind:       "target",
-			Label:      group.name,
-			Target:     "HAProxy target",
-			Status:     targetStatus,
-			StateClass: targetState,
-			X:          targetX,
-			Y:          32,
-		}
+		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "", targetX, 32)
 		graph.Nodes = append(graph.Nodes, targetNode)
 
 		frontendXs := topologyNodePositions(left, clusterWidth, len(group.frontends))
 		for i, frontend := range group.frontends {
-			node := TopologyNode{
-				Kind:       "frontend",
-				Label:      frontend.Name,
-				Target:     frontend.Target,
-				Status:     frontend.Status,
-				StateClass: topologyStatusClass(frontend.Status),
-				Anchor:     frontend.Anchor,
-				X:          frontendXs[i],
-				Y:          158,
-			}
+			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), frontend.Anchor, frontendXs[i], 158)
 			graph.Nodes = append(graph.Nodes, node)
 			frontendNodes[topologyKey(frontend.Target, frontend.Name)] = node
 			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
@@ -96,16 +79,7 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 
 		backendXs := topologyNodePositions(left, clusterWidth, len(group.backends))
 		for i, backend := range group.backends {
-			node := TopologyNode{
-				Kind:       "backend",
-				Label:      backend.Name,
-				Target:     backend.Target,
-				Status:     backend.Status,
-				StateClass: topologyStatusClass(backend.Status),
-				Anchor:     backend.Anchor,
-				X:          backendXs[i],
-				Y:          300,
-			}
+			node := newTopologyNode("backend", backend.Name, backend.Target, backend.Status, topologyStatusClass(backend.Status), backend.Anchor, backendXs[i], 300)
 			graph.Nodes = append(graph.Nodes, node)
 			backendNodes[topologyKey(backend.Target, backend.Name)] = node
 			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
@@ -115,16 +89,7 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 				if !server.Shown {
 					continue
 				}
-				serverNode := TopologyNode{
-					Kind:       "server",
-					Label:      server.Name,
-					Target:     backend.Name,
-					Status:     server.Status,
-					StateClass: topologyStatusClass(server.Status),
-					Anchor:     "server-" + server.Key,
-					X:          node.X,
-					Y:          serverY,
-				}
+				serverNode := newTopologyNode("server", server.Name, backend.Name, server.Status, topologyStatusClass(server.Status), "server-"+server.Key, node.X, serverY)
 				graph.Nodes = append(graph.Nodes, serverNode)
 				graph.Edges = append(graph.Edges, topologyEdge(node, serverNode, "server"))
 				serverY += 94
@@ -154,6 +119,35 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 	graph.Width = max(800, int(left-30))
 	graph.Height = int(maxHeight)
 	return graph
+}
+
+const topologyLabelMaxRunes = 20
+
+func newTopologyNode(kind, label, target, status, stateClass, anchor string, x, y float64) TopologyNode {
+	displayLabel, labelTruncated := truncateTopologyText(label)
+	displayMeta, metaTruncated := truncateTopologyText(target + " · " + status)
+	return TopologyNode{
+		Kind:           kind,
+		Label:          label,
+		DisplayLabel:   displayLabel,
+		LabelTruncated: labelTruncated,
+		Target:         target,
+		Status:         status,
+		DisplayMeta:    displayMeta,
+		MetaTruncated:  metaTruncated,
+		StateClass:     stateClass,
+		Anchor:         anchor,
+		X:              x,
+		Y:              y,
+	}
+}
+
+func truncateTopologyText(value string) (string, bool) {
+	runes := []rune(value)
+	if len(runes) <= topologyLabelMaxRunes {
+		return value, false
+	}
+	return string(runes[:topologyLabelMaxRunes]) + "...", true
 }
 
 func topologyNodePositions(left, width float64, count int) []float64 {

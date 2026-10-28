@@ -205,6 +205,29 @@ func TestBuildViewLinksTopologyOnlyForConfiguredRoutes(t *testing.T) {
 	}
 }
 
+func TestTopologyTruncatesLongLabelsAndKeepsFullTooltip(t *testing.T) {
+	fullName := "production-application-server-node-01"
+	snapshot := &model.Snapshot{
+		Targets: []string{"edge-a"},
+		Backends: []model.Backend{{Name: "app-pool", Target: "edge-a", Status: "UP", Servers: []model.Server{{
+			Name: fullName, Backend: "app-pool", Target: "edge-a", Status: "UP",
+		}}}},
+	}
+	view := buildView(snapshot, prefs.Default(), 5)
+	var rendered strings.Builder
+	if err := dashboardTemplate().ExecuteTemplate(&rendered, "dash", view); err != nil {
+		t.Fatal(err)
+	}
+	shortName := string([]rune(fullName)[:topologyLabelMaxRunes]) + "..."
+	html := rendered.String()
+	if !strings.Contains(html, `<title>server: `+fullName+` · app-pool · UP</title>`) {
+		t.Fatal("topology node tooltip should retain the full server name")
+	}
+	if !strings.Contains(html, `textLength="148" lengthAdjust="spacingAndGlyphs">`+shortName+`</text>`) {
+		t.Fatalf("topology node label was not truncated to %d characters: %q", topologyLabelMaxRunes, shortName)
+	}
+}
+
 func TestRefreshRendersOnlyHTMXFragment(t *testing.T) {
 	s, err := NewServer(&config.AppConfig{Server: config.Server{DefaultRefresh: 5}})
 	if err != nil {
