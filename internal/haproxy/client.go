@@ -4,16 +4,22 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/chrisvanmeer/proxyglass/internal/config"
+	"github.com/chrisvanmeer/proxyglass/internal/logger"
 	"github.com/chrisvanmeer/proxyglass/internal/model"
 )
+
+const targetRequestTimeout = 10 * time.Second
 
 type Client struct {
 }
@@ -42,10 +48,11 @@ func (c *Client) FetchAll(ctx context.Context, targets []config.Target) *model.S
 			tr := http.DefaultTransport.(*http.Transport).Clone()
 			verifyTLS := tgt.VerifyTLS == nil || *tgt.VerifyTLS
 			tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: !verifyTLS} //nolint:gosec
-			client := &http.Client{Timeout: 10 * time.Second, Transport: tr}
+			client := &http.Client{Timeout: targetRequestTimeout, Transport: tr}
 			defer client.CloseIdleConnections()
 			req, err := http.NewRequestWithContext(ctx, "GET", tgt.URL, nil)
 			if err != nil {
+				logger.Warn("HAProxy target %q request could not be created: %s", tgt.Name, requestErrorMessage(err))
 				mu.Lock()
 				snap.Errors[tgt.Name] = err
 				mu.Unlock()
@@ -57,6 +64,11 @@ func (c *Client) FetchAll(ctx context.Context, targets []config.Target) *model.S
 			req.Header.Set("User-Agent", "proxyglass/1.0")
 			resp, err := client.Do(req)
 			if err != nil {
+				if isRequestTimeout(err) {
+					logger.Warn("HAProxy target %q request timed out after %s", tgt.Name, targetRequestTimeout)
+				} else {
+					logger.Warn("HAProxy target %q request failed: %s", tgt.Name, requestErrorMessage(err))
+				}
 				mu.Lock()
 				snap.Errors[tgt.Name] = err
 				mu.Unlock()
@@ -64,6 +76,7 @@ func (c *Client) FetchAll(ctx context.Context, targets []config.Target) *model.S
 			}
 			defer func() { _ = resp.Body.Close() }()
 			if resp.StatusCode != 200 {
+				logger.Warn("HAProxy target %q returned HTTP status %s", tgt.Name, resp.Status)
 				mu.Lock()
 				snap.Errors[tgt.Name] = fmt.Errorf("bad status: %s", resp.Status)
 				mu.Unlock()
@@ -71,12 +84,20 @@ func (c *Client) FetchAll(ctx context.Context, targets []config.Target) *model.S
 			}
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
+				logger.Warn("HAProxy target %q response body could not be read: %s", tgt.Name, requestErrorMessage(err))
 				mu.Lock()
 				snap.Errors[tgt.Name] = err
 				mu.Unlock()
 				return
 			}
-			fes, bes := parseCSV(string(body), tgt.Name)
+			fes, bes, err := parseCSV(string(body), tgt.Name)
+			if err != nil {
+				logger.Warn("HAProxy target %q returned invalid stats CSV: %v", tgt.Name, err)
+				mu.Lock()
+				snap.Errors[tgt.Name] = err
+				mu.Unlock()
+				return
+			}
 			mu.Lock()
 			snap.Frontends = append(snap.Frontends, fes...)
 			snap.Backends = append(snap.Backends, bes...)
@@ -87,13 +108,32 @@ func (c *Client) FetchAll(ctx context.Context, targets []config.Target) *model.S
 	return snap
 }
 
-func parseCSV(data, target string) ([]model.Frontend, []model.Backend) {
+func isRequestTimeout(err error) bool {
+	var requestErr *url.Error
+	if errors.As(err, &requestErr) {
+		err = requestErr.Err
+	}
+	var netErr net.Error
+	return errors.Is(err, context.DeadlineExceeded) || (errors.As(err, &netErr) && netErr.Timeout())
+}
+
+// requestErrorMessage omits the request URL from net/url errors because URLs
+// can contain credentials in userinfo, even though that is discouraged.
+func requestErrorMessage(err error) string {
+	var requestErr *url.Error
+	if errors.As(err, &requestErr) {
+		return requestErr.Err.Error()
+	}
+	return err.Error()
+}
+
+func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 	r := csv.NewReader(strings.NewReader(data))
 	r.FieldsPerRecord = -1
 	// HAProxy CSV uses commas
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, nil
+		return nil, nil, err
 	}
 	backendMap := map[string]*model.Backend{}
 	var frontends []model.Frontend
@@ -203,7 +243,7 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend) {
 	for _, b := range backendMap {
 		backends = append(backends, *b)
 	}
-	return frontends, backends
+	return frontends, backends, nil
 }
 
 func get(rec []string, idx int) string {

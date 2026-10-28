@@ -19,6 +19,7 @@ const (
 	logDir      = "/var/log/proxyglass"
 	configPath  = "/etc/proxyglass/config.yml"
 	systemdPath = "/etc/systemd/system/proxyglass.service"
+	binaryPath  = "/usr/local/bin/proxyglass"
 )
 
 func RunInstall() error {
@@ -63,10 +64,14 @@ func RunInstall() error {
 	if err != nil {
 		return err
 	}
-	targetBin := "/usr/bin/proxyglass"
-	if err := copyFile(exe, targetBin, 0755); err != nil {
+	if err := os.MkdirAll("/usr/local/bin", 0755); err != nil {
+		return fmt.Errorf("failed to create binary directory: %w", err)
+	}
+	if err := copyFile(exe, binaryPath, 0755); err != nil {
 		return fmt.Errorf("failed to copy binary: %w", err)
 	}
+	// Remove the previous installer location after the replacement is in place.
+	_ = os.Remove("/usr/bin/proxyglass")
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		logger.Info("Creating default configuration at %s", configPath)
@@ -91,7 +96,7 @@ Type=simple
 User=proxyglass
 Group=proxyglass
 EnvironmentFile=-/etc/default/proxyglass
-ExecStart=/usr/bin/proxyglass --config ${PROXYGLASS_CONFIG}
+ExecStart=/usr/local/bin/proxyglass --config ${PROXYGLASS_CONFIG}
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=5s
@@ -128,6 +133,7 @@ func RunUninstall() error {
 	_ = runCmd("systemctl", "disable", serviceName)
 	_ = os.Remove(systemdPath)
 	_ = runCmd("systemctl", "daemon-reload")
+	_ = os.Remove(binaryPath)
 	_ = os.Remove("/usr/bin/proxyglass")
 	_ = os.Remove("/etc/default/proxyglass")
 	logger.Info("Proxyglass uninstalled. Configuration and data in /etc/proxyglass and /var/lib/proxyglass left in place.")

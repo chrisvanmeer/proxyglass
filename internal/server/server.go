@@ -17,6 +17,7 @@ import (
 	"github.com/chrisvanmeer/proxyglass/internal/auth"
 	"github.com/chrisvanmeer/proxyglass/internal/config"
 	"github.com/chrisvanmeer/proxyglass/internal/haproxy"
+	"github.com/chrisvanmeer/proxyglass/internal/logger"
 	"github.com/chrisvanmeer/proxyglass/internal/model"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
@@ -250,7 +251,13 @@ func (s *Server) handleOIDCLogin(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 	if s.oidcOAuth == nil {
+		logger.Warn("OIDC: callback received while OIDC is not configured")
 		http.Error(w, "OIDC not configured", http.StatusBadRequest)
+		return
+	}
+	if idpError := r.URL.Query().Get("error"); idpError != "" {
+		logger.Warn("OIDC: identity provider returned an authorization error: %q", idpError)
+		http.Error(w, "OIDC login failed", http.StatusUnauthorized)
 		return
 	}
 	state := r.URL.Query().Get("state")
@@ -258,7 +265,8 @@ func (s *Server) handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 	entry, ok := s.oidcStates[state]
 	delete(s.oidcStates, state)
 	s.mu.Unlock()
-	if !ok || time.Now().After(entry.expires) || r.URL.Query().Get("error") != "" {
+	if !ok || time.Now().After(entry.expires) {
+		logger.Warn("OIDC: callback has an unknown or expired state")
 		http.Error(w, "OIDC login failed", http.StatusUnauthorized)
 		return
 	}
@@ -274,38 +282,55 @@ func (s *Server) handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	token, err := oauthCfg.Exchange(ctx, r.URL.Query().Get("code"))
 	if err != nil {
+		logger.Warn("OIDC: authorization-code exchange failed: %v", err)
 		http.Error(w, "OIDC token exchange failed", http.StatusUnauthorized)
 		return
 	}
 	rawIDToken, ok := token.Extra("id_token").(string)
 	if !ok {
+		logger.Warn("OIDC: token response did not include an ID token")
 		http.Error(w, "OIDC response did not include an ID token", http.StatusUnauthorized)
 		return
 	}
 	verifier := s.oidcProvider.Verifier(&oidc.Config{ClientID: s.cfg.OIDC.ClientID})
 	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
+		logger.Warn("OIDC: ID token verification failed: %v", err)
 		http.Error(w, "OIDC ID token verification failed", http.StatusUnauthorized)
 		return
 	}
 	var claims struct {
-		Nonce  string   `json:"nonce"`
-		Groups []string `json:"groups"`
+		Nonce             string   `json:"nonce"`
+		Subject           string   `json:"sub"`
+		Email             string   `json:"email"`
+		PreferredUsername string   `json:"preferred_username"`
+		Groups            []string `json:"groups"`
 	}
-	if err := idToken.Claims(&claims); err != nil || claims.Nonce != entry.nonce {
+	if err := idToken.Claims(&claims); err != nil {
+		logger.Warn("OIDC: could not read verified ID token claims: %v", err)
+		http.Error(w, "OIDC nonce validation failed", http.StatusUnauthorized)
+		return
+	}
+	identity := oidcIdentity(claims.Email, claims.PreferredUsername, claims.Subject)
+	if claims.Nonce != entry.nonce {
+		logger.Warn("OIDC: nonce validation failed for user %s", identity)
 		http.Error(w, "OIDC nonce validation failed", http.StatusUnauthorized)
 		return
 	}
 	if len(s.cfg.OIDC.AllowedGroups) > 0 && !hasAllowedGroup(claims.Groups, s.cfg.OIDC.AllowedGroups) {
+		logger.Warn("OIDC: user %s (groups %q) is not a member of an allowed group %q; denying access",
+			identity, claims.Groups, s.cfg.OIDC.AllowedGroups)
 		http.Error(w, "user is not a member of an allowed group", http.StatusForbidden)
 		return
 	}
 	session, err := s.sessions.Create()
 	if err != nil {
+		logger.Error("OIDC: failed to create session for user %s: %v", identity, err)
 		http.Error(w, "unable to create session", http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{Name: "proxyglass_session", Value: session, Path: "/", HttpOnly: true, Secure: requestIsHTTPS(r), SameSite: http.SameSiteLaxMode, Expires: time.Now().Add(s.cfg.OIDC.SessionTTL())})
+	logger.Info("OIDC: session established for user %s", identity)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -324,10 +349,41 @@ func requestIsHTTPS(r *http.Request) bool {
 func hasAllowedGroup(groups, allowed []string) bool {
 	for _, group := range groups {
 		for _, match := range allowed {
-			if group == match {
+			if groupMatches(group, match) {
 				return true
 			}
 		}
 	}
 	return false
+}
+
+// groupMatches accepts exact group paths and Keycloak's default full-path
+// group claims when the configured allowed group is just the leaf name. This
+// mirrors Orbitron's group matching behavior.
+func groupMatches(claim, allowed string) bool {
+	claim = strings.TrimSpace(claim)
+	allowed = strings.TrimSpace(allowed)
+	if claim == allowed {
+		return true
+	}
+	trimmedClaim := strings.TrimPrefix(claim, "/")
+	trimmedAllowed := strings.TrimPrefix(allowed, "/")
+	if trimmedClaim == trimmedAllowed {
+		return true
+	}
+	if i := strings.LastIndex(trimmedClaim, "/"); i >= 0 && trimmedClaim[i+1:] == trimmedAllowed {
+		return true
+	}
+	return false
+}
+
+func oidcIdentity(email, preferredUsername, subject string) string {
+	switch {
+	case email != "":
+		return email
+	case preferredUsername != "":
+		return preferredUsername
+	default:
+		return subject
+	}
 }

@@ -94,9 +94,15 @@ func main() {
 	logo.PrintBanner()
 
 	if err := logger.Init(cfg.LogPath); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialize log file %s: %v\n", cfg.LogPath, err)
+		logger.Error("Failed to initialize log file %s: %v", cfg.LogPath, err)
 	}
 	defer logger.Close()
+	if cfg.LogPath == "" {
+		logger.Info("File logging is disabled; logs are written to stdout/stderr (systemd journal or container logs)")
+	} else {
+		logger.Info("Writing application logs to %s", cfg.LogPath)
+	}
+	logger.Info("Starting Proxyglass %s on %s with %d HAProxy target(s)", build.Version, cfg.Server.Listen, len(cfg.Targets))
 
 	srv, err := server.NewServer(cfg)
 	if err != nil {

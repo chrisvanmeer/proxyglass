@@ -106,6 +106,7 @@ require_auth: true
 
 tokens_file: "/etc/proxyglass/tokens.json"
 token_ttl_days: 0
+# Empty writes to stdout/stderr (systemd journal or container logs).
 log_path: "/var/log/proxyglass/proxyglass.log"
 
 # Optional OIDC SSO for dashboard login
@@ -116,6 +117,7 @@ oidc:
   client_secret: ""
   session_ttl_hours: 8
   redirect_uri: ""
+  # Keycloak group paths (e.g. /operations/admins) also match their leaf name.
   allowed_groups: []
 
 targets:

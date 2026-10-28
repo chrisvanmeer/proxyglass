@@ -87,6 +87,7 @@ sudo proxyglass --revoke-token TOKEN --config /etc/proxyglass/config.yml`;
           <p>Replace the example hostnames and credentials. Keep the file readable only by the Proxyglass service account and administrators; target passwords and the OIDC client secret are stored here.</p>
           <pre class="docs-code"><code>{sample}</code></pre>
           <div class="docs-callout"><strong>Read-only requirement:</strong> enable HAProxy’s stats page with a dedicated account and expose the CSV endpoint (typically <code>/stats;csv</code>). Proxyglass only issues HTTP GET requests; it never sends HAProxy control commands.</div>
+          <p>When <code>log_path</code> is empty, application logs go to stdout/stderr (the systemd journal or container logs). With a file path configured, logs are written to that file and still appear on stdout/stderr.</p>
         </section>
 
         <section class="docs-section" id="refresh">

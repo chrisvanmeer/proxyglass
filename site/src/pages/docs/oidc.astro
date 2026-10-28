@@ -14,6 +14,7 @@ const oidcSample = `oidc:
   # Host + X-Forwarded-Proto on the incoming nginx request.
   redirect_uri: "https://proxyglass.example.net/ui/oidc/callback"
   # Optional; the ID token must contain a string-array "groups" claim.
+  # Keycloak full paths (e.g. /operations/admins) also match the leaf "admins".
   allowed_groups:
     - "network-operations"`;
 
@@ -73,6 +74,8 @@ const nginxSample = `location / {
         <section class="docs-section" id="groups">
           <h2>Optional group allow-list</h2>
           <p>When <code>allowed_groups</code> is non-empty, a user must have at least one matching value in the ID token’s <code>groups</code> string-array claim. Configure your identity provider to include that claim. An empty list disables group filtering.</p>
+          <p>Keycloak's Group Membership mapper commonly returns full paths such as <code>/operations/admins</code>. Proxyglass matches exact paths and group leaf names, so <code>admins</code> matches that claim. Use the full path in <code>allowed_groups</code> when group names are repeated in different branches and need to be distinguished.</p>
+          <div class="docs-callout"><strong>Keycloak:</strong> add the built-in <code>groups</code> client scope or a Group Membership protocol mapper, and enable <em>Add to ID token</em>. The group must be present in the ID token; an access-token-only claim is not used for this check.</div>
         </section>
       </article>
     </div>

@@ -35,7 +35,7 @@ if [[ "$app_ready" != true ]]; then
 fi
 printf '\nGenerating sample requests through each HAProxy frontend...\n'
 "$ROOT/test/scripts/traffic.sh" 150
-token="$(docker compose -f docker/docker-compose.test.yaml exec -T proxyglass /usr/bin/proxyglass --generate-token --quiet --config /etc/proxyglass/config.yml)"
+token="$(docker compose -f docker/docker-compose.test.yaml exec -T proxyglass /usr/local/bin/proxyglass --generate-token --quiet --config /etc/proxyglass/config.yml)"
 
 printf '\nDashboard: http://localhost:18000\n'
 printf 'Test login token (paste into the login page): %s\n' "$token"

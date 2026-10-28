@@ -11,8 +11,8 @@ FROM alpine:3.21
 RUN apk add --no-cache ca-certificates && addgroup -S proxyglass && adduser -S -G proxyglass proxyglass \
     && mkdir -p /etc/proxyglass /var/lib/proxyglass /var/log/proxyglass \
     && chown -R proxyglass:proxyglass /etc/proxyglass /var/lib/proxyglass /var/log/proxyglass
-COPY --from=build /out/proxyglass /usr/bin/proxyglass
+COPY --from=build /out/proxyglass /usr/local/bin/proxyglass
 USER proxyglass
 EXPOSE 8080
-ENTRYPOINT ["/usr/bin/proxyglass"]
+ENTRYPOINT ["/usr/local/bin/proxyglass"]
 CMD ["--config", "/etc/proxyglass/config.yml"]

@@ -5,7 +5,7 @@ server:
 require_auth: true
 tokens_file: "./tokens.json"
 token_ttl_days: 0
-log_path: ""
+log_path: "" # Empty sends logs to stdout/stderr (systemd journal or container logs).
 
 oidc:
   enabled: false
@@ -15,6 +15,8 @@ oidc:
   session_ttl_hours: 8
   # For nginx TLS termination, the callback is derived from X-Forwarded-Proto and Host.
   # redirect_uri: "https://proxyglass.example.com/ui/oidc/callback"
+  # Keycloak may emit full paths such as /orbitron/operations/admins;
+  # an allowed leaf name such as admins matches the final path segment.
   allowed_groups: []
 
 targets:

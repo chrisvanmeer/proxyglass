@@ -99,8 +99,9 @@ sudo proxyglass --generate-token --config /etc/proxyglass/config.yml
 sudo systemctl enable --now proxyglass
 ```
 
-The installer creates the `proxyglass` system user, `/etc/proxyglass/`, `/var/lib/proxyglass/`,
-`/var/log/proxyglass/`, `/etc/default/proxyglass` and systemd unit. Existing config/environment files are
+The binary is installed at `/usr/local/bin/proxyglass`. The installer creates the `proxyglass` system
+user, `/etc/proxyglass/`, `/var/lib/proxyglass/`, `/var/log/proxyglass/`, `/etc/default/proxyglass`
+and systemd unit. Existing config/environment files are
 preserved. `proxyglass --uninstall` retains configuration and data.
 
 Optional outbound proxy settings go in `/etc/default/proxyglass`; restart the service after changes:

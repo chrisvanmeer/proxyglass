@@ -25,7 +25,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 sudoedit /etc/proxyglass/config.yml
 sudo proxyglass --generate-token --config /etc/proxyglass/config.yml
 sudo systemctl enable --now proxyglass</code></pre>
-          <p>The installer creates the service account, config and data directories, systemd unit and <code>/etc/default/proxyglass</code>. Existing config is preserved on reinstall.</p>
+          <p>The installer creates the service account, config and data directories, systemd unit and <code>/etc/default/proxyglass</code>. Existing config is preserved on reinstall. Follow logs with <code>journalctl -u proxyglass -f</code>; the packaged default also writes to <code>/var/log/proxyglass/proxyglass.log</code>.</p>
         </section>
         <section class="docs-section" id="systemd">
           <h2>systemd behind nginx</h2>

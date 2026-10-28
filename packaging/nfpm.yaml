@@ -15,7 +15,7 @@ depends:
   - systemd
 contents:
   - src: ${BINARY}
-    dst: /usr/bin/proxyglass
+    dst: /usr/local/bin/proxyglass
     expand: true
     file_info:
       mode: 0755

@@ -1,6 +1,9 @@
 package haproxy
 
 import (
+	"context"
+	"errors"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -14,7 +17,10 @@ web,BACKEND,1,2,20,512,1024,UP,,,,,25
 stats,FRONTEND,0,0,0,0,0,OPEN,,,,,
 stats,BACKEND,1,0,0,0,0,UP,,,,,
 `
-	fes, bes := parseCSV(data, "edge-a")
+	fes, bes, err := parseCSV(data, "edge-a")
+	if err != nil {
+		t.Fatalf("parseCSV returned error: %v", err)
+	}
 	if len(fes) != 1 || fes[0].Name != "web" || fes[0].SessionsCur != 3 {
 		t.Fatalf("unexpected frontends: %#v", fes)
 	}
@@ -26,5 +32,24 @@ stats,BACKEND,1,0,0,0,0,UP,,,,,
 	}
 	if got := bes[0].Servers[1]; got.Status != "DOWN" || !strings.Contains(got.LastChk, "Connection refused") {
 		t.Fatalf("expected failure detail, got %#v", got)
+	}
+}
+
+func TestParseCSVReportsMalformedCSV(t *testing.T) {
+	if _, _, err := parseCSV("# pxname,svname,type\nweb,\"unterminated", "edge-a"); err == nil {
+		t.Fatal("malformed CSV should be reported")
+	}
+}
+
+func TestRequestErrorSummaryRecognizesTimeoutAndRedactsURL(t *testing.T) {
+	err := &url.Error{Op: "Get", URL: "https://reader:secret@example.test/stats;csv", Err: context.DeadlineExceeded}
+	if !isRequestTimeout(err) {
+		t.Fatal("deadline exceeded should be recognized as a request timeout")
+	}
+	if got := requestErrorMessage(err); strings.Contains(got, "reader") || strings.Contains(got, "secret") || strings.Contains(got, "example.test") {
+		t.Fatalf("request error summary leaked URL credentials or target URL: %q", got)
+	}
+	if isRequestTimeout(errors.New("connection refused")) {
+		t.Fatal("connection refused should not be classified as a timeout")
 	}
 }
