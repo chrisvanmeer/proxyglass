@@ -128,6 +128,41 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .check-code.error { color: #fda4af; }
 .preview-caption { display: flex; justify-content: space-between; gap: 10px; padding: 9px 14px; border-top: 1px solid rgba(157, 183, 207, .08); color: #6f8399; font-size: .6rem; }
 
+.interface-showcase { padding-top: 28px; }
+.interface-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.interface-card { min-width: 0; overflow: hidden; border: 1px solid rgba(144, 184, 218, .17); border-radius: 18px; background: linear-gradient(145deg, rgba(15, 26, 43, .96), rgba(8, 15, 27, .98)); box-shadow: 0 24px 70px rgba(0, 0, 0, .25); }
+.interface-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 17px 19px; border-bottom: 1px solid rgba(157, 183, 207, .1); }
+.interface-card-heading .eyebrow { font-size: .57rem; }
+.interface-card-heading h3 { margin-top: 4px; color: #e4f2fa; font-size: 1.02rem; letter-spacing: -.025em; }
+.interface-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid rgba(251, 113, 133, .18); border-radius: 999px; color: #fda4af; background: rgba(251, 113, 133, .06); font-family: var(--font-mono); font-size: .58rem; white-space: nowrap; }
+.interface-badge i { width: 6px; height: 6px; border-radius: 50%; background: #fb7185; }
+.interface-topology-canvas { padding: 12px; background: radial-gradient(ellipse at top, rgba(34, 211, 238, .035), transparent 70%); }
+.interface-topology-svg { display: block; width: 100%; height: auto; }
+.interface-topology-edges path { fill: none; stroke: rgba(148, 163, 184, .32); stroke-width: 2; }
+.interface-topology-edges .route { stroke: #22d3ee; stroke-width: 2.6; }
+.interface-node rect { fill: rgba(15, 23, 42, .96); stroke: rgba(148, 163, 184, .26); stroke-width: 1.5; }
+.interface-node circle { fill: #34d399; }
+.interface-node.down-node circle { fill: #fb7185; }
+.interface-node text { fill: #e2e8f0; font-family: var(--font-mono); font-size: 12px; }
+.interface-node text.node-meta { fill: #8293a8; font-size: 9px; }
+.interface-close { display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgba(157, 183, 207, .15); border-radius: 8px; color: #8798ac; }
+.interface-filter-grid { display: grid; grid-template-columns: .9fr .8fr 1.3fr; gap: 9px; padding: 14px; }
+.interface-filter-group { min-width: 0; padding: 11px 9px; border: 1px solid rgba(157, 183, 207, .1); border-radius: 10px; background: rgba(255, 255, 255, .018); }
+.interface-filter-group h4 { margin: 0 0 9px; color: #dce9f3; font-size: .62rem; font-weight: 650; }
+.interface-select { display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-bottom: 7px; padding: 7px; border: 1px solid rgba(148, 163, 184, .2); border-radius: 7px; color: #d3e0eb; background: rgba(15, 23, 42, .7); font-size: .56rem; }
+.interface-select span { color: #93a4b8; }
+.secondary-select { color: #a6b6c8; }
+.interface-filter-option { display: flex; align-items: center; gap: 6px; min-height: 25px; color: #c0cfdd; font-family: var(--font-mono); font-size: .55rem; white-space: nowrap; }
+.fake-check { position: relative; width: 11px; height: 11px; flex: none; border: 1px solid rgba(148, 163, 184, .42); border-radius: 3px; background: rgba(2, 6, 23, .6); }
+.fake-check.checked { border-color: rgba(34, 211, 238, .7); background: rgba(34, 211, 238, .18); }
+.fake-check.checked::after { position: absolute; top: -2px; left: 1px; color: #67e8f9; content: '✓'; font-size: 10px; }
+.nested-filter { padding-left: 13px; color: #9eafc2; }
+.interface-filter-option small { margin-left: auto; color: #6ee7b7; font-size: .48rem; }
+.interface-filter-option.down-filter small { color: #fda4af; }
+.interface-caption { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-top: 1px solid rgba(157, 183, 207, .08); color: #718399; font-size: .58rem; }
+@media(max-width:900px) { .interface-grid { grid-template-columns: 1fr; } }
+@media(max-width:520px) { .interface-filter-grid { grid-template-columns: 1fr 1fr; } .backend-filter-group { grid-column: 1 / -1; } .interface-card-heading { padding-inline: 14px; } .interface-caption { font-size: .52rem; } }
+
 .section { padding-block: clamp(74px, 9vw, 120px); }
 .section-heading { max-width: 690px; margin-bottom: 42px; }
 .section-heading h2, .how-copy h2 { margin-top: 14px; color: #edf5fc; font-size: clamp(2rem, 4.2vw, 3.35rem); font-weight: 730; line-height: 1.1; letter-spacing: -.06em; }

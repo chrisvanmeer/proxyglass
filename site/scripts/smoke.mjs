@@ -12,6 +12,9 @@ for (const text of [
 	'Container + Nomad',
 	'Last check',
 	'GitHub',
+	'Topology overview',
+	'interface-topology-svg',
+	'interface-filter-grid',
 ]) {
 	assert.ok(html.toLowerCase().includes(text.toLowerCase()), `landing page should include: ${text}`);
 }
