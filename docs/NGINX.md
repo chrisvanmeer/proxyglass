@@ -1,6 +1,7 @@
 # nginx reverse proxy
 
-Proxyglass serves plain HTTP and is intended to sit behind nginx for TLS. Bind its listener to loopback (`127.0.0.1:8080`) and preserve the public host/scheme headers for OIDC redirects.
+Proxyglass serves plain HTTP and is intended to sit behind nginx for TLS. Bind its listener to
+loopback (`127.0.0.1:8080`) and preserve the public host/scheme headers for OIDC redirects.
 
 ```nginx
 location / {
@@ -13,4 +14,6 @@ location / {
 }
 ```
 
-Set the OIDC redirect URI to `https://<public-host>/ui/oidc/callback` when configuring a fixed callback. If `oidc.redirect_uri` is empty, Proxyglass derives the callback from the incoming Host and `X-Forwarded-Proto` headers.
+Set the OIDC redirect URI to `https://<public-host>/ui/oidc/callback` when configuring a fixed
+callback. If `oidc.redirect_uri` is empty, Proxyglass derives the callback from the incoming Host and
+`X-Forwarded-Proto` headers.

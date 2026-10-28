@@ -10,6 +10,7 @@ const dashboardHTML = `<!DOCTYPE html>
 <script src="/static/js/htmx.min.js"></script>
 <style>
 html,body{min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#070b16;color:#e2e8f0}header{position:sticky;top:0;background:rgba(10,16,30,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.1)}main{width:min(1800px,calc(100% - 48px));margin:0 auto;padding:28px 0}#content>.grid{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);gap:24px}#content aside form,#content section>div{background:linear-gradient(145deg,rgba(21,31,51,.94),rgba(12,19,34,.9));border:1px solid rgba(148,163,184,.18);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.24)}#content aside form{padding:20px}#content section{display:grid;gap:20px;align-content:start}#content section>div{overflow:hidden}#content h2{font-size:1.05rem}#content h3{color:#dbeafe}#content table{border-collapse:collapse}#content th,#content td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}#content th{font-size:.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em}#content tr:hover{background:rgba(255,255,255,.035)}input{color:inherit}input[type=checkbox]{accent-color:#22d3ee}a,button{cursor:pointer}.pg-select{position:relative;min-width:190px}.pg-select-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;color:#e2e8f0;text-align:left;background:linear-gradient(135deg,rgba(30,41,59,.92),rgba(15,23,42,.98));border:1px solid rgba(148,163,184,.24);border-radius:12px;box-shadow:inset 0 1px rgba(255,255,255,.06);transition:border-color .18s,box-shadow .18s}.pg-select-trigger:hover,.pg-select-trigger[aria-expanded=true]{border-color:rgba(103,232,249,.62);box-shadow:0 0 0 3px rgba(34,211,238,.08)}.pg-select-menu{position:absolute;z-index:100;top:calc(100% + 8px);left:0;right:0;padding:6px;background:rgba(10,16,30,.98);border:1px solid rgba(148,163,184,.24);border-radius:14px;box-shadow:0 18px 48px rgba(0,0,0,.55),0 0 24px rgba(34,211,238,.08);backdrop-filter:blur(20px)}.pg-select-menu[hidden]{display:none!important}.pg-select-option{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:0;border-radius:9px;color:#cbd5e1;background:transparent;text-align:left;cursor:pointer}.pg-select-option:hover,.pg-select-option[aria-selected=true]{color:#f0fdff;background:linear-gradient(90deg,rgba(8,145,178,.2),rgba(124,58,237,.12))}.pg-select-option small{display:block;margin-top:2px;color:#8492a8;font-size:11px}.pg-select-option[aria-selected=true] .pg-select-check{color:#67e8f9;opacity:1}.pg-select-check{opacity:0;color:#67e8f9}.pg-refresh{min-width:132px}.pg-refresh .pg-select-trigger{padding:7px 10px;border-radius:9px;font-size:13px}.pg-refresh .pg-select-menu{width:238px;left:auto}.pg-metric{min-width:0}.pg-metric-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:700px){main{width:calc(100% - 28px);padding:18px 0}#content>.grid{grid-template-columns:1fr}#content aside{order:0}#content section{order:1}header>div{padding-left:14px;padding-right:14px}}
+.pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;width:100%}.pg-fleet-card{min-width:0}@media(max-width:900px){.pg-fleet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.pg-fleet-grid{grid-template-columns:1fr}}
 </style>
 <style>
 [hidden]{display:none!important}.pg-filter-scrim{position:fixed;z-index:45;top:72px;left:0;right:0;bottom:0;padding:0 24px 24px;background:rgba(2,6,23,.52);backdrop-filter:blur(5px);overflow-y:auto}.pg-filter-drawer{width:min(1680px,100%);margin:12px auto 24px;padding:22px;background:linear-gradient(145deg,rgba(15,23,42,.98),rgba(8,15,29,.98));border:1px solid rgba(103,232,249,.2);border-radius:20px;box-shadow:0 28px 90px rgba(0,0,0,.65),0 0 40px rgba(34,211,238,.06)}.pg-filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.pg-filter-groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.pg-filter-group{min-width:0;padding:16px;background:rgba(255,255,255,.025);border:1px solid rgba(148,163,184,.13);border-radius:14px}.pg-filter-options{display:grid;gap:3px;max-height:36vh;overflow-y:auto;padding-right:5px}.pg-filter-option{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 8px;color:#cbd5e1;font-size:13px;border-radius:8px}.pg-filter-option:hover{background:rgba(255,255,255,.05)}.pg-filter-option span{overflow:hidden;text-overflow:ellipsis}.pg-filter-option small{margin-left:auto;color:#718096;font-size:10px;white-space:nowrap}.pg-filter-server{padding-left:29px;color:#9aa9bd;font-size:12px}.pg-filter-scrim .pg-select{min-width:0}.pg-filter-scrim .pg-select-menu{min-width:250px}@media(max-width:1050px){.pg-filter-groups{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.pg-filter-scrim{top:64px;padding:0 10px 12px}.pg-filter-drawer{padding:14px;margin-top:8px}.pg-filter-groups{grid-template-columns:1fr}.pg-filter-options{max-height:24vh}main{width:calc(100% - 20px);padding:16px 0}header>div{padding-left:12px;padding-right:12px}}
@@ -148,8 +149,15 @@ document.addEventListener('click',async function(event){
     root.querySelector('[data-select-menu]').hidden=true;
     root.querySelector('[data-select-trigger]').setAttribute('aria-expanded','false');
     if(root.dataset.persist==='refresh'){
-      await fetch('/api/prefs',{method:'POST',body:new FormData(root.closest('form'))});
-      location.reload();
+      const response=await fetch('/api/prefs',{method:'POST',body:new FormData(root.closest('form')),credentials:'same-origin'});
+      if(!response.ok){throw new Error('Unable to save refresh preference')}
+      const content=document.getElementById('content');
+      const seconds=Number(value.value);
+      if(content){
+        if(seconds>0){content.setAttribute('hx-trigger','every '+seconds+'s')}
+        else{content.removeAttribute('hx-trigger')}
+        htmx.process(content);
+      }
     }else if(root.dataset.submit==='true'){
       root.closest('form').requestSubmit();
     }
@@ -214,6 +222,21 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 {{range $target, $err := .Errors}}<p class="text-xs text-rose-200/80">{{$target}}: {{$err}}</p>{{end}}
 </div>
 {{end}}
+<div class="mb-6 w-full">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-xs uppercase tracking-[.22em] text-cyan-300/70">Fleet overview</div>
+<h2 class="mt-1 text-xl font-semibold">HAProxy at a glance</h2>
+</div>
+<div class="text-sm text-slate-400">Live view</div>
+</div>
+<div class="pg-fleet-grid">
+<div class="pg-fleet-card rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 p-5"><div class="text-xs text-slate-400">HAProxy proxies</div><div class="mt-1 text-2xl font-semibold">{{.Fleet.Proxies}}</div><div class="mt-1 text-xs text-slate-500">Configured targets</div></div>
+<div class="pg-fleet-card rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 p-5"><div class="text-xs text-slate-400">Active sessions</div><div class="mt-1 text-2xl font-semibold">{{.Fleet.ActiveSess}}</div><div class="mt-1 text-xs text-slate-500">Across frontends</div></div>
+<div class="pg-fleet-card rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 p-5"><div class="text-xs text-slate-400">Healthy servers</div><div class="mt-1 text-2xl font-semibold">{{.Fleet.ServersUp}} <span class="text-base text-slate-500">/ {{.Fleet.ServersTotal}}</span></div><div class="mt-1 text-xs text-slate-500">{{if gt .Fleet.ServersTotal 0}}{{$pct := divf (mulf (toFloat64 .Fleet.ServersUp) 100.0) (toFloat64 .Fleet.ServersTotal)}}{{printf "%.1f" $pct}}% available{{else}}No servers{{end}}</div></div>
+<div class="pg-fleet-card rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 p-5"><div class="text-xs text-slate-400">Bytes in (frontends)</div><div class="mt-1 text-2xl font-semibold">{{humanBytes .Fleet.BytesInTotal}}</div><div class="mt-1 text-xs text-slate-500">Total received</div></div>
+</div>
+</div>
 <section class="space-y-6">
 {{template "frontends" .}}
 {{range .Backends}}

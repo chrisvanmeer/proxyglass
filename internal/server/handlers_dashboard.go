@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"html/template"
 	"net/http"
 	"sort"
@@ -84,6 +85,15 @@ type ViewData struct {
 	Targets    []string
 	Errors     map[string]error
 	DefaultRef int
+	Fleet      FleetView
+}
+
+type FleetView struct {
+	Proxies      int
+	ActiveSess   int64
+	ServersUp    int
+	ServersTotal int
+	BytesInTotal int64
 }
 
 type FView struct {
@@ -236,7 +246,29 @@ func lastSessionAge(value string) string {
 }
 
 func dashboardTemplate() *template.Template {
-	return template.Must(template.New("dash").Funcs(template.FuncMap{"humanBytes": humanBytes}).Parse(dashboardHTML))
+	funcs := template.FuncMap{
+		"humanBytes": humanBytes,
+		"mulf":       func(a, b float64) float64 { return a * b },
+		"divf": func(a, b float64) float64 {
+			if b == 0 {
+				return 0
+			}
+			return a / b
+		},
+		"toFloat64": func(v interface{}) float64 {
+			switch t := v.(type) {
+			case int:
+				return float64(t)
+			case int64:
+				return float64(t)
+			case float64:
+				return t
+			}
+			return 0
+		},
+		"printf": fmt.Sprintf,
+	}
+	return template.Must(template.New("dash").Funcs(funcs).Parse(dashboardHTML))
 }
 
 func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
@@ -248,6 +280,20 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
 		Errors:     snap.Errors,
 		DefaultRef: defRef,
 	}
+	fv := FleetView{Proxies: len(snap.Targets)}
+	for _, be := range snap.Backends {
+		for _, sv := range be.Servers {
+			fv.ServersTotal++
+			if strings.EqualFold(sv.Status, "UP") {
+				fv.ServersUp++
+			}
+		}
+	}
+	for _, fe := range snap.Frontends {
+		fv.ActiveSess += fe.SessionsCur
+		fv.BytesInTotal += fe.BytesIn
+	}
+	vd.Fleet = fv
 	for _, fe := range snap.Frontends {
 		k := prefs.KeyFE(fe.Name, fe.Target)
 		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(fe.Target)]

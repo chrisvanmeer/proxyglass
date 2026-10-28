@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -19,10 +20,43 @@ func TestDashboardRendersFullLayoutAndBundledBrandAssets(t *testing.T) {
 	response := httptest.NewRecorder()
 	s.handleDashboard(response, httptest.NewRequest("GET", "/", nil))
 	body := response.Body.String()
-	for _, expected := range []string{"<!DOCTYPE html>", "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\""} {
+	for _, expected := range []string{"<!DOCTYPE html>", "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\"", ".pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))"} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("full dashboard HTML does not contain %q", expected)
 		}
+	}
+}
+
+func TestRefreshPreferenceCanBeDisabled(t *testing.T) {
+	s, err := NewServer(&config.AppConfig{Server: config.Server{DefaultRefresh: 5}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	save := httptest.NewRecorder()
+	req := httptest.NewRequest("POST", "/api/prefs", strings.NewReader("refresh=0"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	s.handleSavePrefs(save, req)
+
+	var prefCookie *http.Cookie
+	for _, cookie := range save.Result().Cookies() {
+		if cookie.Name == "proxyglass_prefs" {
+			prefCookie = cookie
+		}
+	}
+	if prefCookie == nil {
+		t.Fatal("saving refresh=0 did not set the preferences cookie")
+	}
+
+	page := httptest.NewRecorder()
+	pageReq := httptest.NewRequest("GET", "/", nil)
+	pageReq.AddCookie(prefCookie)
+	s.handleDashboard(page, pageReq)
+	body := page.Body.String()
+	if !strings.Contains(body, `name="refresh" value="0"`) {
+		t.Fatal("disabled refresh preference was not rendered")
+	}
+	if strings.Contains(body, `hx-trigger="every 5s"`) {
+		t.Fatal("disabled refresh preference still enables polling")
 	}
 }
 

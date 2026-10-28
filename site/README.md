@@ -1,6 +1,7 @@
 # Proxyglass website
 
-Astro static marketing site for [proxyglass.app](https://proxyglass.app), styled to match the Proxyglass dashboard. It has no Easter eggs or external runtime asset dependencies.
+Astro static marketing site for [proxyglass.app](https://proxyglass.app), styled to match the
+Proxyglass dashboard. It has no Easter eggs or external runtime asset dependencies.
 
 ## Local development
 
@@ -11,7 +12,8 @@ npm ci
 npm run dev -- --background
 ```
 
-The Astro dev server opens at <http://localhost:4321>. Manage it with `npx astro dev status`, `npx astro dev logs` and `npx astro dev stop`.
+The Astro dev server opens at <http://localhost:4321>. Manage it with `npx astro dev status`,
+`npx astro dev logs` and `npx astro dev stop`.
 
 ## Build and check
 
@@ -21,7 +23,8 @@ npm run smoke
 npx wrangler deploy --dry-run
 ```
 
-Astro writes a static site to `dist/`. Wrangler serves those generated assets from a Cloudflare Worker; the Worker has no application data or server-side rendering.
+Astro writes a static site to `dist/`. Wrangler serves those generated assets from a Cloudflare
+Worker; the Worker has no application data or server-side rendering.
 
 ## Preview the Cloudflare Worker locally
 
@@ -42,15 +45,27 @@ Open <http://127.0.0.1:8788>. The Worker uses the same static asset binding as p
    npm run deploy
    ```
 
-`site/wrangler.jsonc` attaches a Cloudflare Worker Custom Domain at `proxyglass.app`, deploys `dist/` as static assets, and returns the generated `404.html` for missing paths. Wrangler/Cloudflare provisions the apex DNS record and TLS certificate for the custom domain.
+`site/wrangler.jsonc` attaches a Cloudflare Worker Custom Domain at `proxyglass.app`, deploys
+`dist/` as static assets, and returns the generated `404.html` for missing paths. Wrangler/Cloudflare
+provisions the apex DNS record and TLS certificate for the custom domain.
 
-For **Workers Builds** in the Cloudflare dashboard, use Worker name `proxyglass`, repository `chrisvanmeer/proxyglass`, production branch `main`, root directory `site`, build command `npm run build`, and deploy command `npx wrangler deploy`. Choose **None/Other** for the framework preset (this is a Worker with static assets, not a Pages project); the Wrangler config supplies the asset directory and custom domain.
+For **Workers Builds** in the Cloudflare dashboard, use Worker name `proxyglass`, repository
+`chrisvanmeer/proxyglass`, production branch `main`, root directory `site`, build command
+`npm run build`, and deploy command `npx wrangler deploy`. Choose **None/Other** for the framework
+preset (this is a Worker with static assets, not a Pages project); the Wrangler config supplies the
+asset directory and custom domain.
 
 ## Cloudflare Email Routing
 
-In the Cloudflare dashboard, open **Email → Email Routing**, add and verify a destination inbox, then create the addresses you want to forward (for example, `hello@proxyglass.app`). Email Routing shows and installs the exact MX and SPF records for your zone. Keep those mail records alongside the Worker-managed website record; they serve different protocols. Email Routing handles incoming forwarding only—it does not provide SMTP for sending mail.
+In the Cloudflare dashboard, open **Email → Email Routing**, add and verify a destination inbox,
+then create the addresses you want to forward (for example, `hello@proxyglass.app`). Email Routing
+shows and installs the exact MX and SPF records for your zone. Keep those mail records alongside the
+Worker-managed website record; they serve different protocols. Email Routing handles incoming
+forwarding only—it does not provide SMTP for sending mail.
 
-The GitHub Actions workflow `.github/workflows/site-deploy.yml` supports manual deploys. To deploy automatically on pushes to `main`, configure the two secrets above and set the repository variable `PROXYGLASS_WORKER_DEPLOY=true`.
+The GitHub Actions workflow `.github/workflows/site-deploy.yml` supports manual deploys. To deploy
+automatically on pushes to `main`, configure the two secrets above and set the repository variable
+`PROXYGLASS_WORKER_DEPLOY=true`.
 
 ## Structure
 
