@@ -61,6 +61,8 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .brand { display: inline-flex; align-items: center; gap: 10px; flex: none; }
 .brand img { border-radius: 11px; }
 .brand span { font-size: 1.02rem; font-weight: 760; letter-spacing: -.035em; background: linear-gradient(100deg, #f6fdff, var(--cyan) 62%, #c4b5fd); color: transparent; background-clip: text; }
+.brand-status, .preview-status { display: inline-block; width: 6px; height: 6px; flex: none; margin-left: -5px; border-radius: 50%; background: #34d399; box-shadow: 0 0 9px rgba(52, 211, 153, .85), 0 0 18px rgba(52, 211, 153, .32); }
+.preview-status { margin-left: 2px; }
 .nav-inner nav { display: flex; align-items: center; gap: 30px; margin-left: auto; }
 .nav-inner nav a { color: var(--muted); font-size: .87rem; transition: color .18s ease; }
 .nav-inner nav a:hover { color: var(--cyan); }

@@ -47,7 +47,13 @@ targets:
     url: "https://edge-02.example.net:8404/stats;csv"
     username: "proxyglass-reader"
     password: "REPLACE_WITH_STATS_PASSWORD"
-    verify_tls: true`;
+    verify_tls: true
+
+# Optional visual routes for the topology overview
+topology:
+  - target: edge-01
+    frontend: public
+    backends: [web_backend, api_backend]`;
 
 const tokenCommands = `sudo proxyglass --generate-token --config /etc/proxyglass/config.yml
 sudo proxyglass --generate-token --quiet --config /etc/proxyglass/config.yml
@@ -88,6 +94,8 @@ sudo proxyglass --revoke-token TOKEN --config /etc/proxyglass/config.yml`;
           <pre class="docs-code"><code>{sample}</code></pre>
           <div class="docs-callout"><strong>Read-only requirement:</strong> enable HAProxy’s stats page with a dedicated account and expose the CSV endpoint (typically <code>/stats;csv</code>). Proxyglass only issues HTTP GET requests; it never sends HAProxy control commands.</div>
           <p>When <code>log_path</code> is empty, application logs go to stdout/stderr (the systemd journal or container logs). With a file path configured, logs are written to that file and still appear on stdout/stderr.</p>
+          <p>The optional <code>topology</code> mapping links exact target, frontend and backend names in the visual overview. HAProxy stats do not expose routing rules, so unmapped frontend-to-backend links are deliberately omitted. The map is informational only and does not configure HAProxy.</p>
+          <p>The optional <code>topology</code> section maps a frontend to one or more backends for the topology overview. HAProxy’s stats CSV does not expose <code>use_backend</code> rules, so only connections listed there are drawn. These mappings are for visualization only; they do not configure HAProxy.</p>
         </section>
 
         <section class="docs-section" id="refresh">

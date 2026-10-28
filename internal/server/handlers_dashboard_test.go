@@ -20,7 +20,7 @@ func TestDashboardRendersFullLayoutAndBundledBrandAssets(t *testing.T) {
 	response := httptest.NewRecorder()
 	s.handleDashboard(response, httptest.NewRequest("GET", "/", nil))
 	body := response.Body.String()
-	for _, expected := range []string{"<!DOCTYPE html>", `rel="icon" type="image/svg+xml" href="/static/img/proxyglass-mark.svg"`, "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\"", ".pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))"} {
+	for _, expected := range []string{"<!DOCTYPE html>", `rel="icon" type="image/svg+xml" href="/static/img/proxyglass-mark.svg"`, "/static/css/output.css", "/static/img/proxyglass-mark.svg", "id=\"content\"", "id=\"filterPanel\"", "id=\"filterToggle\"", "id=\"topologyPanel\"", "id=\"topologyToggle\"", "Topology overview", ".pg-fleet-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))"} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("full dashboard HTML does not contain %q", expected)
 		}
@@ -154,6 +154,57 @@ func TestBuildViewConfigurationSortUsesConfiguredTargetOrder(t *testing.T) {
 	}
 }
 
+func TestBuildViewLinksTopologyOnlyForConfiguredRoutes(t *testing.T) {
+	snapshot := &model.Snapshot{
+		Targets:   []string{"edge-a"},
+		Frontends: []model.Frontend{{Name: "public", Target: "edge-a", Status: "OPEN"}},
+		Backends: []model.Backend{{Name: "app-pool", Target: "edge-a", Status: "UP", Servers: []model.Server{{
+			Name: "app-01", Backend: "app-pool", Target: "edge-a", Status: "UP",
+		}}}},
+	}
+	view := buildView(snapshot, prefs.Default(), 5, config.TopologyRoute{
+		Target: "edge-a", Frontend: "public", Backends: []string{"app-pool"},
+	})
+
+	routeEdges, serverEdges := 0, 0
+	anchors := map[string]bool{}
+	for _, edge := range view.Topology.Edges {
+		if edge.Kind == "route" {
+			routeEdges++
+		}
+		if edge.Kind == "server" {
+			serverEdges++
+		}
+	}
+	for _, node := range view.Topology.Nodes {
+		if node.Anchor != "" {
+			anchors[node.Anchor] = true
+		}
+	}
+	if routeEdges != 1 || serverEdges != 1 {
+		t.Fatalf("topology edges route=%d server=%d; want one each: %#v", routeEdges, serverEdges, view.Topology.Edges)
+	}
+	for _, anchor := range []string{"frontend-fe:edge-a:public", "backend-be:edge-a:app-pool", "server-sv:edge-a:app-pool:app-01"} {
+		if !anchors[anchor] {
+			t.Errorf("topology is missing clickable row anchor %q", anchor)
+		}
+	}
+	var rendered strings.Builder
+	if err := dashboardTemplate().ExecuteTemplate(&rendered, "dash", view); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(rendered.String(), `class="pg-topology-edge pg-topology-edge-route"`) || !strings.Contains(rendered.String(), `data-topology-anchor="server-sv:edge-a:app-pool:app-01"`) {
+		t.Fatal("topology SVG should render configured routes and clickable server anchors")
+	}
+
+	withoutMapping := buildView(snapshot, prefs.Default(), 5)
+	for _, edge := range withoutMapping.Topology.Edges {
+		if edge.Kind == "route" {
+			t.Fatal("topology must not invent frontend-to-backend routes without a mapping")
+		}
+	}
+}
+
 func TestRefreshRendersOnlyHTMXFragment(t *testing.T) {
 	s, err := NewServer(&config.AppConfig{Server: config.Server{DefaultRefresh: 5}})
 	if err != nil {
@@ -163,6 +214,9 @@ func TestRefreshRendersOnlyHTMXFragment(t *testing.T) {
 	s.handleRefresh(response, httptest.NewRequest("GET", "/api/refresh", nil))
 	if strings.Contains(response.Body.String(), "<!DOCTYPE html>") {
 		t.Fatal("HTMX refresh should return a content fragment, not a nested page")
+	}
+	if !strings.Contains(response.Body.String(), `id="topologyContent" hx-swap-oob="innerHTML"`) {
+		t.Fatal("HTMX refresh should also update topology content out of band")
 	}
 }
 

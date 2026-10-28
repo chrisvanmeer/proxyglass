@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/chrisvanmeer/proxyglass/internal/config"
 	"github.com/chrisvanmeer/proxyglass/internal/haproxy"
 	"github.com/chrisvanmeer/proxyglass/internal/model"
 	"github.com/chrisvanmeer/proxyglass/internal/prefs"
@@ -42,7 +43,7 @@ func (s *Server) getSnapshot() *model.Snapshot {
 func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	p := prefs.GetWithDefault(r, s.cfg.Server.DefaultRefresh)
 	snap := s.getSnapshot()
-	data := buildView(snap, p, s.cfg.Server.DefaultRefresh)
+	data := buildView(snap, p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 	tmpl := dashboardTemplate()
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	_ = tmpl.ExecuteTemplate(w, "dash", data)
@@ -59,20 +60,22 @@ func (s *Server) handleRefresh(w http.ResponseWriter, r *http.Request) {
 	s.lastFetch = time.Now()
 	s.mu.Unlock()
 	p := prefs.GetWithDefault(r, s.cfg.Server.DefaultRefresh)
-	data := buildView(snap, p, s.cfg.Server.DefaultRefresh)
+	data := buildView(snap, p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 	tmpl := dashboardTemplate()
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	_ = tmpl.ExecuteTemplate(w, "content", data)
+	_ = tmpl.ExecuteTemplate(w, "topology-oob", data)
 }
 
 func (s *Server) handleSavePrefs(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		p := prefs.ParseFromForm(r)
 		prefs.Set(w, p)
-		data := buildView(s.getSnapshot(), p, s.cfg.Server.DefaultRefresh)
+		data := buildView(s.getSnapshot(), p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 		tmpl := dashboardTemplate()
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_ = tmpl.ExecuteTemplate(w, "content", data)
+		_ = tmpl.ExecuteTemplate(w, "topology-oob", data)
 		return
 	}
 	w.WriteHeader(400)
@@ -81,6 +84,7 @@ func (s *Server) handleSavePrefs(w http.ResponseWriter, r *http.Request) {
 type ViewData struct {
 	Frontends  []FView
 	Backends   []BView
+	Topology   TopologyView
 	Prefs      *prefs.Prefs
 	Targets    []string
 	Errors     map[string]error
@@ -98,6 +102,7 @@ type FleetView struct {
 
 type FView struct {
 	Key            string
+	Anchor         string
 	Name           string
 	Target         string
 	Status         string
@@ -118,6 +123,7 @@ type FView struct {
 
 type BView struct {
 	Key            string
+	Anchor         string
 	Name           string
 	Target         string
 	Status         string
@@ -153,6 +159,29 @@ type SView struct {
 	ErrorsConn   string
 	ErrorsResp   string
 	Shown        bool
+}
+
+type TopologyNode struct {
+	Kind       string
+	Label      string
+	Target     string
+	Status     string
+	StateClass string
+	Anchor     string
+	X          float64
+	Y          float64
+}
+
+type TopologyEdge struct {
+	Kind string
+	Path string
+}
+
+type TopologyView struct {
+	Nodes  []TopologyNode
+	Edges  []TopologyEdge
+	Width  int
+	Height int
 }
 
 func (s *Server) annotateActivity(snap *model.Snapshot) {
@@ -271,7 +300,7 @@ func dashboardTemplate() *template.Template {
 	return template.Must(template.New("dash").Funcs(funcs).Parse(dashboardHTML))
 }
 
-func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
+func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int, topologyMappings ...config.TopologyRoute) *ViewData {
 	vd := &ViewData{
 		Frontends:  []FView{},
 		Backends:   []BView{},
@@ -309,14 +338,14 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
 		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(fe.Target)]
 		shown := targetShown &&
 			(!p.FrontendFilterActive() || p.ShowFrontends[k])
-		vd.Frontends = append(vd.Frontends, FView{Key: k, Name: fe.Name, Target: fe.Target, Status: fe.Status, SCur: fe.SessionsCur, SMax: fe.SessionsMax, STot: fe.SessionsTot, Rate: fe.Rate, RateMax: fe.RateMax, BIn: fe.BytesIn, BOut: fe.BytesOut, Denied: fe.DeniedReq + fe.DeniedResp, Errors: fe.ErrorsReq, LastActivity: activityAge(fe.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(fe.LastActivity), TargetShown: targetShown, Shown: shown})
+		vd.Frontends = append(vd.Frontends, FView{Key: k, Anchor: "frontend-" + k, Name: fe.Name, Target: fe.Target, Status: fe.Status, SCur: fe.SessionsCur, SMax: fe.SessionsMax, STot: fe.SessionsTot, Rate: fe.Rate, RateMax: fe.RateMax, BIn: fe.BytesIn, BOut: fe.BytesOut, Denied: fe.DeniedReq + fe.DeniedResp, Errors: fe.ErrorsReq, LastActivity: activityAge(fe.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(fe.LastActivity), TargetShown: targetShown, Shown: shown})
 	}
 	for _, be := range snap.Backends {
 		k := prefs.KeyBE(be.Name, be.Target)
 		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(be.Target)]
 		shown := targetShown &&
 			(!p.BackendFilterActive() || p.ShowBackends[k])
-		bv := BView{Key: k, Name: be.Name, Target: be.Target, Status: be.Status, SCur: be.SessionsCur, SMax: be.SessionsMax, BIn: be.BytesIn, BOut: be.BytesOut, LastActivity: activityAge(be.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(be.LastActivity), TargetShown: targetShown, Shown: shown}
+		bv := BView{Key: k, Anchor: "backend-" + k, Name: be.Name, Target: be.Target, Status: be.Status, SCur: be.SessionsCur, SMax: be.SessionsMax, BIn: be.BytesIn, BOut: be.BytesOut, LastActivity: activityAge(be.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(be.LastActivity), TargetShown: targetShown, Shown: shown}
 		for _, sv := range be.Servers {
 			sk := prefs.KeySV(sv.Name, sv.Backend, sv.Target)
 			sshown := !p.ServerFilterActive() || p.ShowServers[sk]
@@ -373,6 +402,7 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int) *ViewData {
 		}
 		return a.Target < b.Target
 	})
+	vd.Topology = buildTopology(snap.Targets, vd.Frontends, vd.Backends, snap.Errors, p, topologyMappings)
 	return vd
 }
 

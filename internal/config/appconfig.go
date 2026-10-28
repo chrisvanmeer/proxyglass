@@ -30,6 +30,14 @@ type OIDCConfig struct {
 	AllowedGroups   []string `yaml:"allowed_groups"`
 }
 
+// TopologyRoute links one HAProxy frontend to the backends selected by its
+// routing rules. These mappings affect only the dashboard visualization.
+type TopologyRoute struct {
+	Target   string   `yaml:"target"`
+	Frontend string   `yaml:"frontend"`
+	Backends []string `yaml:"backends"`
+}
+
 func (o *OIDCConfig) EnabledAndConfigured() bool {
 	return o != nil && o.Enabled && o.Issuer != "" && o.ClientID != ""
 }
@@ -43,13 +51,14 @@ func (o *OIDCConfig) SessionTTL() time.Duration {
 }
 
 type AppConfig struct {
-	Server       Server     `yaml:"server"`
-	Targets      []Target   `yaml:"targets"`
-	RequireAuth  bool       `yaml:"require_auth"`
-	TokensFile   string     `yaml:"tokens_file"`
-	TokenTTLDays int        `yaml:"token_ttl_days"`
-	LogPath      string     `yaml:"log_path"`
-	OIDC         OIDCConfig `yaml:"oidc"`
+	Server       Server          `yaml:"server"`
+	Targets      []Target        `yaml:"targets"`
+	Topology     []TopologyRoute `yaml:"topology"`
+	RequireAuth  bool            `yaml:"require_auth"`
+	TokensFile   string          `yaml:"tokens_file"`
+	TokenTTLDays int             `yaml:"token_ttl_days"`
+	LogPath      string          `yaml:"log_path"`
+	OIDC         OIDCConfig      `yaml:"oidc"`
 }
 
 func Load(path string) (*AppConfig, error) {
@@ -126,5 +135,9 @@ targets:
     username: admin
     password: changeme
     verify_tls: false
+
+# Optional visual links for the topology view. HAProxy stats do not expose
+# frontend-to-backend routing rules; list them here to draw those connections.
+topology: []
 `
 }

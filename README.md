@@ -20,6 +20,7 @@ presents frontends, backends and backend servers. There are no controls that cha
   health-check status/code/duration/last-check detail.
 - Native Go binary and systemd installer, DEB/RPM packages, plus optional container deployment.
 - OIDC login with ID-token signature verification and optional group allow-list; local bearer tokens also supported.
+- Interactive topology overview with zoom/pan and clickable HAProxy targets, frontends, backends and servers.
 - Browser assets are bundled locally. The UI makes no external CDN/font/JavaScript requests and works
   air-gapped. App outbound connections can use `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`.
 - Standalone SVG brand assets live in [`assets/brand/`](assets/brand/) for reuse on a future website;

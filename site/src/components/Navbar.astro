@@ -19,7 +19,7 @@ const links = [
   <div class="wrap nav-inner">
     <a class="brand" href={relativeLink(currentPath, '/')} aria-label="Proxyglass home">
       <img src={relativeLink(currentPath, '/assets/proxyglass-mark.svg')} alt="" width="38" height="38" />
-      <span>proxyglass</span>
+      <span>proxyglass</span><i class="brand-status" aria-hidden="true"></i>
     </a>
     <nav aria-label="Primary navigation">
       {links.map((link) => <a href={relativeLink(currentPath, link.target)}>{link.label}</a>)}

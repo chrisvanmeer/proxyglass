@@ -13,7 +13,7 @@ const { currentPath } = Astro.props;
   <div class="wrap footer-inner">
     <a class="brand footer-brand" href={relativeLink(currentPath, '/')} aria-label="Proxyglass home">
       <img src={relativeLink(currentPath, '/assets/proxyglass-mark.svg')} alt="" width="32" height="32" />
-      <span>proxyglass</span>
+      <span>proxyglass</span><i class="brand-status" aria-hidden="true"></i>
     </a>
     <p>Read-only HAProxy visibility. Yours to run.</p>
     <a class="footer-docs" href={relativeLink(currentPath, '/docs/configuration')}>Configuration docs <span aria-hidden="true">↗</span></a>

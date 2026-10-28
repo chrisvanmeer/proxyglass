@@ -19,3 +19,24 @@ targets:
     url: http://haproxy3:8404/stats;csv
     username: admin
     password: changeme
+
+# Visual-only links for the dashboard topology overview.
+topology:
+  - target: edge-01
+    frontend: http_front
+    backends: [web_servers]
+  - target: edge-01
+    frontend: api_frontend
+    backends: [api_backend]
+  - target: edge-02
+    frontend: http_front
+    backends: [app_servers]
+  - target: edge-02
+    frontend: static_frontend
+    backends: [static_backend]
+  - target: edge-03
+    frontend: edge_frontend
+    backends: [edge_backend]
+  - target: edge-03
+    frontend: admin_frontend
+    backends: [admin_backend]

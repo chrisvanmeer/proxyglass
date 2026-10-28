@@ -25,3 +25,11 @@ targets:
     username: admin
     password: changeme
     verify_tls: true
+
+# Optional: visual-only frontend-to-backend routes for the topology overview.
+# HAProxy's stats CSV does not include use_backend routing rules.
+topology:
+  - target: haproxy-lb-01
+    frontend: public
+    backends:
+      - app-backend
