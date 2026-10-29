@@ -167,6 +167,8 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .orbitron-card .docs-card-link { display: inline-block; margin-top: 14px; color: #c4b5fd; font-weight: 600; text-decoration: none; }
 .orbitron-card .docs-card-link:hover { color: #ddd6fe; }
 
+.deploy-ansible-card { grid-column: 1 / -1; }
+
 .docs-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(157, 183, 207, .12); }
 .docs-nav a { padding: 8px 12px; border: 1px solid rgba(157, 183, 207, .14); border-radius: 8px; color: #a4b4c6; text-decoration: none; font-size: .82rem; }
 .docs-nav a:hover { color: #e2e8f0; border-color: rgba(103, 232, 249, .35); }
@@ -196,6 +198,7 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .steps strong { color: #e0ebf5; font-size: .91rem; font-weight: 650; }
 .steps p { margin-top: 3px; color: #899caf; font-size: .82rem; line-height: 1.6; }
 .steps code, .feature-card code { color: #a5eff9; font-family: var(--font-mono); font-size: .9em; }
+.docs-card code { color: #a5eff9; font-family: var(--font-mono); font-size: .9em; }
 .config-card { overflow: hidden; border: 1px solid rgba(157, 183, 207, .17); border-radius: 16px; background: rgba(5, 12, 22, .78); box-shadow: var(--shadow); }
 .code-head { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 16px; border-bottom: 1px solid rgba(157, 183, 207, .1); color: #9aabbd; font-family: var(--font-mono); font-size: .7rem; }
 .code-lights { display: flex; gap: 5px; }
