@@ -1,5 +1,8 @@
 ---
 extends: default
+ignore: |
+  *.md
+  **/*.md
 rules:
   line-length:
     max: 160
