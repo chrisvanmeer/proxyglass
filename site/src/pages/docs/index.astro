@@ -28,6 +28,11 @@ const path = Astro.url.pathname;
         <h2>Deployment</h2>
         <p>Native systemd installation is the standard path; container and Nomad are optional.</p>
       </a>
+      <a class="docs-card" href={relativeLink(path, '/docs/ansible')}>
+        <span>04 · AUTOMATE</span>
+        <h2>Ansible collection</h2>
+        <p>Install and manage Proxyglass with <code>chrisvanmeer.proxyglass</code>, including proxy and temp-dir options.</p>
+      </a>
     </div>
   </section>
 </SiteLayout>

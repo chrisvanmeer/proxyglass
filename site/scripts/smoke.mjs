@@ -36,10 +36,11 @@ const localPages = [
   ['/docs/configuration', await readFile(new URL('../dist/docs/configuration.html', import.meta.url), 'utf8')],
   ['/docs/oidc', oidcDocs],
   ['/docs/deployment', await readFile(new URL('../dist/docs/deployment.html', import.meta.url), 'utf8')],
+  ['/docs/ansible', await readFile(new URL('../dist/docs/ansible.html', import.meta.url), 'utf8')],
 ];
 for (const [path, page] of localPages) {
   for (const [, href] of page.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
-    if (href.startsWith('https://github.com/chrisvanmeer/proxyglass')) continue;
+    if (href === '.' || href.startsWith('https://github.com/chrisvanmeer/proxyglass') || href.startsWith('https://getorbitron.app')) continue;
     assert.ok(!/^(?:[a-z]+:|\/)/i.test(href), `internal href/src should be relative for local testing: ${href}`);
     const resolved = new URL(href, `https://local.test${path}`);
     assert.equal(resolved.hostname, 'local.test');

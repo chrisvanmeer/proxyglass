@@ -163,6 +163,17 @@ h1, h2, h3 { letter-spacing: -.035em; }
 @media(max-width:900px) { .interface-grid { grid-template-columns: 1fr; } }
 @media(max-width:520px) { .interface-filter-grid { grid-template-columns: 1fr 1fr; } .backend-filter-group { grid-column: 1 / -1; } .interface-card-heading { padding-inline: 14px; } .interface-caption { font-size: .52rem; } }
 
+.orbitron-card { border-color: rgba(167, 139, 250, .28); background: linear-gradient(145deg, rgba(20, 18, 45, .96), rgba(10, 12, 28, .98)); }
+.orbitron-card .docs-card-link { display: inline-block; margin-top: 14px; color: #c4b5fd; font-weight: 600; text-decoration: none; }
+.orbitron-card .docs-card-link:hover { color: #ddd6fe; }
+
+.docs-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(157, 183, 207, .12); }
+.docs-nav a { padding: 8px 12px; border: 1px solid rgba(157, 183, 207, .14); border-radius: 8px; color: #a4b4c6; text-decoration: none; font-size: .82rem; }
+.docs-nav a:hover { color: #e2e8f0; border-color: rgba(103, 232, 249, .35); }
+
+.docs-ansible-link { display: inline-block; margin-top: 8px; color: #67e8f9; font-weight: 600; text-decoration: none; }
+.docs-ansible-link:hover { color: #a5f3fc; text-decoration: underline; }
+
 .section { padding-block: clamp(74px, 9vw, 120px); }
 .section-heading { max-width: 690px; margin-bottom: 42px; }
 .section-heading h2, .how-copy h2 { margin-top: 14px; color: #edf5fc; font-size: clamp(2rem, 4.2vw, 3.35rem); font-weight: 730; line-height: 1.1; letter-spacing: -.06em; }
@@ -269,6 +280,8 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .docs-links .button { font-size: .78rem; }
 .docs-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-top: 26px; }
 .docs-card { padding: 18px; border: 1px solid var(--border); border-radius: 13px; background: rgba(16, 27, 44, .58); }
+.docs-card-wide { display: block; margin-bottom: 24px; }
+.docs-card-wide + .docs-card-wide { margin-top: 8px; }
 .docs-card span { color: var(--cyan); font-family: var(--font-mono); font-size: .65rem; }
 .docs-card h2 { margin-top: 8px; color: #e3edf7; font-size: 1rem; }
 .docs-card p { margin-top: 7px; color: #91a2b6; font-size: .8rem; line-height: 1.65; }

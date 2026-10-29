@@ -1,3 +1,6 @@
+---
+import { relativeLink } from '../utils/links';
+---
 <section class="section wrap" id="deployment">
   <div class="section-heading center-heading">
     <span class="eyebrow"><i></i> Your infrastructure, your choice</span>
@@ -21,5 +24,12 @@
       <div class="deploy-note">Same app. Same config. Optional runtime.</div>
     </article>
   </div>
-  <div class="airgap-note"><span class="airgap-icon" aria-hidden="true">◈</span><p><strong>Air-gap friendly by default.</strong> Dashboard JavaScript, styles and logos are bundled locally. For OIDC or external HAProxy targets, standard proxy environment variables are supported.</p></div>
+  <div class="deploy-card deploy-ansible">
+    <div class="deploy-icon" aria-hidden="true">⚙</div>
+    <h3>Ansible collection</h3>
+    <p>Install and manage Proxyglass as code with the <code>chrisvanmeer.proxyglass</code> collection. It picks the right binary for your architecture, checks the temp mount for <code>noexec</code>, deploys a default config, manages systemd, and generates an admin token idempotently. Downloads honour <code>HTTP_PROXY</code>/<code>HTTPS_PROXY</code>.</p>
+    <ul><li>Version independent of Proxyglass releases</li><li>Configurable temp dir and proxy envs</li><li>Molecule-tested with login verification</li></ul>
+    <div class="deploy-note"><a href={relativeLink(Astro.url.pathname, '/docs/ansible')}>Read the Ansible docs →</a></div>
+  </div>
+  <div class="airgap-note"><span class="airgap-icon" aria-hidden="true">◈</span><p><strong>Air-gap friendly by default.</strong> Dashboard JavaScript, styles and logos are bundled locally. For OIDC or external HAProxy targets, standard proxy environment variables are supported. Need a self-hosted Galaxy mirror? See <a href="https://getorbitron.app" target="_blank" rel="noopener">Orbitron</a>.</p></div>
 </section>

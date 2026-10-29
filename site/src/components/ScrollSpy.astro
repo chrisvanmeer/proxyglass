@@ -25,6 +25,8 @@
 				if (section.getBoundingClientRect().top <= marker) current = section;
 				else break;
 			}
+			const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
+			if (nearBottom) current = sections[sections.length - 1];
 			activate(current.id);
 		};
 

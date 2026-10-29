@@ -1,5 +1,8 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { relativeLink } from '../../utils/links';
+
+const path = Astro.url.pathname;
 ---
 
 <SiteLayout title="Deployment — Proxyglass docs" description="Deploy Proxyglass as a native systemd service or optionally as a container on Nomad.">
@@ -16,6 +19,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
         <a href="#systemd">systemd and nginx</a>
         <a href="#container">Container / Nomad</a>
         <a href="#health">Health endpoint</a>
+        <a href="#ansible">Ansible collection</a>
       </nav>
       <article class="docs-article">
         <section class="docs-section" id="native">
@@ -40,7 +44,18 @@ sudo systemctl enable --now proxyglass</code></pre>
           <h2>Health check</h2>
           <p><code>GET /healthz</code> returns <code>200 OK</code> and <code>ok</code> for load balancer and Nomad health checks. The endpoint does not require dashboard authentication.</p>
         </section>
+        <section class="docs-section" id="ansible">
+          <h2>Ansible collection</h2>
+          <p>Prefer infrastructure as code? The <code>chrisvanmeer.proxyglass</code> collection installs and manages Proxyglass: it downloads the right binary for your architecture, validates the temp mount for <code>noexec</code>, deploys a default config, manages the systemd service, and generates an admin token idempotently. Downloads honour <code>HTTP_PROXY</code>/<code>HTTPS_PROXY</code>. See the <a href={relativeLink(path, '/docs/ansible')}>Ansible docs</a>.</p>
+        </section>
       </article>
     </div>
   </section>
+  <nav class="docs-nav wrap" aria-label="Documentation pages">
+    <a href={relativeLink(path, '/docs')}>Docs</a>
+    <a href={relativeLink(path, '/docs/configuration')}>Configuration</a>
+    <a href={relativeLink(path, '/docs/oidc')}>OIDC</a>
+    <a href={relativeLink(path, '/docs/deployment')}>Deployment</a>
+    <a href={relativeLink(path, '/docs/ansible')}>Ansible</a>
+  </nav>
 </SiteLayout>

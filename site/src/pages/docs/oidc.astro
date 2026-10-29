@@ -80,4 +80,11 @@ const nginxSample = `location / {
       </article>
     </div>
   </section>
+  <nav class="docs-nav wrap" aria-label="Documentation pages">
+    <a href={relativeLink(path, '/docs')}>Docs</a>
+    <a href={relativeLink(path, '/docs/configuration')}>Configuration</a>
+    <a href={relativeLink(path, '/docs/oidc')}>OIDC</a>
+    <a href={relativeLink(path, '/docs/deployment')}>Deployment</a>
+    <a href={relativeLink(path, '/docs/ansible')}>Ansible</a>
+  </nav>
 </SiteLayout>

@@ -1,0 +1,72 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { relativeLink } from '../../utils/links';
+
+const path = Astro.url.pathname;
+---
+<SiteLayout title="Ansible collection — Proxyglass" description="Install and manage Proxyglass with the chrisvanmeer.proxyglass Ansible collection, including proxy and temp-dir options.">
+  <section class="docs-page wrap">
+    <div class="docs-heading">
+      <span class="eyebrow"><i></i> Proxyglass docs</span>
+      <h1>Automate it with Ansible.<br /><span>Install and manage Proxyglass as code.</span></h1>
+      <p>The <code>chrisvanmeer.proxyglass</code> collection ships an <code>install</code> role that downloads the right binary for your architecture, validates the temp mount, deploys a default config, manages the systemd service, and generates an admin token idempotently.</p>
+    </div>
+
+    <article class="docs-card docs-card-wide">
+      <span>01 · INSTALL THE COLLECTION</span>
+      <h2>From Ansible Galaxy</h2>
+      <pre class="docs-code"><code>ansible-galaxy collection install chrisvanmeer.proxyglass</code></pre>
+      <p>Or pin a version: <code>ansible-galaxy collection install chrisvanmeer.proxyglass:1.0.2</code>.</p>
+    </article>
+
+    <article class="docs-card docs-card-wide">
+      <span>02 · BASIC PLAYBOOK</span>
+      <h2>Install on a host</h2>
+      <pre class="docs-code"><code>- name: Install Proxyglass
+  hosts: proxyglass
+  become: true
+  gather_facts: true
+  roles:
+    - role: chrisvanmeer.proxyglass.proxyglass</code></pre>
+    </article>
+
+    <article class="docs-card docs-card-wide">
+      <span>03 · TEMP DIRECTORY &amp; NOEXEC</span>
+      <h2>Control where the binary lands first</h2>
+      <p>Set <code>proxyglass_temp_dir</code> via group_vars/host_vars. The role checks the mount for <code>noexec</code> and fails clearly (or uses <code>proxyglass_allow_noexec_fallback_dir</code>).</p>
+      <pre class="docs-code"><code># group_vars/proxyglass.yml
+proxyglass_temp_dir: /var/tmp/proxyglass
+proxyglass_allow_noexec_fallback_dir: /var/cache/proxyglass/tmp</code></pre>
+    </article>
+
+    <article class="docs-card docs-card-wide">
+      <span>04 · PROXY DOWNLOADS</span>
+      <h2>Route GitHub downloads through a proxy</h2>
+      <p>The role honours <code>HTTP_PROXY</code>/<code>HTTPS_PROXY</code>/<code>NO_PROXY</code> from the environment, or set them explicitly:</p>
+      <pre class="docs-code"><code>proxyglass_http_proxy: "http://proxy.example.com:3128"
+proxyglass_https_proxy: "http://proxy.example.com:3128"
+proxyglass_no_proxy: "localhost,127.0.0.1,.internal"</code></pre>
+    </article>
+
+    <article class="docs-card docs-card-wide">
+      <span>05 · VERSIONING</span>
+      <h2>Independent of Proxyglass releases</h2>
+      <p>The collection version (e.g. <code>1.0.2</code>) is independent of the Proxyglass app version. <code>proxyglass_version: latest</code> resolves the newest GitHub release; pin a tag to stay on a known build.</p>
+    </article>
+
+    <article class="docs-card docs-card-wide orbitron-card">
+      <span>06 · ALSO FROM THE SAME AUTHOR</span>
+      <h2>Orbitron</h2>
+      <p>Orbitron is a self-hosted Ansible Galaxy mirror and collection manager. Run your own Galaxy, cache collections, and keep air-gapped environments supplied. Proxyglass and Orbitron share the same author and the same operational philosophy: read-only where possible, explicit where it matters.</p>
+      <a class="docs-card-link" href="https://getorbitron.app" target="_blank" rel="noopener">Visit getorbitron.app →</a>
+    </article>
+
+    <nav class="docs-nav" aria-label="Documentation pages">
+      <a href={relativeLink(path, '/docs')}>Docs</a>
+      <a href={relativeLink(path, '/docs/configuration')}>Configuration</a>
+      <a href={relativeLink(path, '/docs/oidc')}>OIDC</a>
+      <a href={relativeLink(path, '/docs/deployment')}>Deployment</a>
+      <a href={relativeLink(path, '/docs/ansible')}>Ansible</a>
+    </nav>
+  </section>
+</SiteLayout>
