@@ -163,6 +163,11 @@ func (s *Server) requireAuth(next http.HandlerFunc) http.HandlerFunc {
 				}
 			}
 		}
+		if r.Header.Get("HX-Request") == "true" {
+			w.Header().Set("HX-Redirect", "/login")
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }

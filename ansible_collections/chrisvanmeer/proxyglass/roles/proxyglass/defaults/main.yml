@@ -8,6 +8,9 @@ proxyglass_github_api_base: "https://api.github.com"
 proxyglass_user_agent: "ansible-collection-chrisvanmeer-proxyglass"
 proxyglass_download_timeout: 60
 proxyglass_validate_certs: true
+proxyglass_http_proxy: "{{ lookup('env', 'HTTP_PROXY', default=lookup('env', 'http_proxy', default='')) }}"
+proxyglass_https_proxy: "{{ lookup('env', 'HTTPS_PROXY', default=lookup('env', 'https_proxy', default='')) }}"
+proxyglass_no_proxy: "{{ lookup('env', 'NO_PROXY', default=lookup('env', 'no_proxy', default='')) }}"
 
 # Paths
 proxyglass_temp_dir: "/tmp"

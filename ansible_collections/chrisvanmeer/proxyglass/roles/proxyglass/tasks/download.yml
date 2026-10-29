@@ -25,5 +25,12 @@
     force: false
     headers:
       User-Agent: "{{ proxyglass_user_agent }}"
+  environment:
+    HTTP_PROXY: "{{ proxyglass_http_proxy }}"
+    HTTPS_PROXY: "{{ proxyglass_https_proxy }}"
+    NO_PROXY: "{{ proxyglass_no_proxy }}"
+    http_proxy: "{{ proxyglass_http_proxy }}"
+    https_proxy: "{{ proxyglass_https_proxy }}"
+    no_proxy: "{{ proxyglass_no_proxy }}"
   become: true
   register: proxyglass_downloaded

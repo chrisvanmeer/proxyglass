@@ -252,7 +252,7 @@ func TestHumanBytes(t *testing.T) {
 }
 
 func TestLastSessionAge(t *testing.T) {
-	for raw, want := range map[string]string{"0": "Just now", "1": "1s ago", "386": "386s ago", "-": "No session yet", "": "No session yet"} {
+	for raw, want := range map[string]string{"0": "Just now", "1": "1s ago", "386": "6m ago", "-": "No session yet", "": "No session yet"} {
 		if got := lastSessionAge(raw); got != want {
 			t.Errorf("lastSessionAge(%q) = %q, want %q", raw, got, want)
 		}

@@ -10,6 +10,13 @@
     status_code: 200
     timeout: "{{ proxyglass_download_timeout }}"
     validate_certs: "{{ proxyglass_validate_certs }}"
+  environment:
+    HTTP_PROXY: "{{ proxyglass_http_proxy }}"
+    HTTPS_PROXY: "{{ proxyglass_https_proxy }}"
+    NO_PROXY: "{{ proxyglass_no_proxy }}"
+    http_proxy: "{{ proxyglass_http_proxy }}"
+    https_proxy: "{{ proxyglass_https_proxy }}"
+    no_proxy: "{{ proxyglass_no_proxy }}"
   register: proxyglass_latest_release
   when: proxyglass_version == "latest"
   changed_when: false
@@ -35,6 +42,13 @@
     status_code: 200
     timeout: "{{ proxyglass_download_timeout }}"
     validate_certs: "{{ proxyglass_validate_certs }}"
+  environment:
+    HTTP_PROXY: "{{ proxyglass_http_proxy }}"
+    HTTPS_PROXY: "{{ proxyglass_https_proxy }}"
+    NO_PROXY: "{{ proxyglass_no_proxy }}"
+    http_proxy: "{{ proxyglass_http_proxy }}"
+    https_proxy: "{{ proxyglass_https_proxy }}"
+    no_proxy: "{{ proxyglass_no_proxy }}"
   register: proxyglass_tag_release
   when: proxyglass_version != "latest"
   changed_when: false

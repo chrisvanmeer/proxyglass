@@ -275,7 +275,16 @@ func lastSessionAge(value string) string {
 	if seconds == 0 {
 		return "Just now"
 	}
-	return strconv.FormatInt(seconds, 10) + "s ago"
+	switch {
+	case seconds < 60:
+		return strconv.FormatInt(seconds, 10) + "s ago"
+	case seconds < 3600:
+		return strconv.FormatInt(seconds/60, 10) + "m ago"
+	case seconds < 86400:
+		return strconv.FormatInt(seconds/3600, 10) + "h ago"
+	default:
+		return strconv.FormatInt(seconds/86400, 10) + "d ago"
+	}
 }
 
 func dashboardTemplate() *template.Template {
