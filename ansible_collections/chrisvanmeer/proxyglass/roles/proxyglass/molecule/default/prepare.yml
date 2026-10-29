@@ -1,0 +1,25 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_facts.os_family == 'Debian'
+
+    - name: Install required packages
+      ansible.builtin.package:
+        name:
+          - ca-certificates
+          - curl
+          - iproute2
+        state: present
+
+    - name: Ensure systemd is ready
+      ansible.builtin.command: systemctl --version
+      register: proxyglass_systemctl_version
+      changed_when: false
+      failed_when: false

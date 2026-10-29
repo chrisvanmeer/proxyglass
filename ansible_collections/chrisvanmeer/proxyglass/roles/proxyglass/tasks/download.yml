@@ -1,0 +1,29 @@
+---
+- name: Set download path
+  ansible.builtin.set_fact:
+    proxyglass_download_dir: "{{ proxyglass_temp_dir_effective }}/proxyglass-ansible"
+    proxyglass_download_dest: "{{ proxyglass_temp_dir_effective }}/proxyglass-ansible/proxyglass-{{ proxyglass_resolved_version }}-{{ proxyglass_arch }}"
+
+- name: Ensure private download directory exists
+  ansible.builtin.file:
+    path: "{{ proxyglass_download_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  become: true
+
+- name: Download Proxyglass binary from GitHub
+  ansible.builtin.get_url:
+    url: "{{ proxyglass_binary_url }}"
+    dest: "{{ proxyglass_download_dest }}"
+    mode: '0755'
+    owner: root
+    group: root
+    timeout: "{{ proxyglass_download_timeout }}"
+    validate_certs: "{{ proxyglass_validate_certs }}"
+    force: false
+    headers:
+      User-Agent: "{{ proxyglass_user_agent }}"
+  become: true
+  register: proxyglass_downloaded

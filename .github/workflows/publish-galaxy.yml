@@ -1,0 +1,54 @@
+---
+name: Publish Ansible Collection
+
+on:
+  push:
+    tags:
+      - "collection-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build and publish chrisvanmeer.proxyglass
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Ansible Core
+        run: python -m pip install ansible-core
+
+      - name: Verify collection tag matches collection metadata
+        if: github.ref_type == 'tag'
+        env:
+          COLLECTION_TAG: ${{ github.ref_name }}
+        run: |
+          collection_version="$(python -c "import yaml; print(yaml.safe_load(open('ansible_collections/chrisvanmeer/proxyglass/galaxy.yml'))['version'])")"
+          tag_version="${COLLECTION_TAG#collection-v}"
+          if [[ "$collection_version" != "$tag_version" ]]; then
+            echo "Collection metadata version ($collection_version) does not match tag ($tag_version)." >&2
+            exit 1
+          fi
+          echo "Publishing collection version $collection_version from $COLLECTION_TAG."
+
+      - name: Build collection artifact
+        run: >-
+          ansible-galaxy collection build
+          ansible_collections/chrisvanmeer/proxyglass
+          --output-path dist
+
+      - name: Publish collection to Ansible Galaxy
+        env:
+          GALAXY_API_KEY: ${{ secrets.GALAXY_API_KEY }}
+        run: >-
+          ansible-galaxy collection publish
+          dist/chrisvanmeer-proxyglass-*.tar.gz
+          --token "$GALAXY_API_KEY"

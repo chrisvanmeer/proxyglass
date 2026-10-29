@@ -1,0 +1,135 @@
+---
+- name: Verify Proxyglass deployment
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    proxyglass_install_path: /usr/local/bin/proxyglass
+    proxyglass_config_path: /etc/proxyglass/config.yml
+    proxyglass_service_name: proxyglass
+    proxyglass_token_file: /etc/proxyglass/.proxyglass_auth_token
+    proxyglass_log_dir: /var/log/proxyglass
+    proxyglass_log_file: /var/log/proxyglass/proxyglass.log
+    proxyglass_logrotate_path: /etc/logrotate.d/proxyglass
+  tasks:
+    - name: Check installed binary
+      ansible.builtin.stat:
+        path: "{{ proxyglass_install_path }}"
+      register: proxyglass_verify_binary
+      failed_when: not (proxyglass_verify_binary.stat.exists and proxyglass_verify_binary.stat.executable)
+
+    - name: Check installed default config
+      ansible.builtin.stat:
+        path: "{{ proxyglass_config_path }}"
+      register: proxyglass_verify_config
+      failed_when: not proxyglass_verify_config.stat.exists
+
+    - name: Read generated config
+      ansible.builtin.slurp:
+        src: "{{ proxyglass_config_path }}"
+      register: proxyglass_verify_config_content
+
+    - name: Verify empty refresh value falls back to five seconds
+      ansible.builtin.assert:
+        that:
+          - "'default_refresh: 5' in (proxyglass_verify_config_content.content | b64decode)"
+        quiet: true
+
+    - name: Check Proxyglass log directory ownership
+      ansible.builtin.stat:
+        path: "{{ proxyglass_log_dir }}"
+      register: proxyglass_verify_log_dir
+      failed_when: >-
+        not proxyglass_verify_log_dir.stat.isdir
+        or proxyglass_verify_log_dir.stat.pw_name != 'proxyglass'
+        or proxyglass_verify_log_dir.stat.gr_name != 'proxyglass'
+
+    - name: Check logrotate configuration exists
+      ansible.builtin.stat:
+        path: "{{ proxyglass_logrotate_path }}"
+      register: proxyglass_verify_logrotate
+      failed_when: not proxyglass_verify_logrotate.stat.exists
+
+    - name: Check Proxyglass service is active
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - is-active
+          - "{{ proxyglass_service_name }}"
+      register: proxyglass_verify_service
+      changed_when: false
+      failed_when: proxyglass_verify_service.stdout != 'active'
+
+    - name: Wait for Proxyglass HTTP listener
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 8080
+        timeout: 30
+        state: started
+
+    - name: Check Proxyglass created its configured log file
+      ansible.builtin.stat:
+        path: "{{ proxyglass_log_file }}"
+      register: proxyglass_verify_log_file
+      failed_when: not proxyglass_verify_log_file.stat.exists
+
+    - name: Check generated token marker exists
+      ansible.builtin.stat:
+        path: "{{ proxyglass_token_file }}"
+      register: proxyglass_verify_token_file
+      failed_when: not proxyglass_verify_token_file.stat.exists
+
+    - name: Read generated token
+      ansible.builtin.slurp:
+        src: "{{ proxyglass_token_file }}"
+      register: proxyglass_verify_token_content
+      no_log: true
+
+    - name: Save generated token for idempotence assertion
+      ansible.builtin.set_fact:
+        proxyglass_verify_token: "{{ proxyglass_verify_token_content.content | b64decode | trim }}"
+      no_log: true
+
+    - name: Assert generated token is non-empty
+      ansible.builtin.assert:
+        that:
+          - proxyglass_verify_token | length > 0
+        quiet: true
+      no_log: true
+
+    - name: Log in using the generated token
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080/login
+        method: POST
+        body:
+          token: "{{ proxyglass_verify_token }}"
+        body_format: form-urlencoded
+        status_code: 303
+        follow_redirects: none
+        timeout: 10
+      register: proxyglass_verify_login
+      no_log: true
+
+    - name: Re-run collection role to verify token is preserved
+      ansible.builtin.include_role:
+        name: chrisvanmeer.proxyglass.proxyglass
+      vars:
+        proxyglass_version: latest
+        proxyglass_temp_dir: /var/tmp/proxyglass
+        proxyglass_force_noexec_check: true
+        proxyglass_generate_token_if_missing: true
+        proxyglass_default_refresh: ""
+
+    - name: Read token after idempotent role run
+      ansible.builtin.slurp:
+        src: "{{ proxyglass_token_file }}"
+      register: proxyglass_verify_token_after
+      no_log: true
+
+    - name: Assert role did not rotate existing token
+      ansible.builtin.assert:
+        that:
+          - (proxyglass_verify_token_after.content | b64decode | trim) == proxyglass_verify_token
+        fail_msg: Existing token changed during a subsequent role run.
+        quiet: true
+      no_log: true

@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: chrisvanmeer.proxyglass.proxyglass
+      vars:
+        proxyglass_version: latest
+        proxyglass_temp_dir: /var/tmp/proxyglass
+        proxyglass_force_noexec_check: true
+        proxyglass_generate_token_if_missing: true
+        proxyglass_default_refresh: ""

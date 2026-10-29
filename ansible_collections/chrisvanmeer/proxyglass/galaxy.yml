@@ -1,0 +1,39 @@
+---
+namespace: chrisvanmeer
+name: proxyglass
+version: 1.0.0
+readme: README.md
+authors:
+  - Chris van Meer
+description: Install and manage Proxyglass
+license:
+  - MIT
+tags:
+  - proxyglass
+  - haproxy
+  - monitoring
+  - systemd
+  - linux
+dependencies: {}
+repository: https://github.com/chrisvanmeer/proxyglass
+documentation: https://github.com/chrisvanmeer/proxyglass
+homepage: https://proxyglass.app
+issues: https://github.com/chrisvanmeer/proxyglass/issues
+# ansible-galaxy build does not honour .gitignore, so test and tooling artefacts
+# left behind by a local test run would otherwise ship in the collection tarball
+build_ignore:
+  - "*.tar.gz"
+  - ".github"
+  - "roles/proxyglass/molecule"
+  - "roles/proxyglass/molecule/**"
+  - ".ansible"
+  - ".ansible/**"
+  - ".ansible-lint"
+  - ".pytest_cache"
+  - ".coverage"
+  - "__pycache__"
+  - "*.pyc"
+  - ".venv"
+  - "tests/output"
+  - "tests/unit/results"
+  - "/build"

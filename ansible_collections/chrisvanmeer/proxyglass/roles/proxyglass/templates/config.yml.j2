@@ -1,0 +1,22 @@
+{% set refresh = proxyglass_default_refresh | default(5) %}
+{% if refresh is none or (refresh | string | trim | length == 0) %}
+{% set refresh = 5 %}
+{% endif %}
+server:
+  listen: "{{ proxyglass_listen }}"
+  default_refresh: {{ refresh | int }}
+
+require_auth: true
+tokens_file: "{{ proxyglass_tokens_path }}"
+token_ttl_days: 0
+log_path: "{{ proxyglass_log_file }}"
+
+oidc:
+  enabled: false
+  issuer: ""
+  client_id: ""
+  client_secret: ""
+  session_ttl_hours: 8
+  allowed_groups: []
+
+targets: []
