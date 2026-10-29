@@ -1,0 +1,24 @@
+---
+- name: Ensure Proxyglass configuration directory exists
+  ansible.builtin.file:
+    path: "{{ proxyglass_config_dir }}"
+    state: directory
+    owner: root
+    group: "{{ proxyglass_service_group }}"
+    mode: '0750'
+  become: true
+
+- name: Check whether Proxyglass config already exists
+  ansible.builtin.stat:
+    path: "{{ proxyglass_config_path }}"
+  register: proxyglass_config_stat
+
+- name: Install default Proxyglass config when absent
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ proxyglass_config_path }}"
+    owner: root
+    group: "{{ proxyglass_service_group }}"
+    mode: '0640'
+  become: true
+  when: not proxyglass_config_stat.stat.exists

@@ -1,0 +1,257 @@
+{
+ "files": [
+  {
+   "name": ".",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "meta/runtime.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6698ae10ace1bbeba03d0d3df5feecfacb40c830b67544a79a31ab889d16427f",
+   "format": 1
+  },
+  {
+   "name": "roles",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "4e4b3c8f39dbb0515dd60e0ded93339e55a26c38a0dc3098a4511538fb442bbc",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/check_install.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "74a833002f31383e18e4c5914fd68f408314a3ccc35c4a1db9bb3a09f186c33e",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/deploy.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f87c98b8e42ae4db99bf4d33cfa083224c95f2a64a2115547165904deda67dd9",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/check_mount.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0805406660eab937c079e0b07e094c1da608fa82ff9cef990bc713918f583a36",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/detect.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "384c462375483fbe83cc499b70f04ac67cc090cc7100da968bd0284423af4931",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/check_version.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "36499e2f6c091ed698898ef915253cbc79b62766787510984c93f859abdf8074",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/config.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "31b5eb08e93e967235824469a01f6be148c8d6e36dfd4e8e8e578898e4853170",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/download.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6d3b95a1b194f84ba1621fadb1ddb2ab33254b272a93c40b70715deded237ad0",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/token.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1a6c0ff9a4ca7ec0916ec24c03f99a2dbdcf15166a7f406c6fc5783d39f0ec1e",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "2a18519fe4ae355b817d7354ae42760218585980a595f8cd28ae0bc6c765f905",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "82ba0f3ef547f7c0a4dc217c5ec7f832876741d9816beaa86e9d93dc9b39a5f6",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "549069aacabe1215a02fc7968186bdd460a10f0bae13cec9e301637a8ba2a5b0",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0973de507c32c4814651102bacd578e8b5380123bd7c8c26b2e5b039f1a7b795",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/templates",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/templates/proxyglass.service.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f57bbc20162c57d3a784cb60934634d60b16f97641b79a3d6989a6fca1dcc8b9",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/templates/config.yml.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ab635d92fd3a5a5b6c26e54a58eec9f7688468eb05d14d96569591379d7f7232",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/templates/logrotate.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "560e474564d343d59043d1fee58da5934fdff4aa53c98e4e6247d759834427df",
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/proxyglass/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "8b82b7fd367830ba4efd67a9069f74b3788dd0dc97a052bbd8b20ddec9f6e6ea",
+   "format": 1
+  },
+  {
+   "name": "playbooks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "playbooks/install_proxyglass.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3b244676aade5cdda668f14048b4bf98be4435394687406cf919548d87952c0b",
+   "format": 1
+  },
+  {
+   "name": "playbooks/install_proxyglass_with_proxy.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ceb1e90eec315c90b7baebcbd9b4dd5a3d3e5f838159faf7111040ab210cd7bd",
+   "format": 1
+  },
+  {
+   "name": "README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d40b05da2b6ab2a852b96d5d343ac79d4e282f535f8735e80dadaed093868fca",
+   "format": 1
+  },
+  {
+   "name": "inventory",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "inventory/group_vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "inventory/group_vars/proxyglass.yml.example",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "4addad300936fe631c5e32aae6dfede2124c4ac09cdefa7a98cc70046075c223",
+   "format": 1
+  },
+  {
+   "name": "CHANGELOG.rst",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "0121457356e8def60ef7ced6ef4b548d45f2151d4ea33f6445b96bac4fb9f402",
+   "format": 1
+  }
+ ],
+ "format": 1
+}

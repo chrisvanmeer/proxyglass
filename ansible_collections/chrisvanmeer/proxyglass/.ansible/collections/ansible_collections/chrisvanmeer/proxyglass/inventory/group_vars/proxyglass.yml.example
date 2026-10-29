@@ -1,0 +1,8 @@
+---
+# group_vars/proxyglass.yml
+proxyglass_temp_dir: /var/tmp/proxyglass
+proxyglass_allow_noexec_fallback_dir: /var/cache/proxyglass/tmp
+
+proxyglass_http_proxy: "{{ lookup('env', 'HTTP_PROXY', default=lookup('env', 'http_proxy', default='')) }}"
+proxyglass_https_proxy: "{{ lookup('env', 'HTTPS_PROXY', default=lookup('env', 'https_proxy', default='')) }}"
+proxyglass_no_proxy: "{{ lookup('env', 'NO_PROXY', default=lookup('env', 'no_proxy', default='')) }}"

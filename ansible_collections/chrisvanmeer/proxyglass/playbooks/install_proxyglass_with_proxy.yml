@@ -1,0 +1,24 @@
+---
+- name: Install Proxyglass through a proxy
+  hosts: proxyglass
+  become: true
+  gather_facts: true
+  vars:
+    # Override the temporary download location (must be on an exec mount).
+    proxyglass_temp_dir: /var/tmp/proxyglass
+    proxyglass_allow_noexec_fallback_dir: /var/cache/proxyglass/tmp
+
+    # Pin a release instead of "latest" (optional).
+    proxyglass_version: v0.1.6
+
+    # Proxy settings for GitHub downloads. These can also come from the
+    # environment (HTTP_PROXY / HTTPS_PROXY / NO_PROXY) on the controller.
+    proxyglass_http_proxy: "http://proxy.example.com:3128"
+    proxyglass_https_proxy: "http://proxy.example.com:3128"
+    proxyglass_no_proxy: "localhost,127.0.0.1,.internal"
+
+    # Service and token management.
+    proxyglass_service_enabled: true
+    proxyglass_generate_token_if_missing: true
+  roles:
+    - role: chrisvanmeer.proxyglass.proxyglass

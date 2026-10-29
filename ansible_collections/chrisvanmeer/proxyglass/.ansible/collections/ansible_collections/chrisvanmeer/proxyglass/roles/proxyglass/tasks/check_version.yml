@@ -1,0 +1,72 @@
+---
+- name: Get latest release from GitHub API
+  ansible.builtin.uri:
+    url: "{{ proxyglass_download_url_latest }}"
+    method: GET
+    headers:
+      User-Agent: "{{ proxyglass_user_agent }}"
+      Accept: "application/vnd.github+json"
+    return_content: true
+    status_code: 200
+    timeout: "{{ proxyglass_download_timeout }}"
+    validate_certs: "{{ proxyglass_validate_certs }}"
+  environment:
+    HTTP_PROXY: "{{ proxyglass_http_proxy }}"
+    HTTPS_PROXY: "{{ proxyglass_https_proxy }}"
+    NO_PROXY: "{{ proxyglass_no_proxy }}"
+    http_proxy: "{{ proxyglass_http_proxy }}"
+    https_proxy: "{{ proxyglass_https_proxy }}"
+    no_proxy: "{{ proxyglass_no_proxy }}"
+  register: proxyglass_latest_release
+  when: proxyglass_version == "latest"
+  changed_when: false
+
+- name: Set resolved version (latest)
+  ansible.builtin.set_fact:
+    proxyglass_resolved_version: "{{ proxyglass_latest_release.json.tag_name }}"
+  when: proxyglass_version == "latest"
+
+- name: Set resolved version (pinned)
+  ansible.builtin.set_fact:
+    proxyglass_resolved_version: "{{ proxyglass_version if proxyglass_version.startswith('v') else 'v' + proxyglass_version }}"
+  when: proxyglass_version != "latest"
+
+- name: Fetch release by tag to verify asset exists (pinned)
+  ansible.builtin.uri:
+    url: "{{ proxyglass_download_url_tag }}"
+    method: GET
+    headers:
+      User-Agent: "{{ proxyglass_user_agent }}"
+      Accept: "application/vnd.github+json"
+    return_content: true
+    status_code: 200
+    timeout: "{{ proxyglass_download_timeout }}"
+    validate_certs: "{{ proxyglass_validate_certs }}"
+  environment:
+    HTTP_PROXY: "{{ proxyglass_http_proxy }}"
+    HTTPS_PROXY: "{{ proxyglass_https_proxy }}"
+    NO_PROXY: "{{ proxyglass_no_proxy }}"
+    http_proxy: "{{ proxyglass_http_proxy }}"
+    https_proxy: "{{ proxyglass_https_proxy }}"
+    no_proxy: "{{ proxyglass_no_proxy }}"
+  register: proxyglass_tag_release
+  when: proxyglass_version != "latest"
+  changed_when: false
+
+- name: Build assets list
+  ansible.builtin.set_fact:
+    proxyglass_assets: >-
+      {{ (proxyglass_latest_release.json.assets | default([]))
+         if proxyglass_version == 'latest'
+         else (proxyglass_tag_release.json.assets | default([])) }}
+
+- name: Assert required asset exists
+  ansible.builtin.assert:
+    that:
+      - (proxyglass_assets | selectattr('name', 'equalto', proxyglass_asset_name) | list | length) > 0
+    fail_msg: "Asset {{ proxyglass_asset_name }} not found for version {{ proxyglass_resolved_version }} in repo {{ proxyglass_github_repo }}"
+    quiet: true
+
+- name: Record version check passed
+  ansible.builtin.set_fact:
+    proxyglass_version_checked: true
