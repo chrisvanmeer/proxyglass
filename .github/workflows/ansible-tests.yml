@@ -46,5 +46,4 @@ jobs:
           molecule test
         env:
           ANSIBLE_FORCE_COLOR: '1'
-          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}
           PY_COLORS: '1'
