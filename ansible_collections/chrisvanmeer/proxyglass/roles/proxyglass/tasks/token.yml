@@ -5,8 +5,20 @@
   register: proxyglass_token_stat
   become: true
 
-- name: Generate token only when no token marker exists
-  when: not proxyglass_token_stat.stat.exists
+- name: Check whether tokens.json already contains tokens
+  ansible.builtin.shell: |
+    set -euo pipefail
+    if [ ! -f "{{ proxyglass_tokens_path }}" ]; then exit 1; fi
+    python3 -c "import json,sys; d=json.load(open('{{ proxyglass_tokens_path }}')); sys.exit(0 if d.get('tokens') else 1)"
+  register: proxyglass_tokens_check
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: Generate token only when no token marker and no existing tokens
+  when:
+    - not proxyglass_token_stat.stat.exists
+    - proxyglass_tokens_check.rc | default(1) != 0
   block:
     - name: Generate Proxyglass administrative token
       ansible.builtin.command:
