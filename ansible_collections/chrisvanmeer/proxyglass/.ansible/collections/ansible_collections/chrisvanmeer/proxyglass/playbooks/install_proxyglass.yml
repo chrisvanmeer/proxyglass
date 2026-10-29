@@ -1,7 +1,0 @@
----
-- name: Install Proxyglass
-  hosts: proxyglass
-  become: true
-  gather_facts: true
-  roles:
-    - role: chrisvanmeer.proxyglass.proxyglass
