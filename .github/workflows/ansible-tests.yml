@@ -32,6 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible-core ansible-lint yamllint molecule 'molecule-plugins[docker]' docker requests
           ansible-galaxy collection install community.docker ansible.posix --force --ignore-errors
+          pip install 'docker>=7.0.0'
 
       - name: Run ansible-lint on collection
         run: |
