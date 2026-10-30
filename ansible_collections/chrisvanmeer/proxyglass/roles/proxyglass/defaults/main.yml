@@ -27,9 +27,6 @@ proxyglass_logrotate_path: "/etc/logrotate.d/proxyglass"
 # entire config file. When empty, the template below is used.
 proxyglass_config_content: ""
 
-# Set to false to leave the config file untouched (manual management).
-proxyglass_manage_config: true
-
 # Individual config sections (used when proxyglass_config_content is empty).
 proxyglass_listen: "127.0.0.1:8080"
 proxyglass_default_refresh: 5

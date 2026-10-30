@@ -23,9 +23,6 @@ See `defaults/main.yml` for the full list. Key variables:
 
 ### Managing the config file
 
-By default the role enforces the config file on every run (`proxyglass_manage_config: true`).
-Set to `false` to leave an existing config untouched.
-
 The role manages `/etc/proxyglass/config.yml`. You can either let the role
 render it from individual variables, or provide the full file content.
 

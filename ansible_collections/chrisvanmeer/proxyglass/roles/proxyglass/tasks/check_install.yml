@@ -5,7 +5,6 @@
     checksum_algorithm: sha256
   register: proxyglass_download_stat
   become: true
-  check_mode: false
 
 - name: Inspect installed Proxyglass binary
   ansible.builtin.stat:
@@ -13,14 +12,12 @@
     checksum_algorithm: sha256
   register: proxyglass_installed_stat
   become: true
-  check_mode: false
 
 - name: Check whether default config is missing
   ansible.builtin.stat:
     path: "{{ proxyglass_config_path }}"
   register: proxyglass_current_config_stat
   become: true
-  check_mode: false
 
 - name: Predict whether Proxyglass systemd unit needs an update
   ansible.builtin.template:
@@ -30,14 +27,14 @@
     group: root
     mode: '0644'
   register: proxyglass_unit_check
-  check_mode: false
+  check_mode: true
   become: true
   when: proxyglass_manage_service | bool
 
 - name: Set whether Proxyglass needs an installation update
   ansible.builtin.set_fact:
     proxyglass_deploy_required: >-
-      {{ (not (proxyglass_installed_stat.stat.exists | default(false)))
-         or ((proxyglass_download_stat.stat.checksum | default('')) != (proxyglass_installed_stat.stat.checksum | default('')))
-         or (not (proxyglass_current_config_stat.stat.exists | default(false)))
-         or (proxyglass_manage_service | bool and (proxyglass_unit_check.changed | default(false))) }}
+      {{ (not proxyglass_installed_stat.stat.exists)
+         or (proxyglass_download_stat.stat.checksum != proxyglass_installed_stat.stat.checksum)
+         or (not proxyglass_current_config_stat.stat.exists)
+         or (proxyglass_manage_service | bool and proxyglass_unit_check.changed | default(false)) }}

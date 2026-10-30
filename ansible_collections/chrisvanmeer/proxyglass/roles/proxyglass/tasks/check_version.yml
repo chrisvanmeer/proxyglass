@@ -20,7 +20,6 @@
   register: proxyglass_latest_release
   when: proxyglass_version == "latest"
   changed_when: false
-  check_mode: false
 
 - name: Set resolved version (latest)
   ansible.builtin.set_fact:
@@ -53,7 +52,6 @@
   register: proxyglass_tag_release
   when: proxyglass_version != "latest"
   changed_when: false
-  check_mode: false
 
 - name: Build assets list
   ansible.builtin.set_fact:
