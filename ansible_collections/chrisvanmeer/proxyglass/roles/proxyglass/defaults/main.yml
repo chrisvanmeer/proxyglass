@@ -22,8 +22,24 @@ proxyglass_data_dir: "/var/lib/proxyglass"
 proxyglass_log_dir: "/var/log/proxyglass"
 proxyglass_log_file: "{{ proxyglass_log_dir }}/proxyglass.log"
 proxyglass_logrotate_path: "/etc/logrotate.d/proxyglass"
+
+# Full config override: set this to a complete YAML string to replace the
+# entire config file. When empty, the template below is used.
+proxyglass_config_content: ""
+
+# Individual config sections (used when proxyglass_config_content is empty).
 proxyglass_listen: "127.0.0.1:8080"
 proxyglass_default_refresh: 5
+proxyglass_require_auth: true
+proxyglass_token_ttl_days: 0
+proxyglass_oidc_enabled: false
+proxyglass_oidc_issuer: ""
+proxyglass_oidc_client_id: ""
+proxyglass_oidc_client_secret: ""
+proxyglass_oidc_session_ttl_hours: 8
+proxyglass_oidc_allowed_groups: []
+proxyglass_targets: []
+proxyglass_topology: []
 
 # Service management
 proxyglass_service_name: "proxyglass"

@@ -1,22 +1,24 @@
-{% set refresh = proxyglass_default_refresh | default(5) %}
-{% if refresh is none or (refresh | string | trim | length == 0) %}
-{% set refresh = 5 %}
-{% endif %}
+{% if proxyglass_config_content | length > 0 %}
+{{ proxyglass_config_content }}
+{% else %}
 server:
   listen: "{{ proxyglass_listen }}"
-  default_refresh: {{ refresh | int }}
+  default_refresh: {{ proxyglass_default_refresh | default(5, true) | int }}
 
-require_auth: true
+require_auth: {{ proxyglass_require_auth | bool | lower }}
 tokens_file: "{{ proxyglass_tokens_path }}"
-token_ttl_days: 0
+token_ttl_days: {{ proxyglass_token_ttl_days | int }}
 log_path: "{{ proxyglass_log_file }}"
 
 oidc:
-  enabled: false
-  issuer: ""
-  client_id: ""
-  client_secret: ""
-  session_ttl_hours: 8
-  allowed_groups: []
+  enabled: {{ proxyglass_oidc_enabled | bool | lower }}
+  issuer: "{{ proxyglass_oidc_issuer }}"
+  client_id: "{{ proxyglass_oidc_client_id }}"
+  client_secret: "{{ proxyglass_oidc_client_secret }}"
+  session_ttl_hours: {{ proxyglass_oidc_session_ttl_hours | int }}
+  allowed_groups: {{ proxyglass_oidc_allowed_groups | to_nice_yaml | trim | indent(2) }}
 
-targets: []
+targets: {{ proxyglass_targets | to_nice_yaml | trim | indent(2) }}
+
+topology: {{ proxyglass_topology | to_nice_yaml | trim | indent(2) }}
+{% endif %}

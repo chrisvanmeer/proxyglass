@@ -29,6 +29,9 @@ provisioner:
         proxyglass_force_noexec_check: true
         proxyglass_generate_token_if_missing: true
         proxyglass_default_refresh: ""
+  env:
+    ANSIBLE_REMOTE_TEMP: /tmp/ansible-remote
+    HOME: /tmp
 
 verifier:
   name: ansible
