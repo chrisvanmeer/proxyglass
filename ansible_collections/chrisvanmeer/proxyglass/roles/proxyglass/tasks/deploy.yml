@@ -11,6 +11,7 @@
         - proxyglass_service_exists | bool
         - proxyglass_service_running | bool
         - proxyglass_deploy_required | bool
+        - proxyglass_download_stat.stat.exists | default(false)
 
     - name: Ensure Proxyglass service group exists
       ansible.builtin.group:
@@ -27,15 +28,6 @@
         create_home: false
         shell: /usr/sbin/nologin
         state: present
-      become: true
-
-    - name: Ensure Proxyglass data directory exists
-      ansible.builtin.file:
-        path: "{{ proxyglass_data_dir }}"
-        state: directory
-        owner: "{{ proxyglass_service_user }}"
-        group: "{{ proxyglass_service_group }}"
-        mode: '0750'
       become: true
 
     - name: Ensure Proxyglass log directory exists
@@ -74,6 +66,8 @@
         group: root
         mode: '0755'
       become: true
+      check_mode: false
+      when: proxyglass_download_stat.stat.exists | default(false)
 
     - name: Ensure default config exists
       ansible.builtin.include_tasks: config.yml

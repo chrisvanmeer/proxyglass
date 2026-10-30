@@ -1,3 +1,4 @@
+# Managed by Ansible (chrisvanmeer.proxyglass). Manual changes may be overwritten.
 {% if proxyglass_config_content | length > 0 %}
 {{ proxyglass_config_content }}
 {% else %}
@@ -16,9 +17,45 @@ oidc:
   client_id: "{{ proxyglass_oidc_client_id }}"
   client_secret: "{{ proxyglass_oidc_client_secret }}"
   session_ttl_hours: {{ proxyglass_oidc_session_ttl_hours | int }}
-  allowed_groups: {{ proxyglass_oidc_allowed_groups | to_nice_yaml | trim | indent(2) }}
+  redirect_uri: "{{ proxyglass_oidc_redirect_uri | default('') }}"
+  allowed_groups:
+{% for group in proxyglass_oidc_allowed_groups %}
+    - {{ group }}
+{% else %}
+    []
+{% endfor %}
 
-targets: {{ proxyglass_targets | to_nice_yaml | trim | indent(2) }}
+targets:
+{% for target in proxyglass_targets %}
+  - name: {{ target.name }}
+    url: {{ target.url }}
+{% if target.username is defined %}
+    username: {{ target.username }}
+{% endif %}
+{% if target.password is defined %}
+    password: {{ target.password }}
+{% endif %}
+{% if target.verify_tls is defined %}
+    verify_tls: {{ target.verify_tls | bool | lower }}
+{% endif %}
+{% for key, value in target.items() %}
+{% if key not in ['name', 'url', 'username', 'password', 'verify_tls'] %}
+    {{ key }}: {{ value }}
+{% endif %}
+{% endfor %}
+{% else %}
+  []
+{% endfor %}
 
-topology: {{ proxyglass_topology | to_nice_yaml | trim | indent(2) }}
+topology:
+{% for route in proxyglass_topology %}
+  - target: {{ route.target }}
+    frontend: {{ route.frontend }}
+    backends:
+{% for backend in route.backends %}
+      - {{ backend }}
+{% endfor %}
+{% else %}
+  []
+{% endfor %}
 {% endif %}

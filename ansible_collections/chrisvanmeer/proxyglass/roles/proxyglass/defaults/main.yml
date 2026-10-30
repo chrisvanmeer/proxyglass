@@ -17,8 +17,7 @@ proxyglass_temp_dir: "/tmp"
 proxyglass_install_path: "/usr/local/bin/proxyglass"
 proxyglass_config_dir: "/etc/proxyglass"
 proxyglass_config_path: "{{ proxyglass_config_dir }}/config.yml"
-proxyglass_tokens_path: "/var/lib/proxyglass/tokens.json"
-proxyglass_data_dir: "/var/lib/proxyglass"
+proxyglass_tokens_path: "/etc/proxyglass/tokens.json"
 proxyglass_log_dir: "/var/log/proxyglass"
 proxyglass_log_file: "{{ proxyglass_log_dir }}/proxyglass.log"
 proxyglass_logrotate_path: "/etc/logrotate.d/proxyglass"
@@ -42,6 +41,7 @@ proxyglass_oidc_client_id: ""
 proxyglass_oidc_client_secret: ""
 proxyglass_oidc_session_ttl_hours: 8
 proxyglass_oidc_allowed_groups: []
+proxyglass_oidc_redirect_uri: ""
 proxyglass_targets: []
 proxyglass_topology: []
 
