@@ -12,8 +12,10 @@
   ansible.builtin.stat:
     path: "{{ proxyglass_config_path }}"
   register: proxyglass_config_stat
+  become: true
+  check_mode: false
 
-- name: Install default Proxyglass config when absent
+- name: Install and enforce Proxyglass config when management is enabled
   ansible.builtin.template:
     src: config.yml.j2
     dest: "{{ proxyglass_config_path }}"
@@ -21,4 +23,16 @@
     group: "{{ proxyglass_service_group }}"
     mode: '0640'
   become: true
-  when: not proxyglass_config_stat.stat.exists
+  when: proxyglass_manage_config | bool
+
+- name: Install default Proxyglass config when missing and management is disabled
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ proxyglass_config_path }}"
+    owner: root
+    group: "{{ proxyglass_service_group }}"
+    mode: '0640'
+  become: true
+  when:
+    - not (proxyglass_manage_config | bool)
+    - not (proxyglass_config_stat.stat.exists | default(false))
