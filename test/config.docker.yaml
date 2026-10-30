@@ -28,6 +28,12 @@ topology:
   - target: edge-01
     frontend: api_frontend
     backends: [api_backend]
+  - target: edge-01
+    frontend: tcp_proxy
+    backends: [tcp_backend]
+  - target: edge-01
+    frontend: gateway_frontend
+    backends: [web_servers, api_backend, cache_backend, metrics_backend]
   - target: edge-02
     frontend: http_front
     backends: [app_servers]

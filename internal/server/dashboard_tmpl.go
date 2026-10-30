@@ -15,7 +15,7 @@ html,body{min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-u
 .pg-brand-status{display:inline-block;width:7px;height:7px;margin-left:5px;vertical-align:middle;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.85),0 0 20px rgba(52,211,153,.3)}
 </style>
 <style>
-.pg-topology-panel{margin:0 0 24px;padding:20px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:linear-gradient(145deg,rgba(21,31,51,.94),rgba(12,19,34,.9));box-shadow:0 18px 50px rgba(0,0,0,.24)}.pg-topology-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}.pg-topology-toolbar{display:flex;align-items:center;gap:8px}.pg-topology-toolbar button{min-width:36px;height:34px;padding:0 10px;color:#cbd5e1;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.2);border-radius:9px}.pg-topology-toolbar button:hover{border-color:rgba(103,232,249,.55);color:#a5f3fc}.pg-topology-zoom{min-width:48px;color:#94a3b8;text-align:center;font-size:12px}.pg-topology-help{margin:0 0 12px;color:#94a3b8;font-size:12px}.pg-topology-viewport{height:min(68vh,720px);min-height:340px;overflow:hidden;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:radial-gradient(ellipse at top,rgba(34,211,238,.045),transparent 70%),rgba(2,6,23,.4);touch-action:none;cursor:grab}.pg-topology-viewport.is-dragging{cursor:grabbing;user-select:none}.pg-topology-svg{display:block;width:100%;height:100%;user-select:none}.pg-topology-edge{fill:none;stroke:rgba(148,163,184,.38);stroke-width:2;vector-effect:non-scaling-stroke}.pg-topology-edge-target{stroke:rgba(148,163,184,.28);stroke-dasharray:4 6}.pg-topology-edge-route{stroke:#22d3ee;stroke-width:2.5}.pg-topology-edge-server{stroke:rgba(103,232,249,.45)}.pg-topology-node{cursor:pointer}.pg-topology-node rect{fill:rgba(15,23,42,.96);stroke:rgba(148,163,184,.3);stroke-width:1.5;vector-effect:non-scaling-stroke}.pg-topology-node-target rect{stroke:#818cf8}.pg-topology-node-frontend rect{stroke:#22d3ee}.pg-topology-node-backend rect{stroke:#a78bfa}.pg-topology-node-server rect{stroke:#34d399}.pg-topology-node-server.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.2);stroke:#fb7185}.pg-topology-node:hover rect,.pg-topology-node:focus rect{stroke:#67e8f9;stroke-width:2.5}.pg-topology-node circle{fill:#94a3b8}.pg-topology-node-target circle{fill:#818cf8}.pg-topology-node-frontend circle{fill:#22d3ee}.pg-topology-node-backend circle{fill:#a78bfa}.pg-topology-node-server circle{fill:#34d399}.pg-topology-state-healthy circle{fill:#34d399}.pg-topology-state-unhealthy circle{fill:#fb7185}.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.18);stroke:#fb7185;stroke-width:2}.pg-topology-node-frontend.pg-topology-protocol-tcp circle{fill:#f59e0b}.pg-topology-node-backend.pg-topology-protocol-tcp circle{fill:#f59e0b}.pg-topology-node-backend.pg-topology-protocol-http circle{fill:#a78bfa}.pg-topology-node text{pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.pg-topology-node-title{fill:#e2e8f0;font-size:13px;font-weight:600}.pg-topology-node-meta{fill:#94a3b8;font-size:10px}.pg-topology-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;color:#94a3b8;font-size:11px}.pg-topology-legend span{display:inline-flex;align-items:center;gap:6px}.pg-topology-legend i{width:8px;height:8px;border-radius:50%;background:#67e8f9}.pg-topology-legend .legend-unhealthy{background:#fb7185}.pg-topology-empty{padding:32px;color:#94a3b8;text-align:center}.pg-topology-highlight{outline:2px solid #22d3ee;outline-offset:3px;transition:outline-color .2s}@media(max-width:700px){.pg-topology-panel{padding:14px}.pg-topology-heading{align-items:flex-start;flex-direction:column}.pg-topology-viewport{height:55vh;min-height:300px}}
+.pg-topology-panel{margin:0 0 24px;padding:20px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:linear-gradient(145deg,rgba(21,31,51,.94),rgba(12,19,34,.9));box-shadow:0 18px 50px rgba(0,0,0,.24)}.pg-topology-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}.pg-topology-toolbar{display:flex;align-items:center;gap:8px}.pg-topology-toolbar button{min-width:36px;height:34px;padding:0 10px;color:#cbd5e1;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.2);border-radius:9px}.pg-topology-toolbar button:hover{border-color:rgba(103,232,249,.55);color:#a5f3fc}.pg-topology-zoom{min-width:48px;color:#94a3b8;text-align:center;font-size:12px}.pg-topology-help{margin:0 0 12px;color:#94a3b8;font-size:12px}.pg-topology-viewport{height:min(68vh,720px);min-height:340px;overflow:hidden;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:radial-gradient(ellipse at top,rgba(34,211,238,.045),transparent 70%),rgba(2,6,23,.4);touch-action:none;cursor:grab}.pg-topology-viewport.is-dragging{cursor:grabbing;user-select:none}.pg-topology-svg{display:block;width:100%;height:100%;user-select:none}.pg-topology-edge{fill:none;stroke:rgba(148,163,184,.38);stroke-width:2;vector-effect:non-scaling-stroke}.pg-topology-edge-target{stroke:rgba(148,163,184,.28);stroke-dasharray:4 6}.pg-topology-edge-route{stroke:#22d3ee;stroke-width:2.5}.pg-topology-edge-server{stroke:rgba(103,232,249,.45)}.pg-topology-node{cursor:pointer}.pg-topology-node rect{fill:rgba(15,23,42,.96);stroke:rgba(148,163,184,.3);stroke-width:1.5;vector-effect:non-scaling-stroke}.pg-topology-node-target rect{stroke:#818cf8}.pg-topology-node-frontend rect{stroke:#22d3ee}.pg-topology-node-backend rect{stroke:#2dd4bf;stroke-dasharray:6 3}.pg-topology-node-server rect{stroke:#34d399}.pg-topology-node-server.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.2);stroke:#fb7185}.pg-topology-node:hover rect,.pg-topology-node:focus rect{stroke:#67e8f9;stroke-width:2.5}.pg-topology-node circle{fill:#94a3b8}.pg-topology-node-target circle{fill:#818cf8}.pg-topology-node-frontend circle{fill:#22d3ee}.pg-topology-node-backend circle{fill:#2dd4bf}.pg-topology-node-server circle{fill:#34d399}.pg-topology-state-healthy circle{fill:#34d399}.pg-topology-state-unhealthy circle{fill:#fb7185}.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.18);stroke:#fb7185;stroke-width:2}.pg-topology-node-frontend.pg-topology-protocol-tcp circle{fill:#f59e0b}.pg-topology-node-backend.pg-topology-protocol-tcp circle{fill:#f59e0b}.pg-topology-node-backend.pg-topology-protocol-http circle{fill:#2dd4bf}.pg-topology-node-frontend.pg-topology-protocol-tcp rect{stroke:#f59e0b;fill:rgba(245,158,11,.15)}.pg-topology-node-backend.pg-topology-protocol-tcp rect{stroke:#f59e0b;fill:rgba(245,158,11,.15)}.pg-topology-node-frontend.pg-topology-protocol-tcp .pg-topology-node-title,.pg-topology-node-backend.pg-topology-protocol-tcp .pg-topology-node-title{fill:#fde68a}.pg-topology-node text{pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.pg-topology-node-title{fill:#e2e8f0;font-size:13px;font-weight:600}.pg-topology-node-meta{fill:#94a3b8;font-size:10px}.pg-topology-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;color:#94a3b8;font-size:11px}.pg-topology-legend span{display:inline-flex;align-items:center;gap:6px}.pg-topology-legend i{width:8px;height:8px;border-radius:50%;background:#67e8f9}.pg-topology-legend .legend-unhealthy{background:#fb7185}.pg-topology-empty{padding:32px;color:#94a3b8;text-align:center}.pg-topology-highlight{outline:2px solid #22d3ee;outline-offset:3px;transition:outline-color .2s}@media(max-width:700px){.pg-topology-panel{padding:14px}.pg-topology-heading{align-items:flex-start;flex-direction:column}.pg-topology-viewport{height:55vh;min-height:300px}}
 </style>
 <style>
 .pg-topology-scrim{position:fixed;z-index:46;top:72px;left:0;right:0;bottom:0;padding:0 24px 24px;background:rgba(2,6,23,.52);backdrop-filter:blur(6px);overflow-y:auto}.pg-topology-drawer{width:min(1680px,100%);margin:12px auto 24px;padding:22px;background:linear-gradient(145deg,rgba(15,23,42,.98),rgba(8,15,29,.98));border:1px solid rgba(103,232,249,.2);border-radius:20px;box-shadow:0 28px 90px rgba(0,0,0,.65),0 0 40px rgba(34,211,238,.06);backdrop-filter:blur(20px)}@media(max-width:700px){.pg-topology-scrim{top:64px;padding:0 10px 12px}.pg-topology-drawer{padding:14px;margin-top:8px}}
@@ -147,7 +147,10 @@ Topology
 <section class="pg-topology-drawer" role="dialog" aria-modal="true" aria-labelledby="pgTopologyHeading">
 <div class="pg-topology-heading">
 <div><div class="text-xs uppercase tracking-[.22em] text-cyan-300/70">Environment map</div><h2 id="pgTopologyHeading" class="mt-1 text-xl font-semibold">Topology overview</h2></div>
+<div class="pg-topology-toolbar">
+<button id="topologyReset" type="button" data-topology-action="reset-layout" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:bg-white/10">Reset layout</button>
 <button id="topologyClose" type="button" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:bg-white/10">Close <span aria-hidden="true">×</span></button>
+</div>
 </div>
 <div id="topologyContent">{{template "topology-content" .}}</div>
 </section>
@@ -177,6 +180,12 @@ function applyTopologyView(svg){
   const level=document.querySelector('[data-topology-zoom-level]');
   if(level)level.textContent=Math.round(state.baseWidth/state.width*100)+'%';
 }
+let topologyDefaultPositions=null;
+function captureTopologyDefaults(){const svg=topologySvg();if(!svg||topologyDefaultPositions)return;topologyDefaultPositions={};for(const node of svg.querySelectorAll('[data-topology-node]')){const m=node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);if(m)topologyDefaultPositions[node.dataset.topologyAnchor]={x:Number(m[1]),y:Number(m[2])};}}
+function loadTopologyPositions(){try{return JSON.parse(localStorage.getItem('proxyglass-topology-positions')||'{}')}catch(e){return {}}}
+function saveTopologyPositions(){const svg=topologySvg();if(!svg)return;const out={};for(const node of svg.querySelectorAll('[data-topology-node]')){const m=node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);if(m)out[node.dataset.topologyAnchor]={x:Number(m[1]),y:Number(m[2])};}try{localStorage.setItem('proxyglass-topology-positions',JSON.stringify(out))}catch(e){}}
+function restoreTopologyPositions(){const svg=topologySvg();if(!svg)return;const saved=loadTopologyPositions();for(const node of svg.querySelectorAll('[data-topology-node]')){const pos=saved[node.dataset.topologyAnchor];if(pos&&typeof pos.x==='number'&&typeof pos.y==='number'){node.setAttribute('transform','translate('+pos.x.toFixed(1)+' '+pos.y.toFixed(1)+')');}}for(const node of svg.querySelectorAll('[data-topology-node]')){updateTopologyEdges(node.dataset.topologyAnchor);}}
+function resetTopologyPositions(){const svg=topologySvg();if(!svg||!topologyDefaultPositions)return;try{localStorage.removeItem('proxyglass-topology-positions')}catch(e){}for(const node of svg.querySelectorAll('[data-topology-node]')){const pos=topologyDefaultPositions[node.dataset.topologyAnchor];if(pos){node.setAttribute('transform','translate('+pos.x.toFixed(1)+' '+pos.y.toFixed(1)+')');}}for(const node of svg.querySelectorAll('[data-topology-node]')){updateTopologyEdges(node.dataset.topologyAnchor);}}
 function initTopology(svg){
   if(!svg){topologyViewState=null;return}
   const baseWidth=Number(svg.dataset.baseWidth);
@@ -185,6 +194,8 @@ function initTopology(svg){
     topologyViewState={x:0,y:0,width:baseWidth,height:baseHeight,baseWidth:baseWidth,baseHeight:baseHeight};
   }
   applyTopologyView(svg);
+  captureTopologyDefaults();
+  restoreTopologyPositions();
 }
 function zoomTopology(factor){
   const svg=topologySvg();
@@ -217,6 +228,7 @@ document.addEventListener('click',async function(event){
   if(topologyAction){
     if(topologyAction.dataset.topologyAction==='zoom-in')zoomTopology(1.2);
     else if(topologyAction.dataset.topologyAction==='zoom-out')zoomTopology(1/1.2);
+    else if(topologyAction.dataset.topologyAction==='reset-layout')resetTopologyPositions();
     else resetTopology();
     return;
   }
@@ -273,14 +285,47 @@ document.addEventListener('wheel',function(event){
   event.preventDefault();
   zoomTopology(event.deltaY<0?1.12:1/1.12);
 },{passive:false});
+function topologyNodePosition(node){const m=node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);return m?{x:Number(m[1]),y:Number(m[2])}:{x:0,y:0};}
+function topologyEdgePath(from,to){const fx=from.x+95,fy=from.y+70,tx=to.x+95,ty=to.y,mid=(fy+ty)/2;return 'M '+fx+' '+fy+' C '+fx+' '+mid+', '+tx+' '+mid+', '+tx+' '+ty;}
+function updateTopologyEdges(anchor){const svg=topologySvg();if(!svg)return;const nodes=[...svg.querySelectorAll('[data-topology-node]')];const nodeMap=new Map(nodes.map(function(n){return [n.dataset.topologyAnchor,n];}));for(const edge of svg.querySelectorAll('[data-topology-edge-from]')){const fromAnchor=edge.dataset.topologyEdgeFrom;const toAnchor=edge.dataset.topologyEdgeTo;if(fromAnchor!==anchor&&toAnchor!==anchor)continue;const fromNode=nodeMap.get(fromAnchor);const toNode=nodeMap.get(toAnchor);if(!fromNode||!toNode)continue;edge.setAttribute('d',topologyEdgePath(topologyNodePosition(fromNode),topologyNodePosition(toNode)));}}
+let topologyNodeDrag=null;
 document.addEventListener('pointerdown',function(event){
   if(event.button!==0||!event.target.closest('#pgTopologyViewport'))return;
+  const node=event.target.closest('[data-topology-node]');
   const svg=topologySvg();
   if(!svg)return;
   initTopology(svg);
+  if(node){
+    const match=node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);
+    topologyNodeDrag={node:node,startX:event.clientX,startY:event.clientY,origX:Number(match[1]),origY:Number(match[2]),moved:false};
+    node.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    return;
+  }
   topologyDrag={startX:event.clientX,startY:event.clientY,lastX:event.clientX,lastY:event.clientY,moved:false};
 });
 document.addEventListener('pointermove',function(event){
+  if(topologyNodeDrag){
+    const node=topologyNodeDrag.node;
+    const svg=topologySvg();
+    const viewport=document.getElementById('pgTopologyViewport');
+    const rect=svg&&svg.getBoundingClientRect();
+    if(!svg||!rect||!viewport)return;
+    const fitScale=Math.min(rect.width/topologyViewState.width,rect.height/topologyViewState.height);
+    const dx=(event.clientX-topologyNodeDrag.startX)/fitScale;
+    const dy=(event.clientY-topologyNodeDrag.startY)/fitScale;
+    if(Math.abs(dx)+Math.abs(dy)>3)topologyNodeDrag.moved=true;
+    if(topologyNodeDrag.moved){
+      const newX=topologyNodeDrag.origX+dx;
+      const newY=topologyNodeDrag.origY+dy;
+      node.setAttribute('transform','translate('+newX.toFixed(1)+' '+newY.toFixed(1)+')');
+      const anchor=node.dataset.topologyAnchor;
+      updateTopologyEdges(anchor);
+      viewport.classList.add('is-dragging');
+      event.preventDefault();
+    }
+    return;
+  }
   if(!topologyDrag)return;
   const svg=topologySvg();
   const viewport=document.getElementById('pgTopologyViewport');
@@ -302,6 +347,12 @@ document.addEventListener('pointermove',function(event){
   topologyDrag.lastY=event.clientY;
 });
 function finishTopologyDrag(){
+  if(topologyNodeDrag){
+    if(topologyNodeDrag.moved){topologySuppressClickUntil=Date.now()+200;saveTopologyPositions();}
+    topologyNodeDrag=null;
+    document.getElementById('pgTopologyViewport')?.classList.remove('is-dragging');
+    return;
+  }
   if(!topologyDrag)return;
   if(topologyDrag.moved)topologySuppressClickUntil=Date.now()+200;
   topologyDrag=null;
@@ -451,7 +502,7 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 <div id="pgTopologyViewport" class="pg-topology-viewport">
 <svg id="topologySvg" class="pg-topology-svg" viewBox="0 0 {{.Topology.Width}} {{.Topology.Height}}" data-base-width="{{.Topology.Width}}" data-base-height="{{.Topology.Height}}" preserveAspectRatio="xMinYMin meet" role="group" aria-label="HAProxy environment topology">
 <g data-topology-viewport>
-{{range .Topology.Edges}}<path class="pg-topology-edge pg-topology-edge-{{.Kind}}" d="{{.Path}}"/>{{end}}
+{{range .Topology.Edges}}<path class="pg-topology-edge pg-topology-edge-{{.Kind}}" data-topology-edge-from="{{.From}}" data-topology-edge-to="{{.To}}" d="{{.Path}}"/>{{end}}
 {{range .Topology.Nodes}}
 <g class="pg-topology-node pg-topology-node-{{.Kind}} pg-topology-state-{{.StateClass}} pg-topology-protocol-{{.Protocol}}" data-topology-node data-topology-anchor="{{.Anchor}}" transform="translate({{printf "%.1f" .X}} {{printf "%.1f" .Y}})" tabindex="0" role="button" aria-label="{{.Kind}} {{.Label}}, {{.Status}}">
 <title>{{.Kind}}: {{.Label}} · {{.Target}} · {{.Status}}</title>
@@ -464,7 +515,7 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 </g>
 </svg>
 </div>
-<div class="pg-topology-legend" aria-label="Topology legend"><span><i></i>HAProxy / frontend / backend</span><span><i class="legend-unhealthy"></i>Unavailable</span><span>Solid cyan line: configured frontend route</span></div>
+<div class="pg-topology-legend" aria-label="Topology legend"><span><i style="background:#818cf8"></i>HAProxy target</span><span><i style="background:#22d3ee"></i>Frontend (HTTP)</span><span><i style="background:#f59e0b"></i>Frontend (TCP)</span><span><i style="background:#2dd4bf"></i>Backend (HTTP)</span><span><i style="background:#f59e0b"></i>Backend (TCP)</span><span><i style="background:#34d399"></i>Server up</span><span><i class="legend-unhealthy"></i>Unavailable</span><span>Solid cyan line: configured route</span></div>
 {{else}}
 <div class="pg-topology-empty">No HAProxy targets are visible. Add targets to the Proxyglass configuration or adjust the active filters.</div>
 {{end}}

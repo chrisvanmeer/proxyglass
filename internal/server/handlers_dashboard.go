@@ -105,6 +105,7 @@ type FView struct {
 	Anchor         string
 	Name           string
 	Target         string
+	Mode           string
 	Status         string
 	SCur           int64
 	SMax           int64
@@ -126,6 +127,7 @@ type BView struct {
 	Anchor         string
 	Name           string
 	Target         string
+	Mode           string
 	Status         string
 	SCur           int64
 	SMax           int64
@@ -179,6 +181,8 @@ type TopologyNode struct {
 
 type TopologyEdge struct {
 	Kind string
+	From string
+	To   string
 	Path string
 }
 
@@ -352,14 +356,14 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int, topologyMapping
 		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(fe.Target)]
 		shown := targetShown &&
 			(!p.FrontendFilterActive() || p.ShowFrontends[k])
-		vd.Frontends = append(vd.Frontends, FView{Key: k, Anchor: "frontend-" + k, Name: fe.Name, Target: fe.Target, Status: fe.Status, SCur: fe.SessionsCur, SMax: fe.SessionsMax, STot: fe.SessionsTot, Rate: fe.Rate, RateMax: fe.RateMax, BIn: fe.BytesIn, BOut: fe.BytesOut, Denied: fe.DeniedReq + fe.DeniedResp, Errors: fe.ErrorsReq, LastActivity: activityAge(fe.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(fe.LastActivity), TargetShown: targetShown, Shown: shown})
+		vd.Frontends = append(vd.Frontends, FView{Key: k, Anchor: "frontend-" + k, Name: fe.Name, Target: fe.Target, Mode: fe.Mode, Status: fe.Status, SCur: fe.SessionsCur, SMax: fe.SessionsMax, STot: fe.SessionsTot, Rate: fe.Rate, RateMax: fe.RateMax, BIn: fe.BytesIn, BOut: fe.BytesOut, Denied: fe.DeniedReq + fe.DeniedResp, Errors: fe.ErrorsReq, LastActivity: activityAge(fe.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(fe.LastActivity), TargetShown: targetShown, Shown: shown})
 	}
 	for _, be := range snap.Backends {
 		k := prefs.KeyBE(be.Name, be.Target)
 		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(be.Target)]
 		shown := targetShown &&
 			(!p.BackendFilterActive() || p.ShowBackends[k])
-		bv := BView{Key: k, Anchor: "backend-" + k, Name: be.Name, Target: be.Target, Status: be.Status, SCur: be.SessionsCur, SMax: be.SessionsMax, BIn: be.BytesIn, BOut: be.BytesOut, LastActivity: activityAge(be.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(be.LastActivity), TargetShown: targetShown, Shown: shown}
+		bv := BView{Key: k, Anchor: "backend-" + k, Name: be.Name, Target: be.Target, Mode: be.Mode, Status: be.Status, SCur: be.SessionsCur, SMax: be.SessionsMax, BIn: be.BytesIn, BOut: be.BytesOut, LastActivity: activityAge(be.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(be.LastActivity), TargetShown: targetShown, Shown: shown}
 		for _, sv := range be.Servers {
 			sk := prefs.KeySV(sv.Name, sv.Backend, sv.Target)
 			sshown := !p.ServerFilterActive() || p.ShowServers[sk]

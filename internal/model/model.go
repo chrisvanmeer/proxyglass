@@ -35,6 +35,7 @@ type Server struct {
 type Backend struct {
 	Name         string
 	Target       string
+	Mode         string
 	Status       string
 	CheckStatus  string
 	CheckCode    string
@@ -53,6 +54,7 @@ type Backend struct {
 type Frontend struct {
 	Name         string
 	Target       string
+	Mode         string
 	Status       string
 	SessionsCur  int64
 	SessionsMax  int64

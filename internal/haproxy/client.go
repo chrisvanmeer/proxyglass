@@ -179,6 +179,7 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 			fe := model.Frontend{
 				Name:        pxname,
 				Target:      target,
+				Mode:        field(rec, indices, "mode", 76),
 				Status:      field(rec, indices, "status", 17),
 				SessionsCur: toInt64(field(rec, indices, "scur", 4)),
 				SessionsMax: toInt64(field(rec, indices, "smax", 5)),
@@ -197,6 +198,7 @@ func parseCSV(data, target string) ([]model.Frontend, []model.Backend, error) {
 		if qtype == "1" && svname == "BACKEND" {
 			key := pxname + "|" + target
 			b := getBackend(key, pxname)
+			b.Mode = field(rec, indices, "mode", 76)
 			b.Status = field(rec, indices, "status", 17)
 			b.CheckStatus = field(rec, indices, "check_status", 36)
 			b.CheckCode = field(rec, indices, "check_code", 37)

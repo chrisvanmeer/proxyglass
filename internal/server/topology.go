@@ -66,20 +66,15 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 		if _, failed := errorsByTarget[group.name]; failed {
 			targetStatus, targetState = "UNREACHABLE", "unhealthy"
 		}
-		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "tcp", "", targetX, 32)
+		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "tcp", "target-"+group.name, targetX, 32)
 		graph.Nodes = append(graph.Nodes, targetNode)
-
-		frontendXs := topologyFrontendPositions(left, clusterWidth, group, backendNodes, mappings)
-		for i, frontend := range group.frontends {
-			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), "http", frontend.Anchor, frontendXs[i], 158)
-			graph.Nodes = append(graph.Nodes, node)
-			frontendNodes[topologyKey(frontend.Target, frontend.Name)] = node
-			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
-		}
 
 		backendXs := topologyNodePositions(left, clusterWidth, len(group.backends))
 		for i, backend := range group.backends {
-			protocol := backendProtocol(backend)
+			protocol := normalizeMode(backend.Mode)
+			if protocol == "unknown" {
+				protocol = backendProtocol(backend)
+			}
 			node := newTopologyNode("backend", backend.Name, backend.Target, backend.Status, topologyStatusClass(backend.Status), protocol, backend.Anchor, backendXs[i], 300)
 			graph.Nodes = append(graph.Nodes, node)
 			backendNodes[topologyKey(backend.Target, backend.Name)] = node
@@ -96,6 +91,33 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 				serverY += 94
 			}
 			maxHeight = max(maxHeight, serverY+20)
+		}
+
+		frontendXs := topologyFrontendPositions(left, clusterWidth, group, backendNodes, mappings)
+		for i, frontend := range group.frontends {
+			protocol := normalizeMode(frontend.Mode)
+			for _, mapping := range mappings {
+				if mapping.Target != group.name || mapping.Frontend != frontend.Name {
+					continue
+				}
+				allTCP := true
+				hasBackend := false
+				for _, backendName := range mapping.Backends {
+					if bn, ok := backendNodes[topologyKey(group.name, backendName)]; ok {
+						hasBackend = true
+						if bn.Protocol != "tcp" {
+							allTCP = false
+						}
+					}
+				}
+				if hasBackend && allTCP {
+					protocol = "tcp"
+				}
+			}
+			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), protocol, frontend.Anchor, frontendXs[i], 158)
+			graph.Nodes = append(graph.Nodes, node)
+			frontendNodes[topologyKey(frontend.Target, frontend.Name)] = node
+			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
 		}
 
 		for _, frontend := range group.frontends {
@@ -171,6 +193,7 @@ func topologyFrontendPositions(left, width float64, group topologyTarget, backen
 			}
 		}
 	}
+	_ = connected
 	// Frontends with connections are centered over their connected backends.
 	// Frontends without connections are spread across the cluster.
 	unconnected := []int{}
@@ -207,9 +230,11 @@ func topologyFrontendPositions(left, width float64, group topologyTarget, backen
 			ui++
 		}
 	}
-	// Resolve overlaps: if two frontends end up too close, nudge.
+	// Resolve overlaps among frontends that are ordered left-to-right. Centered
+	// frontends may sit anywhere, so only nudge when the next position is to
+	// the right of the previous one and the two would overlap.
 	for i := 1; i < len(positions); i++ {
-		if positions[i]-positions[i-1] < topologyNodeWidth+20 {
+		if positions[i] > positions[i-1] && positions[i]-positions[i-1] < topologyNodeWidth+20 {
 			positions[i] = positions[i-1] + topologyNodeWidth + 20
 		}
 	}
@@ -239,10 +264,20 @@ func topologyEdge(from, to TopologyNode, kind string) TopologyEdge {
 	toY := to.Y
 	middleY := (fromY + toY) / 2
 	path := fmt.Sprintf("M %.1f %.1f C %.1f %.1f, %.1f %.1f, %.1f %.1f", fromX, fromY, fromX, middleY, toX, middleY, toX, toY)
-	return TopologyEdge{Kind: kind, Path: path}
+	return TopologyEdge{Kind: kind, From: from.Anchor, To: to.Anchor, Path: path}
 }
 
 func topologyKey(target, name string) string { return target + "\x00" + name }
+
+func normalizeMode(mode string) string {
+	switch strings.ToLower(strings.TrimSpace(mode)) {
+	case "http", "https", "http2":
+		return "http"
+	case "tcp":
+		return "tcp"
+	}
+	return "unknown"
+}
 
 func backendProtocol(backend BView) string {
 	for _, server := range backend.Servers {
