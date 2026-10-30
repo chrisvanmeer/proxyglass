@@ -66,12 +66,12 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 		if _, failed := errorsByTarget[group.name]; failed {
 			targetStatus, targetState = "UNREACHABLE", "unhealthy"
 		}
-		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "", targetX, 32)
+		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "tcp", "", targetX, 32)
 		graph.Nodes = append(graph.Nodes, targetNode)
 
-		frontendXs := topologyNodePositions(left, clusterWidth, len(group.frontends))
+		frontendXs := topologyFrontendPositions(left, clusterWidth, group, backendNodes, mappings)
 		for i, frontend := range group.frontends {
-			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), frontend.Anchor, frontendXs[i], 158)
+			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), "http", frontend.Anchor, frontendXs[i], 158)
 			graph.Nodes = append(graph.Nodes, node)
 			frontendNodes[topologyKey(frontend.Target, frontend.Name)] = node
 			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
@@ -79,7 +79,8 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 
 		backendXs := topologyNodePositions(left, clusterWidth, len(group.backends))
 		for i, backend := range group.backends {
-			node := newTopologyNode("backend", backend.Name, backend.Target, backend.Status, topologyStatusClass(backend.Status), backend.Anchor, backendXs[i], 300)
+			protocol := backendProtocol(backend)
+			node := newTopologyNode("backend", backend.Name, backend.Target, backend.Status, topologyStatusClass(backend.Status), protocol, backend.Anchor, backendXs[i], 300)
 			graph.Nodes = append(graph.Nodes, node)
 			backendNodes[topologyKey(backend.Target, backend.Name)] = node
 			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
@@ -89,7 +90,7 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 				if !server.Shown {
 					continue
 				}
-				serverNode := newTopologyNode("server", server.Name, backend.Name, server.Status, topologyStatusClass(server.Status), "server-"+server.Key, node.X, serverY)
+				serverNode := newTopologyNode("server", server.Name, backend.Name, server.Status, topologyStatusClass(server.Status), protocol, "server-"+server.Key, node.X, serverY)
 				graph.Nodes = append(graph.Nodes, serverNode)
 				graph.Edges = append(graph.Edges, topologyEdge(node, serverNode, "server"))
 				serverY += 94
@@ -123,7 +124,7 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 
 const topologyLabelMaxRunes = 20
 
-func newTopologyNode(kind, label, target, status, stateClass, anchor string, x, y float64) TopologyNode {
+func newTopologyNode(kind, label, target, status, stateClass, protocol, anchor string, x, y float64) TopologyNode {
 	displayLabel, labelTruncated := truncateTopologyText(label)
 	displayMeta, metaTruncated := truncateTopologyText(target + " · " + status)
 	return TopologyNode{
@@ -136,6 +137,7 @@ func newTopologyNode(kind, label, target, status, stateClass, anchor string, x, 
 		DisplayMeta:    displayMeta,
 		MetaTruncated:  metaTruncated,
 		StateClass:     stateClass,
+		Protocol:       protocol,
 		Anchor:         anchor,
 		X:              x,
 		Y:              y,
@@ -148,6 +150,70 @@ func truncateTopologyText(value string) (string, bool) {
 		return value, false
 	}
 	return string(runes[:topologyLabelMaxRunes]) + "...", true
+}
+
+func topologyFrontendPositions(left, width float64, group topologyTarget, backendNodes map[string]TopologyNode, mappings []config.TopologyRoute) []float64 {
+	positions := make([]float64, len(group.frontends))
+	if len(group.frontends) == 0 {
+		return positions
+	}
+	// Determine connected backends per frontend.
+	connected := make([][]float64, len(group.frontends))
+	for i, frontend := range group.frontends {
+		for _, mapping := range mappings {
+			if mapping.Target != group.name || mapping.Frontend != frontend.Name {
+				continue
+			}
+			for _, backendName := range mapping.Backends {
+				if bn, ok := backendNodes[topologyKey(group.name, backendName)]; ok {
+					connected[i] = append(connected[i], bn.X)
+				}
+			}
+		}
+	}
+	// Frontends with connections are centered over their connected backends.
+	// Frontends without connections are spread across the cluster.
+	unconnected := []int{}
+	for i := range group.frontends {
+		if len(connected[i]) == 0 {
+			unconnected = append(unconnected, i)
+		}
+	}
+	// Spread unconnected frontends in remaining space.
+	spreadPositions := topologyNodePositions(left, width, len(unconnected))
+	ui := 0
+	for i := range group.frontends {
+		if len(connected[i]) > 0 {
+			minX, maxX := connected[i][0], connected[i][0]
+			for _, x := range connected[i] {
+				if x < minX {
+					minX = x
+				}
+				if x > maxX {
+					maxX = x
+				}
+			}
+			center := (minX + maxX + topologyNodeWidth) / 2
+			positions[i] = center - topologyNodeWidth/2
+			// clamp
+			if positions[i] < left {
+				positions[i] = left
+			}
+			if positions[i] > left+width-topologyNodeWidth {
+				positions[i] = left + width - topologyNodeWidth
+			}
+		} else {
+			positions[i] = spreadPositions[ui]
+			ui++
+		}
+	}
+	// Resolve overlaps: if two frontends end up too close, nudge.
+	for i := 1; i < len(positions); i++ {
+		if positions[i]-positions[i-1] < topologyNodeWidth+20 {
+			positions[i] = positions[i-1] + topologyNodeWidth + 20
+		}
+	}
+	return positions
 }
 
 func topologyNodePositions(left, width float64, count int) []float64 {
@@ -177,6 +243,19 @@ func topologyEdge(from, to TopologyNode, kind string) TopologyEdge {
 }
 
 func topologyKey(target, name string) string { return target + "\x00" + name }
+
+func backendProtocol(backend BView) string {
+	for _, server := range backend.Servers {
+		check := strings.ToUpper(server.CheckStatus)
+		if strings.Contains(check, "L7") {
+			return "http"
+		}
+		if strings.Contains(check, "L4") {
+			return "tcp"
+		}
+	}
+	return "unknown"
+}
 
 func topologyStatusClass(status string) string {
 	switch strings.ToUpper(status) {

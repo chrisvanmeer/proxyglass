@@ -162,18 +162,19 @@ type SView struct {
 }
 
 type TopologyNode struct {
-	Kind       string
-	Label      string
-	DisplayLabel string
+	Kind           string
+	Label          string
+	DisplayLabel   string
 	LabelTruncated bool
-	Target     string
-	Status     string
-	DisplayMeta string
-	MetaTruncated bool
-	StateClass string
-	Anchor     string
-	X          float64
-	Y          float64
+	Target         string
+	Status         string
+	DisplayMeta    string
+	MetaTruncated  bool
+	StateClass     string
+	Protocol       string
+	Anchor         string
+	X              float64
+	Y              float64
 }
 
 type TopologyEdge struct {
