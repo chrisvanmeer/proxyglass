@@ -153,7 +153,7 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .interface-node.backend-node circle { fill: #2dd4bf; }
 .interface-node.server-node rect { stroke: #34d399; }
 .interface-node.server-node circle { fill: #34d399; }
-.interface-node.server-node.down-node rect { stroke: #fb7185; fill: rgba(251, 113, 133, .2); }
+.interface-node.server-node.down-node rect { stroke: #fb7185; fill: rgba(40, 8, 12, .96); }
 .interface-node.server-node.down-node circle { fill: #fb7185; }
 .interface-node { pointer-events: all; cursor: move; }
 .interface-node text { fill: #e2e8f0; font-family: var(--font-mono); font-size: 12px; pointer-events: none; }
