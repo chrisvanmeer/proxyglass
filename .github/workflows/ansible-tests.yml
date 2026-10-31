@@ -40,6 +40,22 @@ jobs:
           ansible-lint
           yamllint .
 
+      - name: Wait for release assets
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for attempt in $(seq 1 60); do
+            if gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name' | grep -qx 'proxyglass-linux-amd64'; then
+              echo "Release asset proxyglass-linux-amd64 is available for $GITHUB_REF_NAME"
+              exit 0
+            fi
+            echo "Waiting for release asset proxyglass-linux-amd64 ($attempt/60)..."
+            sleep 10
+          done
+          echo "Timed out waiting for release asset proxyglass-linux-amd64" >&2
+          exit 1
+
       - name: Run Molecule test
         run: |
           cd ansible_collections/chrisvanmeer/proxyglass/roles/proxyglass
