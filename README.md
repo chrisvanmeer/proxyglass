@@ -82,6 +82,14 @@ targets:
     username: stats-reader
     password: secret
     verify_tls: true # true by default; false only for self-signed TLS
+
+# Optional: visual-only frontend-to-backend routes for the topology overview.
+# HAProxy's stats CSV does not include use_backend routing rules.
+topology:
+  - target: edge-01
+    frontend: public
+    backends:
+      - app-backend
 ```
 
 `PROXYGLASS_CONFIG` selects the config file. For OIDC behind nginx, preserve the original `Host` and set
