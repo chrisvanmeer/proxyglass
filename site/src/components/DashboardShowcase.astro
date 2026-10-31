@@ -11,41 +11,110 @@
         <div><span class="eyebrow">Topology overview</span><h3>Follow each connection</h3></div>
         <span class="interface-badge"><i></i> 1 unavailable</span>
       </div>
+      <p class="interface-topology-hint">Drag any node to rearrange the view. Positions reset on refresh.</p>
       <div class="interface-topology-canvas">
-        <svg class="interface-topology-svg" viewBox="0 0 800 370" role="img" aria-label="Illustrative topology from HAProxy target through a frontend and backend to four servers">
+        <svg class="interface-topology-svg" viewBox="0 0 800 370" role="img" aria-label="Illustrative topology from HAProxy target through a frontend and backend to four servers" data-topology-svg>
           <g class="interface-topology-edges">
-            <path d="M400 72 C400 88 400 94 400 110" />
-            <path class="route" d="M400 162 C400 180 400 186 400 204" />
-            <path d="M400 256 C400 274 105 276 105 302" />
-            <path d="M400 256 C400 274 295 276 295 302" />
-            <path d="M400 256 C400 274 485 276 485 302" />
-            <path d="M400 256 C400 274 675 276 675 302" />
+            <path class="target-edge" data-edge-from="target" data-edge-to="frontend" d="M400 72 C400 88 400 94 400 110" />
+            <path class="route" data-edge-from="frontend" data-edge-to="backend" d="M400 162 C400 180 400 186 400 204" />
+            <path class="server-edge" data-edge-from="backend" data-edge-to="server-0" d="M400 256 C400 274 105 276 105 302" />
+            <path class="server-edge" data-edge-from="backend" data-edge-to="server-1" d="M400 256 C400 274 295 276 295 302" />
+            <path class="server-edge" data-edge-from="backend" data-edge-to="server-2" d="M400 256 C400 274 485 276 485 302" />
+            <path class="server-edge" data-edge-from="backend" data-edge-to="server-3" d="M400 256 C400 274 675 276 675 302" />
           </g>
-          <g class="interface-node target-node" transform="translate(305 20)">
+          <g class="interface-node target-node" data-topology-node data-topology-anchor="target" data-node-width="190" data-node-height="52" transform="translate(305 20)">
             <rect width="190" height="52" rx="11"/><circle cx="15" cy="18" r="4"/><text x="28" y="22">edge-01</text><text class="node-meta" x="14" y="40">HAProxy target · online</text>
           </g>
-          <g class="interface-node frontend-node" transform="translate(305 110)">
+          <g class="interface-node frontend-node" data-topology-node data-topology-anchor="frontend" data-node-width="190" data-node-height="52" transform="translate(305 110)">
             <rect width="190" height="52" rx="11"/><circle cx="15" cy="18" r="4"/><text x="28" y="22">public</text><text class="node-meta" x="14" y="40">Frontend · OPEN</text>
           </g>
-          <g class="interface-node backend-node" transform="translate(305 204)">
+          <g class="interface-node backend-node" data-topology-node data-topology-anchor="backend" data-node-width="190" data-node-height="52" transform="translate(305 204)">
             <rect width="190" height="52" rx="11"/><circle cx="15" cy="18" r="4"/><text x="28" y="22">web-production</text><text class="node-meta" x="14" y="40">Backend · 3 / 4 UP</text>
           </g>
-          <g class="interface-node server-node" transform="translate(30 302)">
+          <g class="interface-node server-node" data-topology-node data-topology-anchor="server-0" data-node-width="150" data-node-height="48" transform="translate(30 302)">
             <rect width="150" height="48" rx="10"/><circle cx="14" cy="17" r="4"/><text x="27" y="21">web-01</text><text class="node-meta" x="13" y="38">UP · L7 OK</text>
           </g>
-          <g class="interface-node server-node" transform="translate(220 302)">
+          <g class="interface-node server-node" data-topology-node data-topology-anchor="server-1" data-node-width="150" data-node-height="48" transform="translate(220 302)">
             <rect width="150" height="48" rx="10"/><circle cx="14" cy="17" r="4"/><text x="27" y="21">web-02</text><text class="node-meta" x="13" y="38">UP · L7 OK</text>
           </g>
-          <g class="interface-node server-node down-node" transform="translate(410 302)">
+          <g class="interface-node server-node down-node" data-topology-node data-topology-anchor="server-2" data-node-width="150" data-node-height="48" transform="translate(410 302)">
             <rect width="150" height="48" rx="10"/><circle cx="14" cy="17" r="4"/><text x="27" y="21">web-03</text><text class="node-meta" x="13" y="38">DOWN · L4 error</text>
           </g>
-          <g class="interface-node server-node" transform="translate(600 302)">
+          <g class="interface-node server-node" data-topology-node data-topology-anchor="server-3" data-node-width="150" data-node-height="48" transform="translate(600 302)">
             <rect width="150" height="48" rx="10"/><circle cx="14" cy="17" r="4"/><text x="27" y="21">web-04</text><text class="node-meta" x="13" y="38">UP · L7 OK</text>
           </g>
         </svg>
       </div>
-      <div class="interface-caption"><span>HAProxy → frontend → backend → servers</span><span>Read-only</span></div>
+      <div class="interface-caption"><span>HAProxy → frontend → backend → servers</span><span>Drag nodes to rearrange · resets on refresh</span></div>
     </article>
+    <script>
+      const topologySvg = document.querySelector('.interface-topology-svg[data-topology-svg]');
+      if (topologySvg) {
+        const nodeSelector = '[data-topology-node]';
+        let drag = null;
+        function nodePos(node) {
+          const match = node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);
+          return {
+            x: Number(match[1]),
+            y: Number(match[2]),
+            w: Number(node.dataset.nodeWidth),
+            h: Number(node.dataset.nodeHeight),
+          };
+        }
+        function updateEdges(anchor) {
+          topologySvg.querySelectorAll('[data-edge-from]').forEach((edge) => {
+            if (edge.dataset.edgeFrom !== anchor && edge.dataset.edgeTo !== anchor) return;
+            const fromNode = topologySvg.querySelector(`[data-topology-anchor="${edge.dataset.edgeFrom}"]`);
+            const toNode = topologySvg.querySelector(`[data-topology-anchor="${edge.dataset.edgeTo}"]`);
+            if (!fromNode || !toNode) return;
+            const from = nodePos(fromNode);
+            const to = nodePos(toNode);
+            const fx = from.x + from.w / 2;
+            const fy = from.y + from.h;
+            const tx = to.x + to.w / 2;
+            const ty = to.y;
+            const mid = (fy + ty) / 2;
+            edge.setAttribute('d', `M ${fx} ${fy} C ${fx} ${mid}, ${tx} ${mid}, ${tx} ${ty}`);
+          });
+        }
+        topologySvg.style.cursor = 'default';
+        topologySvg.addEventListener('mousedown', (event) => {
+          const node = event.target.closest ? event.target.closest(nodeSelector) : null;
+          if (!node || event.button !== 0) return;
+          const match = node.getAttribute('transform').match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);
+          drag = {
+            node,
+            startX: event.clientX,
+            startY: event.clientY,
+            origX: Number(match[1]),
+            origY: Number(match[2]),
+            moved: false,
+          };
+          node.classList.add('is-dragging');
+          event.preventDefault();
+        });
+        window.addEventListener('mousemove', (event) => {
+          if (!drag) return;
+          const rect = topologySvg.getBoundingClientRect();
+          const scaleX = 800 / rect.width;
+          const scaleY = 370 / rect.height;
+          const dx = (event.clientX - drag.startX) * scaleX;
+          const dy = (event.clientY - drag.startY) * scaleY;
+          if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+          if (drag.moved) {
+            const newX = drag.origX + dx;
+            const newY = drag.origY + dy;
+            drag.node.setAttribute('transform', `translate(${newX.toFixed(1)} ${newY.toFixed(1)})`);
+            updateEdges(drag.node.dataset.topologyAnchor);
+            event.preventDefault();
+          }
+        });
+        window.addEventListener('mouseup', () => {
+          if (drag && drag.node) drag.node.classList.remove('is-dragging');
+          drag = null;
+        });
+      }
+    </script>
 
     <article class="interface-card">
       <div class="interface-card-heading">
