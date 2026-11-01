@@ -19,7 +19,7 @@ for (const text of [
 	assert.ok(html.toLowerCase().includes(text.toLowerCase()), `landing page should include: ${text}`);
 }
 
-for (const asset of ['favicon.svg', 'og.svg', 'robots.txt', 'sitemap.xml', '404.html', 'assets/proxyglass-mark.svg']) {
+for (const asset of ['favicon.svg', 'og.svg', 'og.png', 'robots.txt', 'sitemap.xml', '404.html', 'assets/proxyglass-mark.svg']) {
 	await access(new URL(`../dist/${asset}`, import.meta.url));
 }
 

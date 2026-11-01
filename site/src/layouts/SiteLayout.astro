@@ -14,7 +14,7 @@ interface Props {
 const {
   title = 'Proxyglass — HAProxy visibility, without the control plane',
   description = 'A polished, read-only HAProxy stats dashboard. Monitor frontends, backends and servers from a native binary, container or Nomad job.',
-  image = '/og.svg',
+  image = '/og.png',
 } = Astro.props;
 
 const siteURL = Astro.site ?? new URL('https://proxyglass.app');
@@ -41,6 +41,9 @@ const absoluteImage = image.startsWith('http') ? image : new URL(image, siteURL)
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={absoluteImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
