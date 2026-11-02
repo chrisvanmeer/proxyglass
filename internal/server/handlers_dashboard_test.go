@@ -218,13 +218,13 @@ func TestTopologyTruncatesLongLabelsAndKeepsFullTooltip(t *testing.T) {
 	if err := dashboardTemplate().ExecuteTemplate(&rendered, "dash", view); err != nil {
 		t.Fatal(err)
 	}
-	shortName := string([]rune(fullName)[:topologyLabelMaxRunes]) + "..."
+	shortName := string([]rune(fullName)[:topologyServerLabelMaxRunes]) + "..."
 	html := rendered.String()
 	if !strings.Contains(html, `<title>server: `+fullName+` · app-pool · UP</title>`) {
 		t.Fatal("topology node tooltip should retain the full server name")
 	}
 	if !strings.Contains(html, `>`+shortName+`</text>`) {
-		t.Fatalf("topology node label was not truncated to %d characters: %q", topologyLabelMaxRunes, shortName)
+		t.Fatalf("topology server label was not truncated to %d characters: %q", topologyServerLabelMaxRunes, shortName)
 	}
 }
 

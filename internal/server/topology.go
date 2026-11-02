@@ -169,11 +169,18 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 	return graph
 }
 
-const topologyLabelMaxRunes = 20
+const (
+	topologyLabelMaxRunes       = 20
+	topologyServerLabelMaxRunes = topologyLabelMaxRunes - 3
+)
 
 func newTopologyNode(kind, label, target, status, stateClass, protocol, anchor string, x, y float64) TopologyNode {
-	displayLabel, labelTruncated := truncateTopologyText(label)
-	displayMeta, metaTruncated := truncateTopologyText(target + " · " + status)
+	maxRunes := topologyLabelMaxRunes
+	if kind == "server" {
+		maxRunes = topologyServerLabelMaxRunes
+	}
+	displayLabel, labelTruncated := truncateTopologyText(label, maxRunes)
+	displayMeta, metaTruncated := truncateTopologyText(target+" · "+status, maxRunes)
 	return TopologyNode{
 		Kind:           kind,
 		Label:          label,
@@ -191,12 +198,12 @@ func newTopologyNode(kind, label, target, status, stateClass, protocol, anchor s
 	}
 }
 
-func truncateTopologyText(value string) (string, bool) {
+func truncateTopologyText(value string, maxRunes int) (string, bool) {
 	runes := []rune(value)
-	if len(runes) <= topologyLabelMaxRunes {
+	if len(runes) <= maxRunes {
 		return value, false
 	}
-	return string(runes[:topologyLabelMaxRunes]) + "...", true
+	return string(runes[:maxRunes]) + "...", true
 }
 
 func topologyFrontendPositions(left, width float64, group topologyTarget, backendNodes map[string]TopologyNode, mappings []config.TopologyRoute) []float64 {
