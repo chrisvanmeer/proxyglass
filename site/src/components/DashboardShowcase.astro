@@ -15,7 +15,7 @@
       <div class="interface-topology-canvas">
         <svg class="interface-topology-svg" viewBox="0 0 800 370" role="img" aria-label="Illustrative topology from HAProxy target through a frontend and backend to four servers" data-topology-svg>
           <g class="interface-topology-edges">
-            <path class="target-edge" data-edge-from="target" data-edge-to="frontend" d="M400 72 C400 88 400 94 400 110" />
+            <path class="target-frontend" data-edge-from="target" data-edge-to="frontend" d="M400 72 C400 88 400 94 400 110" />
             <path class="route" data-edge-from="frontend" data-edge-to="backend" d="M400 162 C400 180 400 186 400 204" />
             <path class="server-edge" data-edge-from="backend" data-edge-to="server-0" d="M400 256 C400 274 105 276 105 302" />
             <path class="server-edge" data-edge-from="backend" data-edge-to="server-1" d="M400 256 C400 274 295 276 295 302" />
@@ -44,6 +44,11 @@
             <rect width="150" height="48" rx="10"/><circle cx="14" cy="17" r="4"/><text x="27" y="21">web-04</text><text class="node-meta" x="13" y="38">UP · L7 OK</text>
           </g>
         </svg>
+      </div>
+      <div class="interface-topology-legend" aria-label="Topology legend">
+        <span><i class="legend-target"></i>Target → frontend</span>
+        <span><i></i>Configured route</span>
+        <span><i class="legend-backend"></i>Backend</span>
       </div>
       <div class="interface-caption"><span>HAProxy → frontend → backend → servers</span><span>Drag nodes to rearrange · resets on refresh</span></div>
     </article>
@@ -119,27 +124,41 @@
     <article class="interface-card">
       <div class="interface-card-heading">
         <div><span class="eyebrow">View controls</span><h3>Filter &amp; sort</h3></div>
-        <span class="interface-close" aria-hidden="true">×</span>
+        <button type="button" class="interface-close" aria-label="Close filters">Close <span aria-hidden="true">×</span></button>
       </div>
       <div class="interface-filter-grid">
         <section class="interface-filter-group">
           <h4>Sort by</h4>
-          <div class="interface-select">Configuration order <span>⌄</span></div>
-          <div class="interface-select secondary-select">Ascending <span>⌄</span></div>
+          <button type="button" class="interface-select" aria-haspopup="listbox" aria-label="Sort by Configuration order">
+            <span>Configuration order</span>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
         </section>
         <section class="interface-filter-group">
           <h4>HAProxy servers</h4>
-          <div class="interface-filter-option"><i class="fake-check checked"></i> edge-01</div>
-          <div class="interface-filter-option"><i class="fake-check checked"></i> edge-02</div>
-          <div class="interface-filter-option"><i class="fake-check checked"></i> edge-03</div>
+          <div class="interface-filter-options">
+            <label class="interface-filter-option"><input type="checkbox" checked /> edge-01</label>
+            <label class="interface-filter-option"><input type="checkbox" checked /> edge-02</label>
+            <label class="interface-filter-option"><input type="checkbox" checked /> edge-03</label>
+          </div>
+        </section>
+        <section class="interface-filter-group">
+          <h4>Frontends</h4>
+          <div class="interface-filter-options">
+            <label class="interface-filter-option"><input type="checkbox" checked /> <span>public</span><small>edge-01</small></label>
+            <label class="interface-filter-option"><input type="checkbox" checked /> <span>admin</span><small>edge-02</small></label>
+            <label class="interface-filter-option"><input type="checkbox" checked /> <span>status</span><small>edge-03</small></label>
+          </div>
         </section>
         <section class="interface-filter-group backend-filter-group">
           <h4>Backends &amp; servers</h4>
-          <div class="interface-filter-option"><i class="fake-check checked"></i> web-production</div>
-          <div class="interface-filter-option nested-filter"><i class="fake-check checked"></i> web-01 <small>UP</small></div>
-          <div class="interface-filter-option nested-filter"><i class="fake-check checked"></i> web-02 <small>UP</small></div>
-          <div class="interface-filter-option nested-filter down-filter"><i class="fake-check checked"></i> web-03 <small>DOWN</small></div>
-          <div class="interface-filter-option nested-filter"><i class="fake-check checked"></i> web-04 <small>UP</small></div>
+          <div class="interface-filter-options">
+            <label class="interface-filter-option"><input type="checkbox" checked /> <span>web-production</span><small>edge-01</small></label>
+            <label class="interface-filter-option nested-filter"><input type="checkbox" checked /> <span>web-01</span></label>
+            <label class="interface-filter-option nested-filter"><input type="checkbox" checked /> <span>web-02</span></label>
+            <label class="interface-filter-option nested-filter"><input type="checkbox" checked /> <span>web-03</span></label>
+            <label class="interface-filter-option nested-filter"><input type="checkbox" checked /> <span>web-04</span></label>
+          </div>
         </section>
       </div>
       <div class="interface-caption"><span>Choose targets, frontends, backends and servers</span><span>Saved per browser</span></div>
