@@ -15,7 +15,7 @@ html,body{min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-u
 .pg-brand-status{display:inline-block;width:7px;height:7px;margin-left:5px;vertical-align:middle;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.85),0 0 20px rgba(52,211,153,.3)}
 </style>
 <style>
-.pg-topology-panel{margin:0 0 24px;padding:20px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:linear-gradient(145deg,rgba(21,31,51,.94),rgba(12,19,34,.9));box-shadow:0 18px 50px rgba(0,0,0,.24)}.pg-topology-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}.pg-topology-toolbar{display:flex;align-items:center;gap:8px}.pg-topology-toolbar button{min-width:36px;height:34px;padding:0 10px;color:#cbd5e1;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.2);border-radius:9px}.pg-topology-toolbar button:hover{border-color:rgba(103,232,249,.55);color:#a5f3fc}.pg-topology-zoom{min-width:48px;color:#94a3b8;text-align:center;font-size:12px}.pg-topology-help{margin:0 0 12px;color:#94a3b8;font-size:12px}.pg-topology-viewport{height:min(68vh,720px);min-height:340px;overflow:hidden;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:radial-gradient(ellipse at top,rgba(34,211,238,.045),transparent 70%),rgba(2,6,23,.4);touch-action:none;cursor:grab}.pg-topology-viewport.is-dragging{cursor:grabbing;user-select:none}.pg-topology-svg{display:block;width:100%;height:100%;user-select:none}.pg-topology-edge{fill:none;stroke:rgba(148,163,184,.38);stroke-width:2;vector-effect:non-scaling-stroke}.pg-topology-edge-target{stroke:rgba(148,163,184,.28);stroke-dasharray:4 6}.pg-topology-edge-route{stroke:#22d3ee;stroke-width:2.5}.pg-topology-edge-server{stroke:rgba(103,232,249,.45)}.pg-topology-node{cursor:move}.pg-topology-node.is-dragging{cursor:grabbing}.pg-topology-node rect{fill:rgba(15,23,42,.96);stroke:rgba(148,163,184,.3);stroke-width:1.5;vector-effect:non-scaling-stroke}.pg-topology-node-target rect{stroke:#818cf8}.pg-topology-node-frontend rect{stroke:#22d3ee}.pg-topology-node-backend rect{stroke:#2dd4bf;stroke-dasharray:6 3}.pg-topology-node-server rect{stroke:#34d399}.pg-topology-node-server.pg-topology-state-unhealthy rect{fill:rgba(40,8,12,.96);stroke:#fb7185}.pg-topology-node:hover rect,.pg-topology-node:focus rect{stroke:#67e8f9;stroke-width:2.5}.pg-topology-node circle{fill:#94a3b8}.pg-topology-node-target circle{fill:#818cf8}.pg-topology-node-frontend circle{fill:#22d3ee}.pg-topology-node-backend circle{fill:#2dd4bf}.pg-topology-node-server circle{fill:#34d399}.pg-topology-state-healthy circle{fill:#34d399}.pg-topology-state-unhealthy circle{fill:#fb7185}.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.18);stroke:#fb7185;stroke-width:2}.pg-topology-node-frontend.pg-topology-protocol-tcp circle{fill:#38bdf8}.pg-topology-node-backend.pg-topology-protocol-tcp circle{fill:#38bdf8}.pg-topology-node-backend.pg-topology-protocol-http circle{fill:#2dd4bf}.pg-topology-node-frontend.pg-topology-protocol-tcp rect{stroke:#38bdf8;fill:rgba(56,189,248,.15)}.pg-topology-node-backend.pg-topology-protocol-tcp rect{stroke:#38bdf8;fill:rgba(56,189,248,.15)}.pg-topology-node-frontend.pg-topology-protocol-tcp .pg-topology-node-title,.pg-topology-node-backend.pg-topology-protocol-tcp .pg-topology-node-title{fill:#bae6fd}.pg-topology-node text{pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.pg-topology-node-title{fill:#e2e8f0;font-size:13px;font-weight:600}.pg-topology-node-meta{fill:#94a3b8;font-size:10px}.pg-topology-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;color:#94a3b8;font-size:11px}.pg-topology-legend span{display:inline-flex;align-items:center;gap:6px}.pg-topology-legend i{width:8px;height:8px;border-radius:50%;background:#67e8f9}.pg-topology-legend .legend-unhealthy{background:#fb7185}.pg-topology-empty{padding:32px;color:#94a3b8;text-align:center}.pg-topology-highlight{outline:2px solid #22d3ee;outline-offset:3px;transition:outline-color .2s}@media(max-width:700px){.pg-topology-panel{padding:14px}.pg-topology-heading{align-items:flex-start;flex-direction:column}.pg-topology-viewport{height:55vh;min-height:300px}}
+.pg-topology-panel{margin:0 0 24px;padding:20px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:linear-gradient(145deg,rgba(21,31,51,.94),rgba(12,19,34,.9));box-shadow:0 18px 50px rgba(0,0,0,.24)}.pg-topology-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}.pg-topology-toolbar{display:flex;align-items:center;gap:8px}.pg-topology-toolbar button{min-width:36px;height:34px;padding:0 10px;color:#cbd5e1;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.2);border-radius:9px}.pg-topology-toolbar button:hover{border-color:rgba(103,232,249,.55);color:#a5f3fc}.pg-topology-zoom{min-width:48px;color:#94a3b8;text-align:center;font-size:12px}.pg-topology-help{margin:0 0 12px;color:#94a3b8;font-size:12px}.pg-topology-viewport{height:min(68vh,720px);min-height:340px;overflow:hidden;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:radial-gradient(ellipse at top,rgba(34,211,238,.045),transparent 70%),rgba(2,6,23,.4);touch-action:none;cursor:grab}.pg-topology-viewport.is-dragging{cursor:grabbing;user-select:none}.pg-topology-svg{display:block;width:100%;height:100%;user-select:none}.pg-topology-edge{fill:none;stroke:rgba(148,163,184,.38);stroke-width:2;vector-effect:non-scaling-stroke}.pg-topology-edge-target{stroke:rgba(148,163,184,.28);stroke-dasharray:4 6}.pg-topology-group{fill:rgba(148,163,184,.05);stroke:rgba(148,163,184,.22);stroke-width:1.5;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}.pg-topology-edge-route{stroke:#22d3ee;stroke-width:2.5}.pg-topology-edge-target-frontend{stroke:#a78bfa;stroke-width:2.5}.pg-topology-edge-server{stroke:rgba(103,232,249,.45)}.pg-topology-node{cursor:move}.pg-topology-node.is-dragging{cursor:grabbing}.pg-topology-node rect{fill:rgba(15,23,42,.96);stroke:rgba(148,163,184,.3);stroke-width:1.5;vector-effect:non-scaling-stroke}.pg-topology-node-target rect{stroke:#818cf8}.pg-topology-node-frontend rect{stroke:#22d3ee}.pg-topology-node-backend rect{stroke:#2dd4bf;stroke-dasharray:6 3}.pg-topology-node-server rect{stroke:#34d399}.pg-topology-node-server.pg-topology-state-unhealthy rect{fill:rgba(40,8,12,.96);stroke:#fb7185}.pg-topology-node:hover rect,.pg-topology-node:focus rect{stroke:#67e8f9;stroke-width:2.5}.pg-topology-node circle{fill:#94a3b8}.pg-topology-node-target circle{fill:#818cf8}.pg-topology-node-frontend circle{fill:#22d3ee}.pg-topology-node-backend circle{fill:#2dd4bf}.pg-topology-node-server circle{fill:#34d399}.pg-topology-state-healthy circle{fill:#34d399}.pg-topology-state-unhealthy circle{fill:#fb7185}.pg-topology-state-unhealthy rect{fill:rgba(251,113,133,.18);stroke:#fb7185;stroke-width:2}.pg-topology-node-frontend.pg-topology-protocol-tcp circle{fill:#38bdf8}.pg-topology-node-backend.pg-topology-protocol-tcp circle{fill:#38bdf8}.pg-topology-node-backend.pg-topology-protocol-http circle{fill:#2dd4bf}.pg-topology-node-frontend.pg-topology-protocol-tcp rect{stroke:#38bdf8;fill:rgba(56,189,248,.15)}.pg-topology-node-backend.pg-topology-protocol-tcp rect{stroke:#38bdf8;fill:rgba(56,189,248,.15)}.pg-topology-node-frontend.pg-topology-protocol-tcp .pg-topology-node-title,.pg-topology-node-backend.pg-topology-protocol-tcp .pg-topology-node-title{fill:#bae6fd}.pg-topology-node text{pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.pg-topology-node-title{fill:#e2e8f0;font-size:13px;font-weight:600}.pg-topology-node-meta{fill:#94a3b8;font-size:10px}.pg-topology-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;color:#94a3b8;font-size:11px}.pg-topology-legend span{display:inline-flex;align-items:center;gap:6px}.pg-topology-legend i{width:8px;height:8px;border-radius:50%;background:#67e8f9}.pg-topology-legend .legend-unhealthy{background:#fb7185}.pg-topology-empty{padding:32px;color:#94a3b8;text-align:center}.pg-topology-highlight{outline:2px solid #22d3ee;outline-offset:3px;transition:outline-color .2s}@media(max-width:700px){.pg-topology-panel{padding:14px}.pg-topology-heading{align-items:flex-start;flex-direction:column}.pg-topology-viewport{height:55vh;min-height:300px}}
 </style>
 <style>
 .pg-topology-scrim{position:fixed;z-index:46;top:72px;left:0;right:0;bottom:0;padding:0 24px 24px;background:rgba(2,6,23,.52);backdrop-filter:blur(6px);overflow-y:auto}.pg-topology-drawer{width:min(1680px,100%);margin:12px auto 24px;padding:22px;background:linear-gradient(145deg,rgba(15,23,42,.98),rgba(8,15,29,.98));border:1px solid rgba(103,232,249,.2);border-radius:20px;box-shadow:0 28px 90px rgba(0,0,0,.65),0 0 40px rgba(34,211,238,.06);backdrop-filter:blur(20px)}@media(max-width:700px){.pg-topology-scrim{top:64px;padding:0 10px 12px}.pg-topology-drawer{padding:14px;margin-top:8px}}
@@ -67,81 +67,7 @@ Topology
 </div>
 </header>
 <div id="filterPanel" class="pg-filter-scrim" hidden>
-<form id="filterForm" hx-post="/api/prefs" hx-target="#content" hx-swap="innerHTML" class="pg-filter-drawer">
-<input type="hidden" name="filters" value="1">
-<input type="hidden" name="targets_filter" value="1">
-<input type="hidden" name="frontends_filter" value="1">
-<input type="hidden" name="backends_filter" value="1">
-<input type="hidden" name="servers_filter" value="1">
-<input type="hidden" name="refresh" value="{{.Prefs.Refresh}}">
-<div class="pg-filter-header">
-<div><div class="text-xs uppercase tracking-[.22em] text-cyan-300/70">View controls</div><h2 class="mt-1 text-xl font-semibold">Filter &amp; sort</h2></div>
-<button id="filterClose" type="button" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:bg-white/10">Close <span aria-hidden="true">×</span></button>
-</div>
-<div class="pg-filter-groups">
-<div class="pg-filter-group">
-<h3 class="font-semibold mb-3">Sort by</h3>
-<div class="pg-select" data-select data-submit="true">
-<input type="hidden" name="sort" value="{{.Prefs.SortKey}}" data-select-value>
-<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if eq .Prefs.SortKey "config"}}Configuration order{{else if eq .Prefs.SortKey "status"}}Status{{else if eq .Prefs.SortKey "scur"}}Current sessions{{else if eq .Prefs.SortKey "bin"}}Bytes in{{else}}Server name{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-<div class="pg-select-menu" data-select-menu role="listbox" hidden>
-<button type="button" class="pg-select-option" data-select-option data-value="config" aria-selected="{{if eq .Prefs.SortKey "config"}}true{{else}}false{{end}}"><span><strong>Configuration order</strong><small>Targets in config.yml order</small></span><span class="pg-select-check">✓</span></button>
-<button type="button" class="pg-select-option" data-select-option data-value="name" aria-selected="{{if eq .Prefs.SortKey "name"}}true{{else}}false{{end}}"><span><strong>Server name</strong><small>Alphabetical order</small></span><span class="pg-select-check">✓</span></button>
-<button type="button" class="pg-select-option" data-select-option data-value="status" aria-selected="{{if eq .Prefs.SortKey "status"}}true{{else}}false{{end}}"><span><strong>Status</strong><small>Group healthy and unavailable servers</small></span><span class="pg-select-check">✓</span></button>
-<button type="button" class="pg-select-option" data-select-option data-value="scur" aria-selected="{{if eq .Prefs.SortKey "scur"}}true{{else}}false{{end}}"><span><strong>Current sessions</strong><small>Compare active connections</small></span><span class="pg-select-check">✓</span></button>
-<button type="button" class="pg-select-option" data-select-option data-value="bin" aria-selected="{{if eq .Prefs.SortKey "bin"}}true{{else}}false{{end}}"><span><strong>Bytes in</strong><small>Compare inbound traffic</small></span><span class="pg-select-check">✓</span></button>
-</div>
-</div>
-<div id="sortDirection" class="pg-select mt-3" data-select data-submit="true" {{if eq .Prefs.SortKey "config"}}hidden{{end}}>
-<input type="hidden" name="asc" value="{{if .Prefs.SortAsc}}1{{else}}0{{end}}" data-select-value>
-<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if .Prefs.SortAsc}}Ascending{{else}}Descending{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-<div class="pg-select-menu" data-select-menu role="listbox" hidden>
-<button type="button" class="pg-select-option" data-select-option data-value="1" aria-selected="{{if .Prefs.SortAsc}}true{{else}}false{{end}}"><span><strong>Ascending</strong><small>A to Z · low to high</small></span><span class="pg-select-check">✓</span></button>
-<button type="button" class="pg-select-option" data-select-option data-value="0" aria-selected="{{if not .Prefs.SortAsc}}true{{else}}false{{end}}"><span><strong>Descending</strong><small>Z to A · high to low</small></span><span class="pg-select-check">✓</span></button>
-</div>
-</div>
-</div>
-<div class="pg-filter-group">
-<h3 class="font-semibold mb-3">HAProxy servers</h3>
-<div class="pg-filter-options">
-{{range .Targets}}
-<label class="pg-filter-option"><input type="checkbox" name="tg_target:{{.}}" data-target-filter {{if or (index $.Prefs.ShowTargets (printf "target:%s" .)) (not $.Prefs.TargetFilterActive)}}checked{{end}}><span>{{.}}</span></label>
-{{end}}
-</div>
-</div>
-<div class="pg-filter-group">
-<h3 class="font-semibold mb-3">Frontends</h3>
-<div class="pg-filter-options">
-{{range .Frontends}}
-{{if .TargetShown}}
-<label class="pg-filter-option"><input type="checkbox" name="fe_{{.Key}}" {{if or (index $.Prefs.ShowFrontends .Key) (not $.Prefs.FrontendFilterActive)}}checked{{end}} onchange="this.form.requestSubmit()"><span>{{.Name}}</span><small>{{.Target}}</small></label>
-{{else if or (index $.Prefs.ShowFrontends .Key) (not $.Prefs.FrontendFilterActive)}}
-<input type="hidden" name="fe_{{.Key}}" value="1">
-{{end}}
-{{end}}
-</div>
-</div>
-<div class="pg-filter-group">
-<h3 class="font-semibold mb-3">Backends &amp; servers</h3>
-<div class="pg-filter-options">
-{{range .Backends}}
-{{$backend := .}}
-{{if .TargetShown}}
-<label class="pg-filter-option"><input type="checkbox" name="be_{{.Key}}" data-backend-toggle="{{.Key}}" {{if or (index $.Prefs.ShowBackends .Key) (not $.Prefs.BackendFilterActive)}}checked{{end}}><span>{{.Name}}</span><small>{{.Target}}</small></label>
-{{range .Servers}}
-<label class="pg-filter-option pg-filter-server"><input type="checkbox" name="sv_{{.Key}}" data-backend-server="{{$backend.Key}}" {{if or (index $.Prefs.ShowServers .Key) (not $.Prefs.ServerFilterActive)}}checked{{end}}><span>{{.Name}}</span></label>
-{{end}}
-{{else}}
-{{if or (index $.Prefs.ShowBackends .Key) (not $.Prefs.BackendFilterActive)}}<input type="hidden" name="be_{{.Key}}" value="1">{{end}}
-{{range .Servers}}
-{{if or (index $.Prefs.ShowServers .Key) (not $.Prefs.ServerFilterActive)}}<input type="hidden" name="sv_{{.Key}}" value="1">{{end}}
-{{end}}
-{{end}}
-{{end}}
-</div>
-</div>
-</div>
-</form>
+{{template "filter-form" .}}
 </div>
 <div id="topologyPanel" class="pg-topology-scrim" hidden>
 <section class="pg-topology-drawer" role="dialog" aria-modal="true" aria-labelledby="pgTopologyHeading">
@@ -391,15 +317,6 @@ topologyPanel.addEventListener('click',function(event){if(event.target===topolog
 document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!topologyPanel.hidden)setTopologyPanel(false)});
 document.addEventListener('change',function(event){
   const input=event.target;
-  if(input.matches('[data-target-filter]')){
-    const form=input.form;
-    form.addEventListener('htmx:afterRequest',function(requestEvent){
-      const xhr=requestEvent.detail&&requestEvent.detail.xhr;
-      if(xhr&&xhr.status>=200&&xhr.status<300){try{sessionStorage.setItem('proxyglass-reopen-filters','1')}catch(_e){}location.reload()}
-    },{once:true});
-    form.requestSubmit();
-    return;
-  }
   if(input.matches('[data-backend-toggle]')){
     const key=input.dataset.backendToggle;
     filterPanel.querySelectorAll('[data-backend-server]').forEach(function(server){if(server.dataset.backendServer===key)server.checked=input.checked});
@@ -504,6 +421,9 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 <div id="pgTopologyViewport" class="pg-topology-viewport">
 <svg id="topologySvg" class="pg-topology-svg" viewBox="0 0 {{.Topology.Width}} {{.Topology.Height}}" data-base-width="{{.Topology.Width}}" data-base-height="{{.Topology.Height}}" preserveAspectRatio="xMinYMin meet" role="group" aria-label="HAProxy environment topology">
 <g data-topology-viewport>
+<g class="pg-topology-groups">
+{{range .Topology.Groups}}<rect class="pg-topology-group" x="{{printf "%.1f" .X}}" y="{{printf "%.1f" .Y}}" width="{{printf "%.1f" .Width}}" height="{{printf "%.1f" .Height}}" rx="16"/>{{end}}
+</g>
 <g class="pg-topology-edges">
 {{range .Topology.Edges}}<path class="pg-topology-edge pg-topology-edge-{{.Kind}}" data-topology-edge-from="{{.From}}" data-topology-edge-to="{{.To}}" d="{{.Path}}"/>{{end}}
 </g>
@@ -513,14 +433,14 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 <title>{{.Kind}}: {{.Label}} · {{.Target}} · {{.Status}}</title>
 <rect width="190" height="70" rx="13"/>
 <circle cx="16" cy="19" r="5"/>
-<text class="pg-topology-node-title" x="29" y="24"{{if .LabelTruncated}} textLength="148" lengthAdjust="spacing"{{end}}>{{.DisplayLabel}}</text>
-<text class="pg-topology-node-meta" x="15" y="49"{{if .MetaTruncated}} textLength="160" lengthAdjust="spacing"{{end}}>{{.DisplayMeta}}</text>
+<text class="pg-topology-node-title" x="29" y="24">{{.DisplayLabel}}</text>
+<text class="pg-topology-node-meta" x="15" y="49">{{.DisplayMeta}}</text>
 </g>
 {{end}}
 </g>
 </svg>
 </div>
-<div class="pg-topology-legend" aria-label="Topology legend"><span><i style="background:#818cf8"></i>HAProxy target</span><span><i style="background:#22d3ee"></i>Frontend (HTTP)</span><span><i style="background:#38bdf8"></i>Frontend (TCP)</span><span><i style="background:#2dd4bf"></i>Backend (HTTP)</span><span><i style="background:#38bdf8"></i>Backend (TCP)</span><span><i style="background:#34d399"></i>Server up</span><span><i class="legend-unhealthy"></i>Unavailable</span><span>Solid cyan line: configured route</span><span><i style="background:transparent;border:1px dashed #a78bfa;width:14px;height:0;border-radius:0"></i>Dashed border: backend</span></div>
+<div class="pg-topology-legend" aria-label="Topology legend"><span><i style="background:#818cf8"></i>HAProxy target</span><span><i style="background:#22d3ee"></i>Frontend (HTTP)</span><span><i style="background:#38bdf8"></i>Frontend (TCP)</span><span><i style="background:#2dd4bf"></i>Backend (HTTP)</span><span><i style="background:#38bdf8"></i>Backend (TCP)</span><span><i style="background:#34d399"></i>Server up</span><span><i class="legend-unhealthy"></i>Unavailable</span><span><i style="background:#22d3ee;width:14px;height:2px;border-radius:0"></i>Solid cyan line: configured route</span><span><i style="background:#a78bfa;width:14px;height:2px;border-radius:0"></i>Purple line: target to frontends</span><span><i style="background:transparent;border:1px dashed rgba(148,163,184,.45);width:14px;height:10px;border-radius:4px"></i>Dashed box: target without configured route</span><span><i style="background:transparent;border:1px dashed #a78bfa;width:14px;height:0;border-radius:0"></i>Dashed border: backend</span></div>
 {{else}}
 <div class="pg-topology-empty">No HAProxy targets are visible. Add targets to the Proxyglass configuration or adjust the active filters.</div>
 {{end}}
@@ -546,4 +466,83 @@ try{if(sessionStorage.getItem('proxyglass-reopen-filters')==='1'){sessionStorage
 {{end}}
 {{end}}
 {{end}}
+
+{{define "filter-form"}}<form id="filterForm" hx-post="/api/prefs" hx-target="#content" hx-swap="innerHTML" autocomplete="off" class="pg-filter-drawer">{{template "filter-form-body" .}}</form>{{end}}
+{{define "filter-form-body"}}
+<input type="hidden" name="filters" value="1">
+<input type="hidden" name="targets_filter" value="1">
+<input type="hidden" name="frontends_filter" value="1">
+<input type="hidden" name="backends_filter" value="1">
+<input type="hidden" name="servers_filter" value="1">
+<input type="hidden" name="refresh" value="{{.Prefs.Refresh}}">
+<div class="pg-filter-header">
+<div><div class="text-xs uppercase tracking-[.22em] text-cyan-300/70">View controls</div><h2 class="mt-1 text-xl font-semibold">Filter &amp; sort</h2></div>
+<button id="filterClose" type="button" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:bg-white/10">Close <span aria-hidden="true">×</span></button>
+</div>
+<div class="pg-filter-groups">
+<div class="pg-filter-group">
+<h3 class="font-semibold mb-3">Sort by</h3>
+<div class="pg-select" data-select data-submit="true">
+<input type="hidden" name="sort" value="{{.Prefs.SortKey}}" data-select-value>
+<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if eq .Prefs.SortKey "config"}}Configuration order{{else if eq .Prefs.SortKey "status"}}Status{{else if eq .Prefs.SortKey "scur"}}Current sessions{{else if eq .Prefs.SortKey "bin"}}Bytes in{{else}}Server name{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="pg-select-menu" data-select-menu role="listbox" hidden>
+<button type="button" class="pg-select-option" data-select-option data-value="config" aria-selected="{{if eq .Prefs.SortKey "config"}}true{{else}}false{{end}}"><span><strong>Configuration order</strong><small>Targets in config.yml order</small></span><span class="pg-select-check">✓</span></button>
+<button type="button" class="pg-select-option" data-select-option data-value="name" aria-selected="{{if eq .Prefs.SortKey "name"}}true{{else}}false{{end}}"><span><strong>Server name</strong><small>Alphabetical order</small></span><span class="pg-select-check">✓</span></button>
+<button type="button" class="pg-select-option" data-select-option data-value="status" aria-selected="{{if eq .Prefs.SortKey "status"}}true{{else}}false{{end}}"><span><strong>Status</strong><small>Group healthy and unavailable servers</small></span><span class="pg-select-check">✓</span></button>
+<button type="button" class="pg-select-option" data-select-option data-value="scur" aria-selected="{{if eq .Prefs.SortKey "scur"}}true{{else}}false{{end}}"><span><strong>Current sessions</strong><small>Compare active connections</small></span><span class="pg-select-check">✓</span></button>
+<button type="button" class="pg-select-option" data-select-option data-value="bin" aria-selected="{{if eq .Prefs.SortKey "bin"}}true{{else}}false{{end}}"><span><strong>Bytes in</strong><small>Compare inbound traffic</small></span><span class="pg-select-check">✓</span></button>
+</div>
+</div>
+<div id="sortDirection" class="pg-select mt-3" data-select data-submit="true" {{if eq .Prefs.SortKey "config"}}hidden{{end}}>
+<input type="hidden" name="asc" value="{{if .Prefs.SortAsc}}1{{else}}0{{end}}" data-select-value>
+<button type="button" class="pg-select-trigger" data-select-trigger aria-haspopup="listbox" aria-expanded="false"><span data-select-label>{{if .Prefs.SortAsc}}Ascending{{else}}Descending{{end}}</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="pg-select-menu" data-select-menu role="listbox" hidden>
+<button type="button" class="pg-select-option" data-select-option data-value="1" aria-selected="{{if .Prefs.SortAsc}}true{{else}}false{{end}}"><span><strong>Ascending</strong><small>A to Z · low to high</small></span><span class="pg-select-check">✓</span></button>
+<button type="button" class="pg-select-option" data-select-option data-value="0" aria-selected="{{if not .Prefs.SortAsc}}true{{else}}false{{end}}"><span><strong>Descending</strong><small>Z to A · high to low</small></span><span class="pg-select-check">✓</span></button>
+</div>
+</div>
+</div>
+<div class="pg-filter-group">
+<h3 class="font-semibold mb-3">HAProxy servers</h3>
+<div class="pg-filter-options">
+{{range .Targets}}
+<label class="pg-filter-option"><input type="checkbox" name="tg_target:{{.}}" autocomplete="off" onchange="this.form.requestSubmit()" {{if not (index $.Prefs.HideTargets (printf "target:%s" .))}}checked{{end}}><span>{{.}}</span></label>
+{{end}}
+</div>
+</div>
+<div class="pg-filter-group">
+<h3 class="font-semibold mb-3">Frontends</h3>
+<div class="pg-filter-options">
+{{range .Frontends}}
+{{if .TargetShown}}
+<label class="pg-filter-option"><input type="checkbox" name="fe_{{.Key}}" {{if not (index $.Prefs.HideFrontends .Key)}}checked{{end}} onchange="this.form.requestSubmit()"><span>{{.Name}}</span><small>{{.Target}}</small></label>
+{{else if not (index $.Prefs.HideFrontends .Key)}}
+<input type="hidden" name="fe_{{.Key}}" value="1">
+{{end}}
+{{end}}
+</div>
+</div>
+<div class="pg-filter-group">
+<h3 class="font-semibold mb-3">Backends &amp; servers</h3>
+<div class="pg-filter-options">
+{{range .Backends}}
+{{$backend := .}}
+{{if .TargetShown}}
+<label class="pg-filter-option"><input type="checkbox" name="be_{{.Key}}" data-backend-toggle="{{.Key}}" {{if not (index $.Prefs.HideBackends .Key)}}checked{{end}}><span>{{.Name}}</span><small>{{.Target}}</small></label>
+{{range .Servers}}
+<label class="pg-filter-option pg-filter-server"><input type="checkbox" name="sv_{{.Key}}" data-backend-server="{{$backend.Key}}" {{if not (index $.Prefs.HideServers .Key)}}checked{{end}}><span>{{.Name}}</span></label>
+{{end}}
+{{else}}
+{{if not (index $.Prefs.HideBackends .Key)}}<input type="hidden" name="be_{{.Key}}" value="1">{{end}}
+{{range .Servers}}
+{{if not (index $.Prefs.HideServers .Key)}}<input type="hidden" name="sv_{{.Key}}" value="1">{{end}}
+{{end}}
+{{end}}
+{{end}}
+</div>
+</div>
+</div>
+{{end}}
+{{define "filter-form-oob"}}<form id="filterForm" hx-post="/api/prefs" hx-target="#content" hx-swap="innerHTML" autocomplete="off" class="pg-filter-drawer" hx-swap-oob="outerHTML">{{template "filter-form-body" .}}</form>{{end}}
+
 `

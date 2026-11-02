@@ -52,6 +52,17 @@ services:
     depends_on: [edge1, edge2, edge3, edge4, admin1, admin2]
     networks:
       - pgtest
+  haproxy4:
+    image: haproxy:2.9
+    container_name: proxyglass-haproxy4
+    ports:
+      - "48404:8404"
+      - "48080:80"
+    volumes:
+      - ../test/haproxy/haproxy4.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on: [edge4]
+    networks:
+      - pgtest
   proxyglass:
     build:
       context: ..
@@ -60,7 +71,7 @@ services:
       - "18000:8080"
     volumes:
       - ../test/config.docker.yaml:/etc/proxyglass/config.yml:ro
-    depends_on: [haproxy1, haproxy2, haproxy3]
+    depends_on: [haproxy1, haproxy2, haproxy3, haproxy4]
     networks: [pgtest]
 
 networks:

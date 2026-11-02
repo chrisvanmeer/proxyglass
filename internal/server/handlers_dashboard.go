@@ -43,9 +43,15 @@ func (s *Server) getSnapshot() *model.Snapshot {
 func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	p := prefs.GetWithDefault(r, s.cfg.Server.DefaultRefresh)
 	snap := s.getSnapshot()
+	targets, frontends, backends, servers := filterKeys(snap)
+	if p.Normalize(targets, frontends, backends, servers) {
+		prefs.Set(w, p)
+	}
 	data := buildView(snap, p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 	tmpl := dashboardTemplate()
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, private")
+	w.Header().Set("Pragma", "no-cache")
 	_ = tmpl.ExecuteTemplate(w, "dash", data)
 }
 
@@ -60,21 +66,31 @@ func (s *Server) handleRefresh(w http.ResponseWriter, r *http.Request) {
 	s.lastFetch = time.Now()
 	s.mu.Unlock()
 	p := prefs.GetWithDefault(r, s.cfg.Server.DefaultRefresh)
+	targets, frontends, backends, servers := filterKeys(snap)
+	_ = p.Normalize(targets, frontends, backends, servers)
 	data := buildView(snap, p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 	tmpl := dashboardTemplate()
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, private")
+	w.Header().Set("Pragma", "no-cache")
 	_ = tmpl.ExecuteTemplate(w, "content", data)
 	_ = tmpl.ExecuteTemplate(w, "topology-oob", data)
 }
 
 func (s *Server) handleSavePrefs(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		p := prefs.ParseFromForm(r)
+		snap := s.getSnapshot()
+		targets, frontends, backends, servers := filterKeys(snap)
+		p := prefs.ParseFromForm(r, targets, frontends, backends, servers)
+		p.Normalize(targets, frontends, backends, servers)
 		prefs.Set(w, p)
-		data := buildView(s.getSnapshot(), p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
+		data := buildView(snap, p, s.cfg.Server.DefaultRefresh, s.cfg.Topology...)
 		tmpl := dashboardTemplate()
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, private")
+		w.Header().Set("Pragma", "no-cache")
 		_ = tmpl.ExecuteTemplate(w, "content", data)
+		_ = tmpl.ExecuteTemplate(w, "filter-form-oob", data)
 		_ = tmpl.ExecuteTemplate(w, "topology-oob", data)
 		return
 	}
@@ -186,9 +202,17 @@ type TopologyEdge struct {
 	Path string
 }
 
+type TopologyGroup struct {
+	X      float64
+	Y      float64
+	Width  float64
+	Height float64
+}
+
 type TopologyView struct {
 	Nodes  []TopologyNode
 	Edges  []TopologyEdge
+	Groups []TopologyGroup
 	Width  int
 	Height int
 }
@@ -353,20 +377,18 @@ func buildView(snap *model.Snapshot, p *prefs.Prefs, defRef int, topologyMapping
 	vd.Fleet = fv
 	for _, fe := range snap.Frontends {
 		k := prefs.KeyFE(fe.Name, fe.Target)
-		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(fe.Target)]
-		shown := targetShown &&
-			(!p.FrontendFilterActive() || p.ShowFrontends[k])
+		targetShown := p.TargetVisible(prefs.KeyTarget(fe.Target))
+		shown := targetShown && p.FrontendVisible(k)
 		vd.Frontends = append(vd.Frontends, FView{Key: k, Anchor: "frontend-" + k, Name: fe.Name, Target: fe.Target, Mode: fe.Mode, Status: fe.Status, SCur: fe.SessionsCur, SMax: fe.SessionsMax, STot: fe.SessionsTot, Rate: fe.Rate, RateMax: fe.RateMax, BIn: fe.BytesIn, BOut: fe.BytesOut, Denied: fe.DeniedReq + fe.DeniedResp, Errors: fe.ErrorsReq, LastActivity: activityAge(fe.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(fe.LastActivity), TargetShown: targetShown, Shown: shown})
 	}
 	for _, be := range snap.Backends {
 		k := prefs.KeyBE(be.Name, be.Target)
-		targetShown := !p.TargetFilterActive() || p.ShowTargets[prefs.KeyTarget(be.Target)]
-		shown := targetShown &&
-			(!p.BackendFilterActive() || p.ShowBackends[k])
+		targetShown := p.TargetVisible(prefs.KeyTarget(be.Target))
+		shown := targetShown && p.BackendVisible(k)
 		bv := BView{Key: k, Anchor: "backend-" + k, Name: be.Name, Target: be.Target, Mode: be.Mode, Status: be.Status, SCur: be.SessionsCur, SMax: be.SessionsMax, BIn: be.BytesIn, BOut: be.BytesOut, LastActivity: activityAge(be.LastActivity, snap.FetchedAt), LastActivityAt: activityTimestamp(be.LastActivity), TargetShown: targetShown, Shown: shown}
 		for _, sv := range be.Servers {
 			sk := prefs.KeySV(sv.Name, sv.Backend, sv.Target)
-			sshown := !p.ServerFilterActive() || p.ShowServers[sk]
+			sshown := p.ServerVisible(sk)
 			if sshown {
 				bv.VisibleServers = true
 			}
@@ -469,4 +491,24 @@ func humanBytes(b int64) string {
 	val := float64(b) / float64(div)
 	suffix := []string{"KB", "MB", "GB", "TB", "PB", "EB"}[exp]
 	return strconv.FormatFloat(val, 'f', 1, 64) + " " + suffix
+}
+
+func filterKeys(snap *model.Snapshot) ([]string, []string, []string, []string) {
+	targets := make([]string, 0, len(snap.Targets))
+	for _, target := range snap.Targets {
+		targets = append(targets, prefs.KeyTarget(target))
+	}
+	frontends := make([]string, 0, len(snap.Frontends))
+	for _, frontend := range snap.Frontends {
+		frontends = append(frontends, prefs.KeyFE(frontend.Name, frontend.Target))
+	}
+	backends := make([]string, 0)
+	servers := make([]string, 0)
+	for _, backend := range snap.Backends {
+		backends = append(backends, prefs.KeyBE(backend.Name, backend.Target))
+		for _, server := range backend.Servers {
+			servers = append(servers, prefs.KeySV(server.Name, backend.Name, backend.Target))
+		}
+	}
+	return targets, frontends, backends, servers
 }

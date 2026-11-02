@@ -138,7 +138,7 @@ Worker setup. No external browser CDNs or Easter eggs are included.
 
 ## HAProxy test lab
 
-See [`docs/TESTING.md`](docs/TESTING.md). `test/scripts/setup.sh` starts three HAProxy containers and
+See [`docs/TESTING.md`](docs/TESTING.md). `test/scripts/setup.sh` starts four HAProxy containers and
 test backends, enables stats with test-only Basic Auth and sends requests to create nonzero counters. One
 intentionally unavailable server demonstrates down/check-error states. Test credentials are
 `admin / changeme`; never reuse them.

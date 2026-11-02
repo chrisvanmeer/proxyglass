@@ -6,11 +6,12 @@ cd "$ROOT"
 docker compose -f docker/docker-compose.test.yaml up -d --build --force-recreate
 
 ready=false
-printf 'Waiting for three HAProxy stats endpoints'
+printf 'Waiting for four HAProxy stats endpoints'
 for _ in $(seq 1 45); do
   if curl -fsS -u admin:changeme 'http://localhost:18404/stats;csv' >/dev/null 2>&1 && \
      curl -fsS -u admin:changeme 'http://localhost:28404/stats;csv' >/dev/null 2>&1 && \
-     curl -fsS -u admin:changeme 'http://localhost:38404/stats;csv' >/dev/null 2>&1; then
+     curl -fsS -u admin:changeme 'http://localhost:38404/stats;csv' >/dev/null 2>&1 && \
+     curl -fsS -u admin:changeme 'http://localhost:48404/stats;csv' >/dev/null 2>&1; then
     ready=true
     break
   fi
@@ -18,7 +19,7 @@ for _ in $(seq 1 45); do
   sleep 1
 done
 if [[ "$ready" != true ]]; then
-  echo '\nHAProxy stats did not become ready. Inspect logs with docker compose -f docker/docker-compose.test.yaml logs haproxy1 haproxy2 haproxy3.' >&2
+  echo '\nHAProxy stats did not become ready. Inspect logs with docker compose -f docker/docker-compose.test.yaml logs haproxy1 haproxy2 haproxy3 haproxy4.' >&2
   exit 1
 fi
 app_ready=false
@@ -40,4 +41,4 @@ token="$(docker compose -f docker/docker-compose.test.yaml exec -T proxyglass /u
 printf '\nDashboard: http://localhost:18000\n'
 printf 'Test login token (paste into the login page): %s\n' "$token"
 printf 'Stats pages (basic auth admin / changeme):\n'
-printf '  http://localhost:18404/stats\n  http://localhost:28404/stats\n  http://localhost:38404/stats\n'
+printf '  http://localhost:18404/stats\n  http://localhost:28404/stats\n  http://localhost:38404/stats\n  http://localhost:48404/stats\n'

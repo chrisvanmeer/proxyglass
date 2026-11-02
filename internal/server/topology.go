@@ -50,13 +50,13 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 		}
 	}
 
-	graph := TopologyView{Nodes: []TopologyNode{}, Edges: []TopologyEdge{}, Width: 800, Height: 420}
+	graph := TopologyView{Nodes: []TopologyNode{}, Edges: []TopologyEdge{}, Groups: []TopologyGroup{}, Width: 800, Height: 420}
 	frontendNodes := make(map[string]TopologyNode)
 	backendNodes := make(map[string]TopologyNode)
 	left := 40.0
 	maxHeight := 420.0
 	for _, group := range groups {
-		if p != nil && p.TargetFilterActive() && !p.ShowTargets[prefs.KeyTarget(group.name)] {
+		if p != nil && !p.TargetVisible(prefs.KeyTarget(group.name)) {
 			continue
 		}
 		columns := max(len(group.frontends), len(group.backends), 1)
@@ -69,6 +69,10 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 		targetNode := newTopologyNode("target", group.name, "HAProxy target", targetStatus, targetState, "tcp", "target-"+group.name, targetX, 32)
 		graph.Nodes = append(graph.Nodes, targetNode)
 
+		groupTop := 16.0
+		groupBottom := targetNode.Y + topologyNodeHeight
+		hasRoute := false
+
 		backendXs := topologyNodePositions(left, clusterWidth, len(group.backends))
 		for i, backend := range group.backends {
 			protocol := normalizeMode(backend.Mode)
@@ -78,7 +82,9 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 			node := newTopologyNode("backend", backend.Name, backend.Target, backend.Status, topologyStatusClass(backend.Status), protocol, backend.Anchor, backendXs[i], 300)
 			graph.Nodes = append(graph.Nodes, node)
 			backendNodes[topologyKey(backend.Target, backend.Name)] = node
-			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
+			if node.Y+topologyNodeHeight > groupBottom {
+				groupBottom = node.Y + topologyNodeHeight
+			}
 
 			serverY := 442.0
 			for _, server := range backend.Servers {
@@ -88,11 +94,15 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 				serverNode := newTopologyNode("server", server.Name, backend.Name, server.Status, topologyStatusClass(server.Status), protocol, "server-"+server.Key, node.X, serverY)
 				graph.Nodes = append(graph.Nodes, serverNode)
 				graph.Edges = append(graph.Edges, topologyEdge(node, serverNode, "server"))
+				if serverNode.Y+topologyNodeHeight > groupBottom {
+					groupBottom = serverNode.Y + topologyNodeHeight
+				}
 				serverY += 94
 			}
 			maxHeight = max(maxHeight, serverY+20)
 		}
 
+		targetFrontends := []TopologyNode{}
 		frontendXs := topologyFrontendPositions(left, clusterWidth, group, backendNodes, mappings)
 		for i, frontend := range group.frontends {
 			protocol := normalizeMode(frontend.Mode)
@@ -117,7 +127,10 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 			node := newTopologyNode("frontend", frontend.Name, frontend.Target, frontend.Status, topologyStatusClass(frontend.Status), protocol, frontend.Anchor, frontendXs[i], 158)
 			graph.Nodes = append(graph.Nodes, node)
 			frontendNodes[topologyKey(frontend.Target, frontend.Name)] = node
-			graph.Edges = append(graph.Edges, topologyEdge(targetNode, node, "target"))
+			targetFrontends = append(targetFrontends, node)
+			if node.Y+topologyNodeHeight > groupBottom {
+				groupBottom = node.Y + topologyNodeHeight
+			}
 		}
 
 		for _, frontend := range group.frontends {
@@ -133,9 +146,21 @@ func buildTopology(targets []string, frontends []FView, backends []BView, errors
 					to, ok := backendNodes[topologyKey(group.name, backendName)]
 					if ok {
 						graph.Edges = append(graph.Edges, topologyEdge(from, to, "route"))
+						hasRoute = true
 					}
 				}
 			}
+		}
+		for _, frontendNode := range targetFrontends {
+			graph.Edges = append(graph.Edges, topologyEdge(targetNode, frontendNode, "target-frontend"))
+		}
+		if !hasRoute {
+			graph.Groups = append(graph.Groups, TopologyGroup{
+				X:      left - 12,
+				Y:      groupTop,
+				Width:  clusterWidth + 24,
+				Height: groupBottom - groupTop + 24,
+			})
 		}
 		left += clusterWidth + 70
 	}
