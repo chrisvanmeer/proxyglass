@@ -27,6 +27,22 @@ func TestDashboardRendersFullLayoutAndBundledBrandAssets(t *testing.T) {
 	}
 }
 
+func TestFilterCloseSurvivesOOBFormSwap(t *testing.T) {
+	s, err := NewServer(&config.AppConfig{Server: config.Server{DefaultRefresh: 5}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	response := httptest.NewRecorder()
+	s.handleDashboard(response, httptest.NewRequest("GET", "/", nil))
+	body := response.Body.String()
+	if strings.Contains(body, "document.getElementById('filterClose').addEventListener") {
+		t.Fatal("filter close must not bind directly to the close button; OOB form swaps replace it")
+	}
+	if !strings.Contains(body, "event.target.closest('#filterClose')") {
+		t.Fatal("filter panel should handle close clicks through event delegation")
+	}
+}
+
 func TestBundledFaviconIsServed(t *testing.T) {
 	s, err := NewServer(&config.AppConfig{})
 	if err != nil {

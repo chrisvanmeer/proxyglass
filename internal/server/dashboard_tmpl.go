@@ -302,16 +302,17 @@ function setTopologyPanel(open){
   else if(wasOpen){topologyToggle.focus()}
 }
 function setFilterPanel(open){
+  const wasOpen=!filterPanel.hidden;
   if(open)setTopologyPanel(false);
   filterPanel.hidden=!open;
   filterToggle.setAttribute('aria-expanded',open?'true':'false');
-  if(open){document.getElementById('filterClose').focus()}
+  if(open){const close=document.getElementById('filterClose');if(close)close.focus()}
+  else if(wasOpen){filterToggle.focus()}
 }
 filterToggle.addEventListener('click',function(){setFilterPanel(filterPanel.hidden)});
 topologyToggle.addEventListener('click',function(){setTopologyPanel(topologyPanel.hidden)});
-document.getElementById('filterClose').addEventListener('click',function(){setFilterPanel(false)});
 document.getElementById('topologyClose').addEventListener('click',function(){setTopologyPanel(false)});
-filterPanel.addEventListener('click',function(event){if(event.target===filterPanel)setFilterPanel(false)});
+filterPanel.addEventListener('click',function(event){if(event.target.closest('#filterClose')||event.target===filterPanel)setFilterPanel(false)});
 document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!filterPanel.hidden)setFilterPanel(false)});
 topologyPanel.addEventListener('click',function(event){if(event.target===topologyPanel)setTopologyPanel(false)});
 document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!topologyPanel.hidden)setTopologyPanel(false)});
